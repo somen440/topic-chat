@@ -54,7 +54,7 @@ service TopicCatalogService {
 }
 
 message ListTopicsResponse {
-  repeated Topic topic = 1;
+  repeated Topic topics = 1;
 }
 
 message GetTopicRequest {
