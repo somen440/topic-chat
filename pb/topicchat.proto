@@ -10,12 +10,8 @@ message User {
 }
 
 message Topic {
-  string id = 1;
+  string id = 1;
   string name = 2;
-  string description = 3;
-  string picture = 4;
-
-  repeated string categories = 5;
 }
 
 // -------------------- Auth --------------------
@@ -40,11 +36,11 @@ message LoggedInRequest {
 // -------------------- Room --------------------
 
 service RoomService {
-  rpc Join(JoinRequest) returns (Empty) {}
+  rpc Join(RoomJoinRequest) returns (Empty) {}
   rpc Left(Empty) returns (Empty) {}
 }
 
-message JoinRequest {
+message RoomJoinRequest {
   string topic_id = 1;
   User user = 2;
 }
@@ -53,11 +49,11 @@ message JoinRequest {
 
 service TopicCatalogService {
   rpc ListTopics(Empty) returns (ListTopicsResponse) {}
-  rpc GetTopicRequest(GetTopicRequest) returns (Topic) {}
-  rpc SearchTopics(SearchTopicsRequest) returns (SearchTopicsResponse) {}
+  rpc GetTopic(GetTopicRequest) returns (Topic) {}
+//  rpc SearchTopics(SearchTopicsRequest) returns (SearchTopicsResponse) {}
 }
 
-message ListTopicResponse {
+message ListTopicsResponse {
   repeated Topic topic = 1;
 }
 
