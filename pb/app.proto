@@ -1,0 +1,66 @@
+syntax = "proto3";
+
+package topicchat;
+
+message Empty {}
+
+message User {
+  string id = 1;
+  string name = 2;
+}
+
+message Topic {
+  string id = 1;
+  string name = 2;
+  string description = 3;
+  string picture = 4;
+
+  repeated string categories = 5;
+}
+
+// -------------------- Auth --------------------
+
+service AuthService {
+  rpc Join(JoinRequest) returns (JoinResponse) {}
+  rpc LoggedIn(LoggedInRequest) returns (Empty) {}
+}
+
+message JoinRequest {
+  string name = 1;
+}
+
+message JoinResponse {
+  User user = 1;
+}
+
+message LoggedInRequest {
+  string user_id = 1;
+}
+
+// -------------------- Room --------------------
+
+service RoomService {
+  rpc Join(JoinRequest) returns (Empty) {}
+  rpc Left(Empty) returns (Empty) {}
+}
+
+message JoinRequest {
+  string topic_id = 1;
+  User user = 2;
+}
+
+// -------------------- Topic Catalog --------------------
+
+service TopicCatalogService {
+  rpc ListTopics(Empty) returns (ListTopicsResponse) {}
+  rpc GetTopicRequest(GetTopicRequest) returns (Topic) {}
+  rpc SearchTopics(SearchTopicsRequest) returns (SearchTopicsResponse) {}
+}
+
+message ListTopicResponse {
+  repeated Topic topic = 1;
+}
+
+message GetTopicRequest {
+  string id = 1;
+}
