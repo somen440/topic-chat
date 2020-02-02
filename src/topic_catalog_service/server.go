@@ -1,16 +1,16 @@
 package main
 
 import (
-	"context"
 	"fmt"
 	"io/ioutil"
-	"log"
 	"net"
 	"os"
 	"strconv"
+	"time"
 
 	pb "github.com/somen440/topic-chat/src/topic_catalog_service/pb"
 
+	"github.com/sirupsen/logrus"
 	"google.golang.org/grpc"
 	"gopkg.in/yaml.v2"
 )
@@ -18,23 +18,25 @@ import (
 var (
 	port   = 8081
 	topics []*pb.Topic
+	log    *logrus.Logger
 )
 
-type topicCatalogServiceServer struct{}
-
-func (t *topicCatalogServiceServer) ListTopics(_ context.Context, _ *pb.Empty) (*pb.ListTopicsResponse, error) {
-	return &pb.ListTopicsResponse{
-		Topics: topics,
-	}, nil
-}
-
-func (t *topicCatalogServiceServer) GetTopic(_ context.Context, req *pb.GetTopicRequest) (*pb.Topic, error) {
-	for _, v := range topics {
-		if v.GetId() == req.GetId() {
-			return v, nil
-		}
+func init() {
+	log = logrus.New()
+	if os.Getenv("DEBUG") == "on" {
+		log.Level = logrus.DebugLevel
 	}
-	return nil, fmt.Errorf("not found")
+	log.Formatter = &logrus.JSONFormatter{
+		FieldMap: logrus.FieldMap{
+			logrus.FieldKeyTime:  "timestamp",
+			logrus.FieldKeyLevel: "severity",
+			logrus.FieldKeyMsg:   "message",
+		},
+		TimestampFormat: time.RFC3339Nano,
+	}
+	log.Out = os.Stdout
+
+	parseTopics()
 }
 
 func main() {
@@ -48,6 +50,16 @@ func main() {
 		log.Fatal(err)
 	}
 
+	s := grpc.NewServer()
+	pb.RegisterTopicCatalogServiceServer(s, &topicCatalogServiceServer{})
+
+	log.Infof("starting grpc server at :%s", srvPort)
+	if err := s.Serve(l); err != nil {
+		log.Fatalf("failed to serve: %v", err)
+	}
+}
+
+func parseTopics() {
 	fileName := "./topic_catalog.yaml"
 	bytes, err := ioutil.ReadFile(fileName)
 	if err != nil {
@@ -57,13 +69,5 @@ func main() {
 	err = yaml.Unmarshal(bytes, &topics)
 	if err != nil {
 		log.Fatalf("error: %v", err)
-	}
-
-	s := grpc.NewServer()
-	pb.RegisterTopicCatalogServiceServer(s, &topicCatalogServiceServer{})
-
-	log.Printf("liten: :%s", srvPort)
-	if err := s.Serve(l); err != nil {
-		log.Fatalf("failed to serve: %v", err)
 	}
 }
