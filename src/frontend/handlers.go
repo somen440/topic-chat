@@ -31,20 +31,13 @@ func (fe *frontendServer) TopicHandler(w http.ResponseWriter, r *http.Request) {
 	log := r.Context().Value(ctxKeyLog{}).(logrus.FieldLogger)
 	log.Info("topic")
 
-	topics := []*pb.Topic{
-		&pb.Topic{
-			Id:   "1",
-			Name: "hoge",
-		},
-		&pb.Topic{
-			Id:   "2",
-			Name: "foo",
-		},
-		&pb.Topic{
-			Id:   "3",
-			Name: "bar",
-		},
+	resp, err := pb.NewTopicCatalogServiceClient(fe.topicCatalogSvcConn).
+		ListTopics(r.Context(), &pb.Empty{})
+	if err != nil {
+		log.Error(err)
 	}
+
+	topics := resp.GetTopics()
 	log.WithField("topics", topics).Debug("list topics")
 
 	if err := templates.ExecuteTemplate(w, "topic", map[string]interface{}{
