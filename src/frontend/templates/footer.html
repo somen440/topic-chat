@@ -1,6 +1,12 @@
 {{ define "footer" }}
   <h3>footer</h3>
 
+  {{ if $.session_id }}
+  <p>session-id: {{ $.session_id }}</p>
+  {{end}}
+  {{ if $.request_id }}
+  <p>request-id: {{ $.request_id }}</p>
+  {{end}}
 </body>
 </html>
 {{ end }}
