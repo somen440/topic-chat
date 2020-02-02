@@ -23,11 +23,7 @@ const (
 
 type ctxKeySessionID struct{}
 
-// var (
-// 	templates = template.Must(template.New("").
-// 		Funcs(template.FuncMap{}).
-// 		ParseGlob("templates/*.html"),
-// )
+type frontendServer struct{}
 
 func main() {
 	log := logrus.New()
@@ -51,7 +47,10 @@ func main() {
 		srvAddr = addr
 	}
 
+	srv := new(frontendServer)
+
 	r := mux.NewRouter()
+	r.HandleFunc("/", srv.HomeHandler)
 	r.HandleFunc("/_healthz", func(w http.ResponseWriter, r *http.Request) {
 		fmt.Fprint(w, "ok")
 	})
