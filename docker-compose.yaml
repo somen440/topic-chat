@@ -1,0 +1,15 @@
+version: '3'
+
+services:
+  frontend:
+    image: gcr.io/topic-chat/frontend:latest
+    environment:
+      FRONTEND_PORT: 8080
+      FRONTEND_LISTEN_ADDR: 0.0.0.0
+      TOPIC_CATALOG_SERVICE_ADDR: topic_catalog:8081
+    ports:
+      - 8080:8080
+  topic_catalog:
+    image: gcr.io/topic-chat/topic_catalog:latest
+    environment:
+      TOPIC_CATALOG_SERVICE_PORT: 8081

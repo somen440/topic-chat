@@ -1,15 +1,19 @@
 package main
 
 import (
+	"context"
 	"fmt"
 	"net/http"
 	"os"
 	"time"
 
 	"github.com/gorilla/mux"
+	"github.com/pkg/errors"
 	"github.com/sirupsen/logrus"
+	"go.opencensus.io/plugin/ocgrpc"
 	"go.opencensus.io/plugin/ochttp"
 	"go.opencensus.io/plugin/ochttp/propagation/b3"
+	"google.golang.org/grpc"
 )
 
 const (
@@ -23,9 +27,13 @@ const (
 
 type ctxKeySessionID struct{}
 
-type frontendServer struct{}
+type frontendServer struct {
+	topicCatalogSvcAddr string
+	topicCatalogSvcConn *grpc.ClientConn
+}
 
 func main() {
+	ctx := context.Background()
 	log := logrus.New()
 	log.Level = logrus.DebugLevel
 	log.Formatter = &logrus.JSONFormatter{
@@ -38,19 +46,23 @@ func main() {
 	}
 	log.Out = os.Stdout
 
-	srvPort := os.Getenv("PORT")
+	srvPort := os.Getenv("FRONTEND_PORT")
 	if srvPort == "" {
 		srvPort = port
 	}
-	srvAddr := os.Getenv("LISTEN_ADDR")
+	srvAddr := os.Getenv("FRONTEND_LISTEN_ADDR")
 	if srvPort == "" {
 		srvAddr = addr
 	}
 
 	srv := new(frontendServer)
+	srv.topicCatalogSvcAddr = os.Getenv("TOPIC_CATALOG_SERVICE_ADDR")
+
+	mustConnGRPC(ctx, &srv.topicCatalogSvcConn, srv.topicCatalogSvcAddr)
 
 	r := mux.NewRouter()
-	r.HandleFunc("/", srv.HomeHandler)
+	r.HandleFunc("/", srv.HomeHandler).Methods(http.MethodGet, http.MethodHead)
+	r.HandleFunc("/topic", srv.TopicHandler).Methods(http.MethodGet, http.MethodHead)
 	r.HandleFunc("/_healthz", func(w http.ResponseWriter, r *http.Request) {
 		fmt.Fprint(w, "ok")
 	})
@@ -64,4 +76,15 @@ func main() {
 
 	log.Infof("starting server on " + srvAddr + ":" + srvPort)
 	log.Fatal(http.ListenAndServe(srvAddr+":"+srvPort, handler))
+}
+
+func mustConnGRPC(ctx context.Context, conn **grpc.ClientConn, addr string) {
+	var err error
+	*conn, err = grpc.DialContext(ctx, addr,
+		grpc.WithInsecure(),
+		grpc.WithTimeout(time.Second*3),
+		grpc.WithStatsHandler(&ocgrpc.ClientHandler{}))
+	if err != nil {
+		panic(errors.Wrapf(err, "grpc: failed to connect %s", addr))
+	}
 }

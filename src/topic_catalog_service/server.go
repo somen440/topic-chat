@@ -6,6 +6,8 @@ import (
 	"io/ioutil"
 	"log"
 	"net"
+	"os"
+	"strconv"
 
 	"google.golang.org/grpc"
 
@@ -15,7 +17,7 @@ import (
 )
 
 var (
-	port   = 8080
+	port   = 8081
 	topics []*pb.Topic
 )
 
@@ -37,7 +39,12 @@ func (t *topicCatalogUsecase) GetTopic(_ context.Context, req *pb.GetTopicReques
 }
 
 func main() {
-	l, err := net.Listen("tcp", fmt.Sprintf(":%d", port))
+	srvPort := os.Getenv("TOPIC_CATALOG_SERVICE_PORT")
+	if srvPort == "" {
+		srvPort = strconv.Itoa(port)
+	}
+
+	l, err := net.Listen("tcp", fmt.Sprintf(":%s", srvPort))
 	if err != nil {
 		log.Fatal(err)
 	}
@@ -56,7 +63,7 @@ func main() {
 	s := grpc.NewServer()
 	pb.RegisterTopicCatalogServiceServer(s, &topicCatalogUsecase{})
 
-	log.Printf("liten: :%d", port)
+	log.Printf("liten: :%s", srvPort)
 	if err := s.Serve(l); err != nil {
 		log.Fatalf("failed to serve: %v", err)
 	}

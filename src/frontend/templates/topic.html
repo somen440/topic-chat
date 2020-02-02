@@ -1,0 +1,13 @@
+{{ define "topic" }}
+  {{ template "header" . }}
+
+  <h2>topic</h2>
+
+  <ul>
+  {{ range $i, $v := .topics }}
+    <li value="{{ $i }}">{{ $v }}</li>
+  {{ end }}
+  </ul>
+
+  {{ template "footer" . }}
+{{ end }}
