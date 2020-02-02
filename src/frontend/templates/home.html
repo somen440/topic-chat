@@ -3,5 +3,10 @@
 
   <h2>home</h2>
 
+  {{ if $.user }}
+  <h3>loggedin</h3>
+  <p>{{ $.user.Name }}</p>
+  {{end}}
+
   {{ template "footer" . }}
 {{ end }}

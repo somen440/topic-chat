@@ -23,6 +23,7 @@ const (
 
 	cookiePrefix    = "topicchat_"
 	cookieSessionID = cookiePrefix + "session-id"
+	cookieAuth      = cookiePrefix + "auth"
 )
 
 type ctxKeySessionID struct{}

@@ -1,6 +1,9 @@
 package main
 
 import (
+	"encoding/base64"
+	"encoding/json"
+	"fmt"
 	"html/template"
 	"net/http"
 
@@ -20,10 +23,16 @@ func (fe *frontendServer) HomeHandler(w http.ResponseWriter, r *http.Request) {
 	log := r.Context().Value(ctxKeyLog{}).(logrus.FieldLogger)
 	log.Info("home")
 
-	if err := templates.ExecuteTemplate(w, "home", map[string]interface{}{
+	data := map[string]interface{}{
 		"session_id": sessionID(r),
 		"request_id": r.Context().Value(ctxKeyRequestID{}),
-	}); err != nil {
+	}
+
+	if loggedIn(r) {
+		data["user"] = loggedInUser(r)
+	}
+
+	if err := templates.ExecuteTemplate(w, "home", data); err != nil {
 		log.Error(err)
 	}
 }
@@ -104,7 +113,18 @@ func (fe *frontendServer) JoinHandler(w http.ResponseWriter, r *http.Request) {
 	if err != nil {
 		log.Error(err)
 	}
-	log.WithField("user", res.GetUser()).Debug("join user")
+
+	user := res.GetUser()
+	userJSON, err := json.Marshal(user)
+	if err != nil {
+		log.Error(err)
+	}
+	http.SetCookie(w, &http.Cookie{
+		Name:   cookieAuth,
+		Value:  base64.StdEncoding.EncodeToString(userJSON),
+		MaxAge: cookieMaxAge,
+	})
+	log.WithField("user", user).Debug("join user")
 
 	redirectIndex(w)
 }
@@ -115,6 +135,28 @@ func sessionID(r *http.Request) string {
 		return v.(string)
 	}
 	return ""
+}
+
+func loggedIn(r *http.Request) bool {
+	c, _ := r.Cookie(cookieAuth)
+	if c != nil {
+		return true
+	}
+	return false
+}
+
+func loggedInUser(r *http.Request) *pb.User {
+	if !loggedIn(r) {
+		panic(fmt.Errorf("not loggedIn"))
+	}
+
+	c, _ := r.Cookie(cookieAuth)
+	decoded, _ := base64.StdEncoding.DecodeString(c.Value)
+
+	user := &pb.User{}
+	json.Unmarshal(decoded, user)
+
+	return user
 }
 
 func redirectIndex(w http.ResponseWriter) {
