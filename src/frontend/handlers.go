@@ -76,10 +76,41 @@ func (fe *frontendServer) ViewTopicHandler(w http.ResponseWriter, r *http.Reques
 	}
 }
 
+func (fe *frontendServer) JoinHandler(w http.ResponseWriter, r *http.Request) {
+	log := r.Context().Value(ctxKeyLog{}).(logrus.FieldLogger)
+	log = log.WithField("method", r.Method)
+
+	if r.Method == http.MethodGet {
+		log.Debug("join")
+		if err := templates.ExecuteTemplate(w, "join", map[string]interface{}{
+			"session_id": sessionID(r),
+			"request_id": r.Context().Value(ctxKeyRequestID{}),
+		}); err != nil {
+			log.Error(err)
+		}
+		return
+	}
+
+	name := r.FormValue("name")
+	if name == "" {
+		log.Error("name is empty")
+	}
+	log.WithField("name", name).Debug("join")
+
+	// todo: pb.NewAuthServiceClient(fe.autuserviceconn).Join...
+
+	redirectIndex(w)
+}
+
 func sessionID(r *http.Request) string {
 	v := r.Context().Value(ctxKeySessionID{})
 	if v != nil {
 		return v.(string)
 	}
 	return ""
+}
+
+func redirectIndex(w http.ResponseWriter) {
+	w.Header().Set("location", "/")
+	w.WriteHeader(http.StatusFound)
 }

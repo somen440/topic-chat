@@ -64,6 +64,7 @@ func main() {
 	r.HandleFunc("/", srv.HomeHandler).Methods(http.MethodGet, http.MethodHead)
 	r.HandleFunc("/topic", srv.ListTopicHandler).Methods(http.MethodGet, http.MethodHead)
 	r.HandleFunc("/topic/{id}", srv.ViewTopicHandler).Methods(http.MethodGet, http.MethodHead)
+	r.HandleFunc("/join", srv.JoinHandler).Methods(http.MethodGet, http.MethodHead, http.MethodPost)
 	r.HandleFunc("/_healthz", func(w http.ResponseWriter, r *http.Request) {
 		fmt.Fprint(w, "ok")
 	})
