@@ -21,4 +21,9 @@
       <a href="/join">join</a>
     </li>
   </ul>
+
+  {{ if $.user }}
+  <h3>loggedin</h3>
+  <p>{{ $.user.Name }}</p>
+  {{end}}
 {{ end }}
