@@ -1,6 +1,11 @@
 {{ define "home" }}
   {{ template "header" . }}
 
+  {{ if $.user }}
+  <h3>loggedin</h3>
+  <p>{{ $.user.Name }}</p>
+  {{end}}
+
   <h2>home</h2>
 
   {{ template "footer" . }}

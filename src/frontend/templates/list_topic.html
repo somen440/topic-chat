@@ -5,7 +5,9 @@
 
   <ul>
   {{ range $i, $v := .topics }}
-    <li value="{{ $i }}">{{ $v }}</li>
+    <li value="{{ $i }}">
+      <a href="/topic/{{ $v.Id }}">{{ $v }}</a>
+    </li>
   {{ end }}
   </ul>
 

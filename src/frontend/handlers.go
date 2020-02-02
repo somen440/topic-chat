@@ -28,8 +28,8 @@ func (fe *frontendServer) HomeHandler(w http.ResponseWriter, r *http.Request) {
 		"request_id": r.Context().Value(ctxKeyRequestID{}),
 	}
 
-	if loggedIn(r) {
-		data["user"] = loggedInUser(r)
+	if isLoggedIn(r) {
+		data["user"] = getLoggedInUser(r)
 	}
 
 	if err := templates.ExecuteTemplate(w, "home", data); err != nil {
@@ -106,7 +106,7 @@ func (fe *frontendServer) JoinHandler(w http.ResponseWriter, r *http.Request) {
 	}
 	log.WithField("name", name).Debug("join")
 
-	res, err := pb.NewAuthServiceClient(fe.authSvcConn).
+	user, err := pb.NewAuthServiceClient(fe.authSvcConn).
 		Join(r.Context(), &pb.JoinRequest{
 			Name: name,
 		})
@@ -114,17 +114,71 @@ func (fe *frontendServer) JoinHandler(w http.ResponseWriter, r *http.Request) {
 		log.Error(err)
 	}
 
-	user := res.GetUser()
-	userJSON, err := json.Marshal(user)
+	if err := loggedIn(w, user); err != nil {
+		log.Error(err)
+	}
+	log.WithField("user", user).Debug("join user")
+
+	redirectIndex(w)
+}
+
+func (fe *frontendServer) LoggedInHandler(w http.ResponseWriter, r *http.Request) {
+	log := r.Context().Value(ctxKeyLog{}).(logrus.FieldLogger)
+	log = log.WithField("method", r.Method)
+
+	if r.Method == http.MethodGet {
+		log.Debug("loggedin")
+		if err := templates.ExecuteTemplate(w, "login", map[string]interface{}{
+			"session_id": sessionID(r),
+			"request_id": r.Context().Value(ctxKeyRequestID{}),
+		}); err != nil {
+			log.Error(err)
+		}
+		return
+	}
+
+	id := r.FormValue("id")
+	if id == "" {
+		log.Error("id is empty")
+	}
+	log.WithField("id", id).Debug("logged in")
+
+	user, err := pb.NewAuthServiceClient(fe.authSvcConn).
+		LoggedIn(r.Context(), &pb.LoggedInRequest{
+			UserId: id,
+		})
 	if err != nil {
 		log.Error(err)
 	}
+	if err := loggedIn(w, user); err != nil {
+		log.Error(err)
+	}
+	log.WithField("user", user).Debug("logged in user")
+
+	redirectIndex(w)
+}
+
+func (fe *frontendServer) SignoutHandler(w http.ResponseWriter, r *http.Request) {
+	log := r.Context().Value(ctxKeyLog{}).(logrus.FieldLogger)
+	id := r.FormValue("id")
+	if id == "" {
+		log.Error("id is empty")
+	}
+	log.WithField("id", id).Debug("signout")
+
+	_, err := pb.NewAuthServiceClient(fe.authSvcConn).
+		Signout(r.Context(), &pb.SignoutRequest{
+			UserId: id,
+		})
+	if err != nil {
+		log.Error(err)
+	}
+
 	http.SetCookie(w, &http.Cookie{
 		Name:   cookieAuth,
-		Value:  base64.StdEncoding.EncodeToString(userJSON),
-		MaxAge: cookieMaxAge,
+		Value:  "",
+		MaxAge: -1,
 	})
-	log.WithField("user", user).Debug("join user")
 
 	redirectIndex(w)
 }
@@ -137,16 +191,29 @@ func sessionID(r *http.Request) string {
 	return ""
 }
 
-func loggedIn(r *http.Request) bool {
+func isLoggedIn(r *http.Request) bool {
 	c, _ := r.Cookie(cookieAuth)
-	if c != nil {
+	if c != nil && c.Value != "" {
 		return true
 	}
 	return false
 }
 
-func loggedInUser(r *http.Request) *pb.User {
-	if !loggedIn(r) {
+func loggedIn(w http.ResponseWriter, user *pb.User) error {
+	userJSON, err := json.Marshal(user)
+	if err != nil {
+		return err
+	}
+	http.SetCookie(w, &http.Cookie{
+		Name:   cookieAuth,
+		Value:  base64.StdEncoding.EncodeToString(userJSON),
+		MaxAge: cookieMaxAge,
+	})
+	return nil
+}
+
+func getLoggedInUser(r *http.Request) *pb.User {
+	if !isLoggedIn(r) {
 		panic(fmt.Errorf("not loggedIn"))
 	}
 

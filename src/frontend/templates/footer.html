@@ -1,6 +1,10 @@
 {{ define "footer" }}
   <h3>footer</h3>
 
+  <form method="POST" action="/signout">
+    <button type="submit">signout</button>
+  </form>
+
   {{ if $.session_id }}
   <p>session-id: {{ $.session_id }}</p>
   {{end}}

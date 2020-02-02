@@ -7,6 +7,7 @@ message Empty {}
 message User {
   string id = 1;
   string name = 2;
+  bool loggedIn = 3;
 }
 
 message Topic {
@@ -17,24 +18,20 @@ message Topic {
 // -------------------- Auth --------------------
 
 service AuthService {
-  rpc Join(JoinRequest) returns (JoinResponse) {}
-  rpc LoggedIn(LoggedInRequest) returns (Empty) {}
-  rpc Sighout(SighoutRequest) returns (Empty) {}
+  rpc Join(JoinRequest) returns (User) {}
+  rpc LoggedIn(LoggedInRequest) returns (User) {}
+  rpc Signout(SignoutRequest) returns (Empty) {}
 }
 
 message JoinRequest {
   string name = 1;
 }
 
-message JoinResponse {
-  User user = 1;
-}
-
 message LoggedInRequest {
   string user_id = 1;
 }
 
-message SighoutRequest {
+message SignoutRequest {
   string user_id = 1;
 }
 
