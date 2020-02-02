@@ -40,13 +40,10 @@ func (fe *frontendServer) HomeHandler(w http.ResponseWriter, r *http.Request) {
 func (fe *frontendServer) ListTopicHandler(w http.ResponseWriter, r *http.Request) {
 	log := r.Context().Value(ctxKeyLog{}).(logrus.FieldLogger)
 
-	resp, err := pb.NewTopicCatalogServiceClient(fe.topicCatalogSvcConn).
-		ListTopics(r.Context(), &pb.Empty{})
+	topics, err := fe.ListTopics(r.Context())
 	if err != nil {
 		log.Error(err)
 	}
-
-	topics := resp.GetTopics()
 	log.WithField("topics", topics).Debug("list topics")
 
 	if err := templates.ExecuteTemplate(w, "list_topic", map[string]interface{}{
@@ -67,10 +64,7 @@ func (fe *frontendServer) ViewTopicHandler(w http.ResponseWriter, r *http.Reques
 	log.WithField("id", id).
 		Debug("view topic")
 
-	topic, err := pb.NewTopicCatalogServiceClient(fe.topicCatalogSvcConn).
-		GetTopic(r.Context(), &pb.GetTopicRequest{
-			Id: id,
-		})
+	topic, err := fe.GetTopic(r.Context(), id)
 	if err != nil {
 		log.Error(err)
 	}
@@ -106,10 +100,7 @@ func (fe *frontendServer) JoinHandler(w http.ResponseWriter, r *http.Request) {
 	}
 	log.WithField("name", name).Debug("join")
 
-	user, err := pb.NewAuthServiceClient(fe.authSvcConn).
-		Join(r.Context(), &pb.JoinRequest{
-			Name: name,
-		})
+	user, err := fe.Join(r.Context(), name)
 	if err != nil {
 		log.Error(err)
 	}
@@ -137,16 +128,13 @@ func (fe *frontendServer) LoggedInHandler(w http.ResponseWriter, r *http.Request
 		return
 	}
 
-	id := r.FormValue("id")
-	if id == "" {
+	userID := r.FormValue("id")
+	if userID == "" {
 		log.Error("id is empty")
 	}
-	log.WithField("id", id).Debug("logged in")
+	log.WithField("userID", userID).Debug("logged in")
 
-	user, err := pb.NewAuthServiceClient(fe.authSvcConn).
-		LoggedIn(r.Context(), &pb.LoggedInRequest{
-			UserId: id,
-		})
+	user, err := fe.LoggedIn(r.Context(), userID)
 	if err != nil {
 		log.Error(err)
 	}
@@ -160,17 +148,13 @@ func (fe *frontendServer) LoggedInHandler(w http.ResponseWriter, r *http.Request
 
 func (fe *frontendServer) SignoutHandler(w http.ResponseWriter, r *http.Request) {
 	log := r.Context().Value(ctxKeyLog{}).(logrus.FieldLogger)
-	id := r.FormValue("id")
-	if id == "" {
+	userID := r.FormValue("id")
+	if userID == "" {
 		log.Error("id is empty")
 	}
-	log.WithField("id", id).Debug("signout")
+	log.WithField("userID", userID).Debug("signout")
 
-	_, err := pb.NewAuthServiceClient(fe.authSvcConn).
-		Signout(r.Context(), &pb.SignoutRequest{
-			UserId: id,
-		})
-	if err != nil {
+	if err := fe.Signout(r.Context(), userID); err != nil {
 		log.Error(err)
 	}
 
@@ -181,6 +165,66 @@ func (fe *frontendServer) SignoutHandler(w http.ResponseWriter, r *http.Request)
 	})
 
 	redirectIndex(w)
+}
+
+func (fe *frontendServer) RoomHandler(w http.ResponseWriter, r *http.Request) {
+	log := r.Context().Value(ctxKeyLog{}).(logrus.FieldLogger)
+	log.Debug("room")
+
+	if !isLoggedIn(r) {
+		log.Debug("not logged in")
+		redirectIndex(w)
+		return
+	}
+
+	topicID := r.URL.Query().Get("topic_id")
+	if topicID == "" {
+		log.Error("not choice topic")
+	}
+
+	topic, err := fe.GetTopic(r.Context(), topicID)
+	if err != nil {
+		log.Fatal(err)
+	}
+	log.WithField("topic", topic).Debug("get topic")
+
+	if err := templates.ExecuteTemplate(w, "room", map[string]interface{}{
+		"session_id": sessionID(r),
+		"request_id": r.Context().Value(ctxKeyRequestID{}),
+		"topic":      topic,
+	}); err != nil {
+		log.Error(err)
+	}
+}
+
+func (fe *frontendServer) RoomJoinHandler(w http.ResponseWriter, r *http.Request) {
+	log := r.Context().Value(ctxKeyLog{}).(logrus.FieldLogger)
+	log.Debug("room join")
+
+	if !isLoggedIn(r) {
+		log.Debug("not logged in")
+		redirectIndex(w)
+		return
+	}
+
+	user := getLoggedInUser(r)
+	topicID := r.FormValue("topic_id")
+	if topicID == "" {
+		log.Error("topic_id is empty")
+	}
+	log.WithField("topic_id", topicID).
+		WithField("user", user).Debug("room join")
+
+	w.Header().Set("location", "/room?topic_id="+topicID)
+	w.WriteHeader(http.StatusFound)
+}
+
+func (fe *frontendServer) RoomLeftHandler(w http.ResponseWriter, r *http.Request) {
+	log := r.Context().Value(ctxKeyLog{}).(logrus.FieldLogger)
+	log.Debug("room left")
+
+	w.Header().Set("location", "/topic")
+	w.WriteHeader(http.StatusFound)
 }
 
 func sessionID(r *http.Request) string {

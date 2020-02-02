@@ -1,0 +1,83 @@
+{{ define "room" }}
+  {{ template "header" . }}
+
+  <h2>room</h2>
+
+  <h3>topic: {{ .topic.Name }}</h3>
+
+  <ul id="messages"></ul>
+
+  <textarea id="message">
+  </textarea>
+
+  <button type="submit">send</button>
+
+  <form method="POST" action="/room/left">
+    <button type="submit">left</button>
+  </form>
+
+  <script>
+    $(() => {
+      let socket = null
+      let message = $("#message")
+      let messages = $("#messages")
+
+      function send() {
+        if (!message.val()) return false
+        if (!socket) {
+          alert("まだだよ")
+          return false
+        }
+        socket.send(JSON.stringify({
+          "Message": message.val(),
+        }))
+        message.val("")
+        messageScroll.scrollTop(messageScroll.height() - 600)
+        return false
+      }
+
+      $("#sendButton").on("click", send)
+
+      let canSend = false
+      $("#message").on("input", (e) => {
+        const { inputType, isComposing } = e.originalEvent
+        if (inputType === "insertText") {
+          canSend = true
+        } else {
+          canSend = false
+        }
+      })
+      $("#message").on("compositionstart", (e) => {
+        canSend = false
+      })
+      $("#message").on("compositionend", (e) => {
+        canSend = true
+      })
+      $("#message").on("keydown", (e) => {
+        if (!canSend) {
+          return
+        }
+        const { code } = e.originalEvent
+        if (code !== "Enter") {
+          return
+        }
+        send()
+      })
+
+      if (!window.WebSocket) {
+        alert("未対応")
+      } else {
+        socket = new WebSocket("ws://{{ .Host }}/room")
+        socket.onclose = () => {
+          alert("終了")
+        }
+        socket.onmessage = (e) => {
+          const user = JSON.parse(e.data)
+          messages.append(`<li>${e.data}</li>`)
+        }
+      }
+    })
+  </script>
+
+  {{ template "footer" . }}
+{{ end }}
