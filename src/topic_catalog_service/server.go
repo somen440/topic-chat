@@ -21,15 +21,15 @@ var (
 	topics []*pb.Topic
 )
 
-type topicCatalogUsecase struct{}
+type topicCatalogServiceServer struct{}
 
-func (t *topicCatalogUsecase) ListTopics(_ context.Context, _ *pb.Empty) (*pb.ListTopicsResponse, error) {
+func (t *topicCatalogServiceServer) ListTopics(_ context.Context, _ *pb.Empty) (*pb.ListTopicsResponse, error) {
 	return &pb.ListTopicsResponse{
 		Topics: topics,
 	}, nil
 }
 
-func (t *topicCatalogUsecase) GetTopic(_ context.Context, req *pb.GetTopicRequest) (*pb.Topic, error) {
+func (t *topicCatalogServiceServer) GetTopic(_ context.Context, req *pb.GetTopicRequest) (*pb.Topic, error) {
 	for _, v := range topics {
 		if v.GetId() == req.GetId() {
 			return v, nil
@@ -61,7 +61,7 @@ func main() {
 	}
 
 	s := grpc.NewServer()
-	pb.RegisterTopicCatalogServiceServer(s, &topicCatalogUsecase{})
+	pb.RegisterTopicCatalogServiceServer(s, &topicCatalogServiceServer{})
 
 	log.Printf("liten: :%s", srvPort)
 	if err := s.Serve(l); err != nil {
