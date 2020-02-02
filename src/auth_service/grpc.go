@@ -23,6 +23,11 @@ func (srv *authServiceServer) Join(ctx context.Context, req *pb.JoinRequest) (*p
 	}
 	users = append(users, user)
 
+	log.WithField("name", name).
+		WithField("id", id).
+		WithField("users", users).
+		Debug("join user")
+
 	return &pb.JoinResponse{
 		User: user,
 	}, nil

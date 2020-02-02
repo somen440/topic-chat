@@ -24,6 +24,9 @@ var (
 
 func init() {
 	log = logrus.New()
+	if os.Getenv("DEBUG") == "on" {
+		log.Level = logrus.DebugLevel
+	}
 	log.Formatter = &logrus.JSONFormatter{
 		FieldMap: logrus.FieldMap{
 			logrus.FieldKeyTime:  "timestamp",
