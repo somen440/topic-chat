@@ -9,10 +9,9 @@ import (
 	"os"
 	"strconv"
 
-	"google.golang.org/grpc"
-
 	pb "github.com/somen440/topic-chat/src/topic_catalog_service/pb"
 
+	"google.golang.org/grpc"
 	"gopkg.in/yaml.v2"
 )
 

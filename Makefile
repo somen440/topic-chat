@@ -13,7 +13,7 @@ genproto:
 
 ####################################################################
 
-build: build_frontend build_topic_catalog
+build: build_frontend build_topic_catalog build_auth
 .PHONY: build
 
 build_frontend:
@@ -23,3 +23,7 @@ build_frontend:
 build_topic_catalog:
 	cd src/topic_catalog_service && docker build -t gcr.io/$(PROJECT)/topic_catalog .
 .PHONY: build_topic_catalog
+
+build_auth:
+	cd src/auth_service && docker build -t gcr.io/$(PROJECT)/auth .
+.PHONY: build_auth
