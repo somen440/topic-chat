@@ -9,3 +9,8 @@ genproto:
 			--go_out=plugins=grpc:src/topic_catalog_service \
 			-I$(PROTODIR) \
 			$(PROTODIR)/topicchat.proto
+
+build: build_frontend
+
+build_frontend:
+	cd src/frontend && go build -o frontend
