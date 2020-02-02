@@ -19,6 +19,7 @@ message Topic {
 service AuthService {
   rpc Join(JoinRequest) returns (JoinResponse) {}
   rpc LoggedIn(LoggedInRequest) returns (Empty) {}
+  rpc Sighout(SighoutRequest) returns (Empty) {}
 }
 
 message JoinRequest {
@@ -30,6 +31,10 @@ message JoinResponse {
 }
 
 message LoggedInRequest {
+  string user_id = 1;
+}
+
+message SighoutRequest {
   string user_id = 1;
 }
 
