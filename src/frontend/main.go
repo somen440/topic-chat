@@ -21,7 +21,7 @@ const (
 	port         = "8080"
 	cookieMaxAge = 60 * 60 * 48
 
-	cookiePrefix    = "topic_"
+	cookiePrefix    = "topicchat_"
 	cookieSessionID = cookiePrefix + "session-id"
 )
 
@@ -30,6 +30,9 @@ type ctxKeySessionID struct{}
 type frontendServer struct {
 	topicCatalogSvcAddr string
 	topicCatalogSvcConn *grpc.ClientConn
+
+	authSvcAddr string
+	authSvcConn *grpc.ClientConn
 }
 
 func main() {
@@ -57,8 +60,10 @@ func main() {
 
 	srv := new(frontendServer)
 	srv.topicCatalogSvcAddr = os.Getenv("TOPIC_CATALOG_SERVICE_ADDR")
+	srv.authSvcAddr = os.Getenv("AUTH_SERVICE_ADDR")
 
 	mustConnGRPC(ctx, &srv.topicCatalogSvcConn, srv.topicCatalogSvcAddr)
+	mustConnGRPC(ctx, &srv.authSvcConn, srv.authSvcAddr)
 
 	r := mux.NewRouter()
 	r.HandleFunc("/", srv.HomeHandler).Methods(http.MethodGet, http.MethodHead)

@@ -97,7 +97,14 @@ func (fe *frontendServer) JoinHandler(w http.ResponseWriter, r *http.Request) {
 	}
 	log.WithField("name", name).Debug("join")
 
-	// todo: pb.NewAuthServiceClient(fe.autuserviceconn).Join...
+	res, err := pb.NewAuthServiceClient(fe.authSvcConn).
+		Join(r.Context(), &pb.JoinRequest{
+			Name: name,
+		})
+	if err != nil {
+		log.Error(err)
+	}
+	log.WithField("user", res.GetUser()).Debug("join user")
 
 	redirectIndex(w)
 }
