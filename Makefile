@@ -27,3 +27,13 @@ build_topic_catalog:
 build_auth:
 	cd src/auth_service && docker build -t gcr.io/$(PROJECT)/auth .
 .PHONY: build_auth
+
+####################################################################
+
+debug_catalog_list:
+	grpcurl -plaintext \
+		-import-path pb/ \
+		-proto topicchat.proto \
+		localhost:8081 \
+		topicchat.TopicCatalogService/ListTopics
+.PHONY: debug_catalog_list
