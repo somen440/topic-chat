@@ -25,3 +25,10 @@ services:
       DEBUG: "on"
     ports:
       - 8082:8082
+  chat:
+    image: gcr.io/topic-chat/chat:latest
+    environment:
+      CHAT_SERVICE_PORT: 8083
+      DEBUG: "on"
+    ports:
+      - 8083:8083

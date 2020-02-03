@@ -42,3 +42,16 @@ debug_catalog_list:
 		localhost:8081 \
 		topicchat.TopicCatalogService/ListTopics
 .PHONY: debug_catalog_list
+
+debug_chat_stream:
+	grpcurl -import-path pb/ \
+		-proto topicchat.proto \
+		-plaintext -v localhost:8083 topicchat.ChatService/GetStream
+.PHONY: debug_chat_stream
+
+debug_chat_send:
+	grpcurl -import-path pb/ \
+		-proto topicchat.proto \
+		-d "{\"text\":\"$(TEXT)\"}" \
+		-plaintext -v localhost:8083 topicchat.ChatService/Send
+.PHONY: debug_chat_stream
