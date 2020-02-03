@@ -47,6 +47,17 @@ message RoomJoinRequest {
   User user = 2;
 }
 
+// -------------------- Chat --------------------
+
+service ChatService {
+  rpc GetStream(Empty) returns (stream Message);
+  rpc Send(Message) returns (Empty);
+}
+
+message Message {
+  string text = 1;
+}
+
 // -------------------- Topic Catalog --------------------
 
 service TopicCatalogService {

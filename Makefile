@@ -8,12 +8,13 @@ genproto:
 			--go_out=plugins=grpc:src/frontend \
 			--go_out=plugins=grpc:src/room_service \
 			--go_out=plugins=grpc:src/topic_catalog_service \
+			--go_out=plugins=grpc:src/chat_service \
 			-I$(PROTODIR) \
 			$(PROTODIR)/topicchat.proto
 
 ####################################################################
 
-build: build_frontend build_topic_catalog build_auth
+build: build_frontend build_topic_catalog build_auth build_chat
 .PHONY: build
 
 build_frontend:
@@ -27,6 +28,10 @@ build_topic_catalog:
 build_auth:
 	cd src/auth_service && docker build -t gcr.io/$(PROJECT)/auth .
 .PHONY: build_auth
+
+build_chat:
+	cd src/chat_service && docker build -t gcr.io/$(PROJECT)/chat .
+.PHONY: build_chat
 
 ####################################################################
 
