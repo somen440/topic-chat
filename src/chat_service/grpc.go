@@ -2,49 +2,39 @@ package main
 
 import (
 	"context"
+	"io"
 
 	pb "github.com/somen440/topic-chat/src/chat_service/pb"
 )
 
 type chatServiceServer struct{}
 
-type client struct {
-	id   int
-	send chan []byte
-}
+func (srv *chatServiceServer) GetStream(stream pb.ChatService_GetStreamServer) error {
+	newID := len(clients) + 1
+	log.WithField("id", newID).Debug("get stream")
 
-var clients []*client
-
-func (srv *chatServiceServer) GetStream(_ *pb.Empty, stream pb.ChatService_GetStreamServer) error {
-	log.Debug("get stream")
-
-	c := &client{
-		id:   len(clients) + 1,
-		send: make(chan []byte),
+	client := &client{
+		id:     newID,
+		stream: stream,
 	}
-	clients = append(clients, c)
+	clients = append(clients, client)
 
 	for {
-		select {
-		case txt := <-c.send:
-			log.WithField("txt", string(txt)).Debug("get txt")
-			stream.Send(&pb.Message{
-				Text: string(txt),
-			})
+		req, err := stream.Recv()
+		if err == io.EOF {
+			continue
 		}
+		if err != nil {
+			return err
+		}
+		stream.Send(req)
 	}
 }
 
-func (srv *chatServiceServer) Send(ctx context.Context, req *pb.Message) (*pb.Empty, error) {
-	log.WithField("txt", req.GetText()).Debug("send")
-	msg := []byte(req.GetText())
+func (srv *chatServiceServer) Send(_ context.Context, msg *pb.ChatMessage) (*pb.Empty, error) {
+	log.WithField("msg", msg.GetText()).Debug("send")
 	for _, c := range clients {
-		select {
-		case c.send <- msg:
-			log.WithField("client", c).Debug("send message")
-		default:
-			log.WithField("client", c).Error("failed send message")
-		}
+		c.stream.Send(msg)
 	}
 	return &pb.Empty{}, nil
 }

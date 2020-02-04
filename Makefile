@@ -6,7 +6,6 @@ genproto:
       -I$(GOPATH)/src \
 			--go_out=plugins=grpc:src/auth_service \
 			--go_out=plugins=grpc:src/frontend \
-			--go_out=plugins=grpc:src/room_service \
 			--go_out=plugins=grpc:src/topic_catalog_service \
 			--go_out=plugins=grpc:src/chat_service \
 			-I$(PROTODIR) \
