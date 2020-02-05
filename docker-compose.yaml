@@ -32,3 +32,10 @@ services:
       DEBUG: "on"
     ports:
       - 8083:8083
+  envoy:
+    build:
+      context: docker/envoy
+    ports:
+      - 9090:9090
+    links:
+      - chat
