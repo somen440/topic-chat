@@ -21,7 +21,7 @@ genproto:
 
 ####################################################################
 
-build: build_frontend build_topic_catalog build_auth build_chat
+build: build_frontend build_topic_catalog build_auth build_chat build_chat_client
 .PHONY: build
 
 build_frontend:
@@ -39,6 +39,10 @@ build_auth:
 build_chat:
 	cd src/chat_service && docker build -t gcr.io/$(PROJECT)/chat .
 .PHONY: build_chat
+
+build_chat_client:
+	cd src/chat_client && docker build -t gcr.io/$(PROJECT)/chat_client .
+.PHONY: build_chat_client
 
 ####################################################################
 

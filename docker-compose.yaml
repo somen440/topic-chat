@@ -32,6 +32,13 @@ services:
       DEBUG: "on"
     ports:
       - 8083:8083
+  chat_client:
+    image: gcr.io/topic-chat/chat_client:latest
+    ports:
+      - 8000:8000
+    links:
+      - envoy
+      - chat
   envoy:
     build:
       context: docker/envoy
