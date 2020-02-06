@@ -50,8 +50,8 @@ message RoomJoinRequest {
 // -------------------- Chat --------------------
 
 service ChatService {
-  rpc GetStream(stream ChatMessage) returns (stream ChatMessage);
-  rpc Send(ChatMessage) returns (Empty);
+  rpc RecvMessage(Empty) returns (stream ChatMessage);
+  rpc SendMessage(stream ChatMessage) returns (Empty);
 }
 
 message ChatMessage {

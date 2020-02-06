@@ -192,26 +192,23 @@ export class ChatServiceClient {
     this.options_ = options;
   }
 
-  methodInfoSend = new grpcWeb.AbstractClientBase.MethodInfo(
-    Empty,
-    (request: ChatMessage) => {
+  methodInfoRecvMessage = new grpcWeb.AbstractClientBase.MethodInfo(
+    ChatMessage,
+    (request: Empty) => {
       return request.serializeBinary();
     },
-    Empty.deserializeBinary
+    ChatMessage.deserializeBinary
   );
 
-  send(
-    request: ChatMessage,
-    metadata: grpcWeb.Metadata | null,
-    callback: (err: grpcWeb.Error,
-               response: Empty) => void) {
-    return this.client_.rpcCall(
+  recvMessage(
+    request: Empty,
+    metadata?: grpcWeb.Metadata) {
+    return this.client_.serverStreaming(
       this.hostname_ +
-        '/topicchat.ChatService/Send',
+        '/topicchat.ChatService/RecvMessage',
       request,
       metadata || {},
-      this.methodInfoSend,
-      callback);
+      this.methodInfoRecvMessage);
   }
 
 }

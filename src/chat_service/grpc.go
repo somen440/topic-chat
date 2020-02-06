@@ -1,7 +1,6 @@
 package main
 
 import (
-	"context"
 	"io"
 
 	pb "github.com/somen440/topic-chat/src/chat_service/pb"
@@ -9,32 +8,45 @@ import (
 
 type chatServiceServer struct{}
 
-func (srv *chatServiceServer) GetStream(stream pb.ChatService_GetStreamServer) error {
+func (srv *chatServiceServer) RecvMessage(_ *pb.Empty, stream pb.ChatService_RecvMessageServer) error {
 	newID := len(clients) + 1
 	log.WithField("id", newID).Debug("get stream")
 
 	client := &client{
-		id:     newID,
-		stream: stream,
+		id:   newID,
+		send: make(chan []byte),
 	}
-	clients = append(clients, client)
+	clients[client] = true
 
 	for {
-		req, err := stream.Recv()
-		if err == io.EOF {
-			continue
-		}
-		if err != nil {
-			return err
-		}
-		stream.Send(req)
+		msg := <-client.send
+		stream.Send(&pb.ChatMessage{Text: string(msg)})
 	}
 }
 
-func (srv *chatServiceServer) Send(_ context.Context, msg *pb.ChatMessage) (*pb.Empty, error) {
-	log.WithField("msg", msg.GetText()).Debug("send")
-	for _, c := range clients {
-		c.stream.Send(msg)
+func (srv *chatServiceServer) SendMessage(stream pb.ChatService_SendMessageServer) error {
+	for {
+		req, err := stream.Recv()
+		if err == io.EOF {
+			return stream.SendAndClose(&pb.Empty{})
+		}
+
+		if err != nil {
+			return err
+		}
+
+		for c := range clients {
+			select {
+			case c.send <- []byte(req.GetText()):
+				log.WithField("msg", req.GetText()).
+					WithField("id", c.id).
+					Debug("send")
+			default:
+				delete(clients, c)
+				close(c.send)
+			}
+		}
+
+		return stream.SendAndClose(&pb.Empty{})
 	}
-	return &pb.Empty{}, nil
 }
