@@ -53,12 +53,12 @@ debug_catalog_list:
 debug_chat_recv:
 	grpcurl -import-path pb/ \
 		-proto topicchat.proto \
-		-plaintext -v localhost:8083 topicchat.ChatService/RecvMessage
+		-plaintext -v localhost:9090 topicchat.ChatService/RecvMessage
 .PHONY: debug_chat_stream
 
 debug_chat_send:
 	grpcurl -import-path pb/ \
 		-proto topicchat.proto \
 		-d "{\"text\":\"$(TEXT)\"}" \
-		-plaintext -v localhost:8083 topicchat.ChatService/SendMessage
+		-plaintext -v localhost:9090 topicchat.ChatService/SendMessage
 .PHONY: debug_chat_stream
