@@ -1,3 +1,4 @@
+/* eslint-disable */
 "use strict";
 /**
  * @fileoverview gRPC-Web generated client stub for topicchat

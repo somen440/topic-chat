@@ -41,7 +41,9 @@ build_chat:
 .PHONY: build_chat
 
 build_chat_client:
-	cd src/chat_client && docker build -t gcr.io/$(PROJECT)/chat_client .
+	cd src/chat_client && \
+		npx webpack client.ts && \
+		docker build -t gcr.io/$(PROJECT)/chat_client .
 .PHONY: build_chat_client
 
 ####################################################################

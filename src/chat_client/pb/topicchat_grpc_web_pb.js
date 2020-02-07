@@ -1,3 +1,4 @@
+/* eslint-disable */
 /**
  * @fileoverview gRPC-Web generated client stub for topicchat
  * @enhanceable
@@ -863,4 +864,3 @@ proto.topicchat.TopicCatalogServicePromiseClient.prototype.getTopic =
 
 
 module.exports = proto.topicchat;
-

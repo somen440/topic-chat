@@ -1,3 +1,4 @@
+/* eslint-disable */
 // source: pb/topicchat.proto
 /**
  * @fileoverview
