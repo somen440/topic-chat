@@ -10,7 +10,7 @@ export default tsx.component({
       messages: ["a", "b", "c"]
     };
   },
-  render() {
+  created() {
     const client = new ChatServiceClient("http://localhost:9090");
     const stream = client.recvMessage(new Empty(), {});
     stream.on("data", response => {
@@ -26,7 +26,8 @@ export default tsx.component({
       console.log("error");
       console.log(err);
     });
-
+  },
+  render() {
     return (
       <div id="app">
         <h1>app</h1>
