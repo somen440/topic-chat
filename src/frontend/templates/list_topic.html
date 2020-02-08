@@ -7,11 +7,7 @@
   {{ range $i, $v := .topics }}
     <li value="{{ $i }}">
       <a href="/topic/{{ $v.Id }}">{{ $v }}</a>
-
-      <form method="POST" action="/room/join">
-        <input type="hidden" name="topic_id" value="{{ $v.Id }}" />
-        <button type="submit">join</button>
-      </form>
+      <a href="http://localhost:8000/#/?topic_id={{ $v.Id }}">join</a>
     </li>
   {{ end }}
   </ul>

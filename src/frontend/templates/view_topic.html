@@ -5,10 +5,7 @@
 
   <p>{{ .topic }}</p>
 
-  <form method="POST" action="/room/join">
-    <input type="hidden" name="topic_id" value="{{ .topic.Id }}" />
-    <button type="submit">join</button>
-  </form>
+  <a href="http://localhost:8000/#/?topic_id={{ .topic.Id }}">join</a>
 
   {{ template "footer" . }}
 {{ end }}
