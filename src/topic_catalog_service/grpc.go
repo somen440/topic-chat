@@ -2,28 +2,33 @@ package main
 
 import (
 	"context"
-	"fmt"
 
 	pb "github.com/somen440/topic-chat/src/topic_catalog_service/pb"
 )
 
-type topicCatalogServiceServer struct{}
+type topicCatalogServiceServer struct {
+	topics TopicMap
+}
 
-func (t *topicCatalogServiceServer) ListTopics(_ context.Context, _ *pb.Empty) (*pb.ListTopicsResponse, error) {
-	log.Info("list topics")
+func (srv *topicCatalogServiceServer) ListTopics(_ context.Context, _ *pb.Empty) (*pb.ListTopicsResponse, error) {
+	log.Debug("list topics")
 
 	return &pb.ListTopicsResponse{
-		Topics: topics,
+		Topics: srv.Topics(),
 	}, nil
 }
 
-func (t *topicCatalogServiceServer) GetTopic(_ context.Context, req *pb.GetTopicRequest) (*pb.Topic, error) {
-	log.WithField("id", req.GetId()).Info("get topic")
+func (srv *topicCatalogServiceServer) GetTopic(_ context.Context, req *pb.GetTopicRequest) (*pb.Topic, error) {
+	topicID := TopicID(req.GetTopicId())
 
-	for _, v := range topics {
-		if v.GetId() == req.GetId() {
-			return v, nil
-		}
+	log.WithField("topicID", topicID).
+		Debug("get topic")
+
+	return srv.Topic(topicID)
+}
+
+func newTopicCatalogServiceServer() *topicCatalogServiceServer {
+	return &topicCatalogServiceServer{
+		topics: mockTopic(),
 	}
-	return nil, fmt.Errorf("not found")
 }

@@ -2,7 +2,6 @@ package main
 
 import (
 	"fmt"
-	"io/ioutil"
 	"net"
 	"os"
 	"strconv"
@@ -12,13 +11,14 @@ import (
 
 	"github.com/sirupsen/logrus"
 	"google.golang.org/grpc"
-	"gopkg.in/yaml.v2"
+)
+
+const (
+	port = 8081
 )
 
 var (
-	port   = 8081
-	topics []*pb.Topic
-	log    *logrus.Logger
+	log *logrus.Logger
 )
 
 func init() {
@@ -35,8 +35,6 @@ func init() {
 		TimestampFormat: time.RFC3339Nano,
 	}
 	log.Out = os.Stdout
-
-	parseTopics()
 }
 
 func main() {
@@ -51,23 +49,10 @@ func main() {
 	}
 
 	s := grpc.NewServer()
-	pb.RegisterTopicCatalogServiceServer(s, &topicCatalogServiceServer{})
+	pb.RegisterTopicCatalogServiceServer(s, newTopicCatalogServiceServer())
 
 	log.Infof("starting grpc server at :%s", srvPort)
 	if err := s.Serve(l); err != nil {
 		log.Fatalf("failed to serve: %v", err)
-	}
-}
-
-func parseTopics() {
-	fileName := "./topic_catalog.yaml"
-	bytes, err := ioutil.ReadFile(fileName)
-	if err != nil {
-		log.Fatal(err)
-	}
-
-	err = yaml.Unmarshal(bytes, &topics)
-	if err != nil {
-		log.Fatalf("error: %v", err)
 	}
 }
