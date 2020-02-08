@@ -1,6 +1,6 @@
 import * as tsx from "vue-tsx-support";
 import { ChatServiceClient } from "@/pb/TopicchatServiceClientPb";
-import { Empty, ChatMessage } from "@/pb/topicchat_pb";
+import { ChatMessage, RecvMessageRequest, User, SendMessageRequest } from "@/pb/topicchat_pb";
 
 export default tsx.component({
   name: "App",
@@ -8,11 +8,22 @@ export default tsx.component({
     return {
       message: "hoge",
       messages: ["a", "b", "c"],
-      client: new ChatServiceClient("http://localhost:9090")
+      client: new ChatServiceClient("http://localhost:9090"),
+      topicId: 0
     };
   },
   created() {
-    const stream = this.client.recvMessage(new Empty(), {});
+    this.topicId = Number.parseInt(this.$route.query.topic_id.toString());
+    console.log(this.topicId);
+
+    const req = new RecvMessageRequest();
+    req.setTopicId(this.topicId);
+
+    const user = new User();
+    user.setId(Math.random().toString(32).substring(2));
+    req.setUser(user);
+
+    const stream = this.client.recvMessage(req, {});
     stream.on("data", response => {
       console.log("data");
       console.log(response.getText());
@@ -47,9 +58,12 @@ export default tsx.component({
           onClick={() => {
             console.log("click");
             console.log(this.message);
+            const req = new SendMessageRequest();
+            req.setTopicId(this.topicId);
             const msg = new ChatMessage();
             msg.setText(this.message);
-            this.client.sendMessage(msg, null, (err, _) => {
+            req.setMessage(msg);
+            this.client.sendMessage(req, null, (err, _) => {
               console.log(err);
             });
           }}
