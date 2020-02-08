@@ -5,7 +5,7 @@ AUTH_SERVICE_OUT_DIR=src/auth_service
 FRONTEND_OUT_DIR=src/frontend
 TOPIC_CATALOG_SERVICE_OUT_DIR=src/topic_catalog_service
 CHAT_SERVICE_OUT_DIR=src/chat_service
-CHAT_CLIENT_OUT_DIR=src/chat_client
+CHAT_CLIENT_OUT_DIR=src/chat_client/src
 
 genproto:
 	protoc -I/usr/local/include -I. \
@@ -42,7 +42,7 @@ build_chat:
 
 build_chat_client:
 	cd src/chat_client && \
-		npx webpack client.ts && \
+		yarn build && \
 		docker build -t gcr.io/$(PROJECT)/chat_client .
 .PHONY: build_chat_client
 
