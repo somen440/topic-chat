@@ -45,11 +45,8 @@ func main() {
 		log.Fatal(err)
 	}
 
-	r := newRoom()
-	go r.Run()
-
 	s := grpc.NewServer()
-	pb.RegisterChatServiceServer(s, newChatServiceServer(r))
+	pb.RegisterChatServiceServer(s, newChatServiceServer())
 
 	log.Infof("starting grpc server at :%s", srvPort)
 	if err := s.Serve(l); err != nil {

@@ -1,16 +1,22 @@
 package main
 
 import (
+	"fmt"
+
 	pb "github.com/somen440/topic-chat/src/chat_service/pb"
 )
 
+type TopicID int
+
 type room struct {
-	id      int
+	id      TopicID
 	join    chan *client
 	leave   chan *client
-	forword chan *pb.ChatMessage
+	forward chan *pb.ChatMessage
 	member  map[*client]bool
 }
+
+var rooms = map[TopicID]*room{}
 
 func (r *room) Run() {
 	for {
@@ -20,7 +26,7 @@ func (r *room) Run() {
 		case c := <-r.leave:
 			delete(r.member, c)
 			close(c.send)
-		case msg := <-r.forword:
+		case msg := <-r.forward:
 			for c := range r.member {
 				c.send <- msg
 			}
@@ -40,16 +46,25 @@ func (r *room) Leave(c *client) {
 	r.leave <- c
 }
 
-func (r *room) Forword(msg *pb.ChatMessage) {
-	r.forword <- msg
+func (r *room) Forward(msg *pb.ChatMessage) {
+	r.forward <- msg
 }
 
-func newRoom() *room {
+func newRoom(id TopicID) *room {
 	return &room{
-		id:      1, // todo: topic id
+		id:      id,
 		join:    make(chan *client),
 		leave:   make(chan *client),
-		forword: make(chan *pb.ChatMessage),
+		forward: make(chan *pb.ChatMessage),
 		member:  map[*client]bool{},
 	}
+}
+
+func GetRoom(topicID TopicID) (*room, error) {
+	for id, r := range rooms {
+		if topicID == id {
+			return r, nil
+		}
+	}
+	return nil, fmt.Errorf("room %v not found", topicID)
 }

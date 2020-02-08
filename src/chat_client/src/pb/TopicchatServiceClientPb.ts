@@ -16,7 +16,8 @@ import {
   JoinRequest,
   ListTopicsResponse,
   LoggedInRequest,
-  RoomJoinRequest,
+  RecvMessageRequest,
+  SendMessageRequest,
   SignoutRequest,
   Topic,
   User} from './topicchat_pb';
@@ -108,71 +109,6 @@ export class AuthServiceClient {
 
 }
 
-export class RoomServiceClient {
-  client_: grpcWeb.AbstractClientBase;
-  hostname_: string;
-  credentials_: null | { [index: string]: string; };
-  options_: null | { [index: string]: string; };
-
-  constructor (hostname: string,
-               credentials?: null | { [index: string]: string; },
-               options?: null | { [index: string]: string; }) {
-    if (!options) options = {};
-    if (!credentials) credentials = {};
-    options['format'] = 'text';
-
-    this.client_ = new grpcWeb.GrpcWebClientBase(options);
-    this.hostname_ = hostname;
-    this.credentials_ = credentials;
-    this.options_ = options;
-  }
-
-  methodInfoJoin = new grpcWeb.AbstractClientBase.MethodInfo(
-    Empty,
-    (request: RoomJoinRequest) => {
-      return request.serializeBinary();
-    },
-    Empty.deserializeBinary
-  );
-
-  join(
-    request: RoomJoinRequest,
-    metadata: grpcWeb.Metadata | null,
-    callback: (err: grpcWeb.Error,
-               response: Empty) => void) {
-    return this.client_.rpcCall(
-      this.hostname_ +
-        '/topicchat.RoomService/Join',
-      request,
-      metadata || {},
-      this.methodInfoJoin,
-      callback);
-  }
-
-  methodInfoLeft = new grpcWeb.AbstractClientBase.MethodInfo(
-    Empty,
-    (request: Empty) => {
-      return request.serializeBinary();
-    },
-    Empty.deserializeBinary
-  );
-
-  left(
-    request: Empty,
-    metadata: grpcWeb.Metadata | null,
-    callback: (err: grpcWeb.Error,
-               response: Empty) => void) {
-    return this.client_.rpcCall(
-      this.hostname_ +
-        '/topicchat.RoomService/Left',
-      request,
-      metadata || {},
-      this.methodInfoLeft,
-      callback);
-  }
-
-}
-
 export class ChatServiceClient {
   client_: grpcWeb.AbstractClientBase;
   hostname_: string;
@@ -194,14 +130,14 @@ export class ChatServiceClient {
 
   methodInfoRecvMessage = new grpcWeb.AbstractClientBase.MethodInfo(
     ChatMessage,
-    (request: Empty) => {
+    (request: RecvMessageRequest) => {
       return request.serializeBinary();
     },
     ChatMessage.deserializeBinary
   );
 
   recvMessage(
-    request: Empty,
+    request: RecvMessageRequest,
     metadata?: grpcWeb.Metadata) {
     return this.client_.serverStreaming(
       this.hostname_ +
@@ -213,14 +149,14 @@ export class ChatServiceClient {
 
   methodInfoSendMessage = new grpcWeb.AbstractClientBase.MethodInfo(
     Empty,
-    (request: ChatMessage) => {
+    (request: SendMessageRequest) => {
       return request.serializeBinary();
     },
     Empty.deserializeBinary
   );
 
   sendMessage(
-    request: ChatMessage,
+    request: SendMessageRequest,
     metadata: grpcWeb.Metadata | null,
     callback: (err: grpcWeb.Error,
                response: Empty) => void) {

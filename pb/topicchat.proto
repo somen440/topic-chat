@@ -35,27 +35,39 @@ message SignoutRequest {
   string user_id = 1;
 }
 
-// -------------------- Room --------------------
-
-service RoomService {
-  rpc Join(RoomJoinRequest) returns (Empty) {}
-  rpc Left(Empty) returns (Empty) {}
-}
-
-message RoomJoinRequest {
-  string topic_id = 1;
-  User user = 2;
-}
-
 // -------------------- Chat --------------------
 
 service ChatService {
-  rpc RecvMessage(Empty) returns (stream ChatMessage);
-  rpc SendMessage(ChatMessage) returns (Empty);
+  // ---- Message ----
+  rpc RecvMessage(RecvMessageRequest) returns (stream ChatMessage);
+  rpc SendMessage(SendMessageRequest) returns (Empty);
+
+  // ---- Room ----
+ // rpc JoinRoom(JoinRoomRequest) returns (Empty) {}
+ // rpc LeftRoom(LeftRoomRequest) returns (Empty) {}
 }
 
 message ChatMessage {
   string text = 1;
+}
+
+message RecvMessageRequest {
+  int32 topic_id = 1;
+}
+
+message SendMessageRequest {
+  int32 topic_id = 1;
+  ChatMessage message = 2;
+}
+
+message JoinRoomRequest {
+  int32 topic_id = 1;
+  User user = 2;
+}
+
+message LeftRoomRequest {
+  int32 topic_id = 1;
+  User user = 2;
 }
 
 // -------------------- Topic Catalog --------------------

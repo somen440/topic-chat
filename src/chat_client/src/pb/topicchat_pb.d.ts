@@ -116,30 +116,6 @@ export namespace SignoutRequest {
   }
 }
 
-export class RoomJoinRequest extends jspb.Message {
-  getTopicId(): string;
-  setTopicId(value: string): void;
-
-  getUser(): User | undefined;
-  setUser(value?: User): void;
-  hasUser(): boolean;
-  clearUser(): void;
-
-  serializeBinary(): Uint8Array;
-  toObject(includeInstance?: boolean): RoomJoinRequest.AsObject;
-  static toObject(includeInstance: boolean, msg: RoomJoinRequest): RoomJoinRequest.AsObject;
-  static serializeBinaryToWriter(message: RoomJoinRequest, writer: jspb.BinaryWriter): void;
-  static deserializeBinary(bytes: Uint8Array): RoomJoinRequest;
-  static deserializeBinaryFromReader(message: RoomJoinRequest, reader: jspb.BinaryReader): RoomJoinRequest;
-}
-
-export namespace RoomJoinRequest {
-  export type AsObject = {
-    topicId: string,
-    user?: User.AsObject,
-  }
-}
-
 export class ChatMessage extends jspb.Message {
   getText(): string;
   setText(value: string): void;
@@ -155,6 +131,96 @@ export class ChatMessage extends jspb.Message {
 export namespace ChatMessage {
   export type AsObject = {
     text: string,
+  }
+}
+
+export class RecvMessageRequest extends jspb.Message {
+  getTopicId(): number;
+  setTopicId(value: number): void;
+
+  serializeBinary(): Uint8Array;
+  toObject(includeInstance?: boolean): RecvMessageRequest.AsObject;
+  static toObject(includeInstance: boolean, msg: RecvMessageRequest): RecvMessageRequest.AsObject;
+  static serializeBinaryToWriter(message: RecvMessageRequest, writer: jspb.BinaryWriter): void;
+  static deserializeBinary(bytes: Uint8Array): RecvMessageRequest;
+  static deserializeBinaryFromReader(message: RecvMessageRequest, reader: jspb.BinaryReader): RecvMessageRequest;
+}
+
+export namespace RecvMessageRequest {
+  export type AsObject = {
+    topicId: number,
+  }
+}
+
+export class SendMessageRequest extends jspb.Message {
+  getTopicId(): number;
+  setTopicId(value: number): void;
+
+  getMessage(): ChatMessage | undefined;
+  setMessage(value?: ChatMessage): void;
+  hasMessage(): boolean;
+  clearMessage(): void;
+
+  serializeBinary(): Uint8Array;
+  toObject(includeInstance?: boolean): SendMessageRequest.AsObject;
+  static toObject(includeInstance: boolean, msg: SendMessageRequest): SendMessageRequest.AsObject;
+  static serializeBinaryToWriter(message: SendMessageRequest, writer: jspb.BinaryWriter): void;
+  static deserializeBinary(bytes: Uint8Array): SendMessageRequest;
+  static deserializeBinaryFromReader(message: SendMessageRequest, reader: jspb.BinaryReader): SendMessageRequest;
+}
+
+export namespace SendMessageRequest {
+  export type AsObject = {
+    topicId: number,
+    message?: ChatMessage.AsObject,
+  }
+}
+
+export class JoinRoomRequest extends jspb.Message {
+  getTopicId(): number;
+  setTopicId(value: number): void;
+
+  getUser(): User | undefined;
+  setUser(value?: User): void;
+  hasUser(): boolean;
+  clearUser(): void;
+
+  serializeBinary(): Uint8Array;
+  toObject(includeInstance?: boolean): JoinRoomRequest.AsObject;
+  static toObject(includeInstance: boolean, msg: JoinRoomRequest): JoinRoomRequest.AsObject;
+  static serializeBinaryToWriter(message: JoinRoomRequest, writer: jspb.BinaryWriter): void;
+  static deserializeBinary(bytes: Uint8Array): JoinRoomRequest;
+  static deserializeBinaryFromReader(message: JoinRoomRequest, reader: jspb.BinaryReader): JoinRoomRequest;
+}
+
+export namespace JoinRoomRequest {
+  export type AsObject = {
+    topicId: number,
+    user?: User.AsObject,
+  }
+}
+
+export class LeftRoomRequest extends jspb.Message {
+  getTopicId(): number;
+  setTopicId(value: number): void;
+
+  getUser(): User | undefined;
+  setUser(value?: User): void;
+  hasUser(): boolean;
+  clearUser(): void;
+
+  serializeBinary(): Uint8Array;
+  toObject(includeInstance?: boolean): LeftRoomRequest.AsObject;
+  static toObject(includeInstance: boolean, msg: LeftRoomRequest): LeftRoomRequest.AsObject;
+  static serializeBinaryToWriter(message: LeftRoomRequest, writer: jspb.BinaryWriter): void;
+  static deserializeBinary(bytes: Uint8Array): LeftRoomRequest;
+  static deserializeBinaryFromReader(message: LeftRoomRequest, reader: jspb.BinaryReader): LeftRoomRequest;
+}
+
+export namespace LeftRoomRequest {
+  export type AsObject = {
+    topicId: number,
+    user?: User.AsObject,
   }
 }
 
