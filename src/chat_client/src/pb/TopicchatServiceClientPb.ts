@@ -11,9 +11,11 @@ import * as grpcWeb from 'grpc-web';
 
 import {
   ChatMessage,
+  CreateRoomRequest,
   Empty,
   GetTopicRequest,
   JoinRequest,
+  ListRoomResponse,
   ListTopicsResponse,
   LoggedInRequest,
   RecvMessageRequest,
@@ -166,6 +168,50 @@ export class ChatServiceClient {
       request,
       metadata || {},
       this.methodInfoSendMessage,
+      callback);
+  }
+
+  methodInfoCreateRoom = new grpcWeb.AbstractClientBase.MethodInfo(
+    Empty,
+    (request: CreateRoomRequest) => {
+      return request.serializeBinary();
+    },
+    Empty.deserializeBinary
+  );
+
+  createRoom(
+    request: CreateRoomRequest,
+    metadata: grpcWeb.Metadata | null,
+    callback: (err: grpcWeb.Error,
+               response: Empty) => void) {
+    return this.client_.rpcCall(
+      this.hostname_ +
+        '/topicchat.ChatService/CreateRoom',
+      request,
+      metadata || {},
+      this.methodInfoCreateRoom,
+      callback);
+  }
+
+  methodInfoListRoom = new grpcWeb.AbstractClientBase.MethodInfo(
+    ListRoomResponse,
+    (request: Empty) => {
+      return request.serializeBinary();
+    },
+    ListRoomResponse.deserializeBinary
+  );
+
+  listRoom(
+    request: Empty,
+    metadata: grpcWeb.Metadata | null,
+    callback: (err: grpcWeb.Error,
+               response: ListRoomResponse) => void) {
+    return this.client_.rpcCall(
+      this.hostname_ +
+        '/topicchat.ChatService/ListRoom',
+      request,
+      metadata || {},
+      this.methodInfoListRoom,
       callback);
   }
 

@@ -276,6 +276,7 @@ func (m *SignoutRequest) GetUserId() string {
 
 type ChatMessage struct {
 	Text                 string   `protobuf:"bytes,1,opt,name=text,proto3" json:"text,omitempty"`
+	User                 *User    `protobuf:"bytes,2,opt,name=user,proto3" json:"user,omitempty"`
 	XXX_NoUnkeyedLiteral struct{} `json:"-"`
 	XXX_unrecognized     []byte   `json:"-"`
 	XXX_sizecache        int32    `json:"-"`
@@ -313,8 +314,94 @@ func (m *ChatMessage) GetText() string {
 	return ""
 }
 
+func (m *ChatMessage) GetUser() *User {
+	if m != nil {
+		return m.User
+	}
+	return nil
+}
+
+type Room struct {
+	TopicId              int32    `protobuf:"varint,1,opt,name=topic_id,json=topicId,proto3" json:"topic_id,omitempty"`
+	XXX_NoUnkeyedLiteral struct{} `json:"-"`
+	XXX_unrecognized     []byte   `json:"-"`
+	XXX_sizecache        int32    `json:"-"`
+}
+
+func (m *Room) Reset()         { *m = Room{} }
+func (m *Room) String() string { return proto.CompactTextString(m) }
+func (*Room) ProtoMessage()    {}
+func (*Room) Descriptor() ([]byte, []int) {
+	return fileDescriptor_f7c4a8088c4bf324, []int{7}
+}
+
+func (m *Room) XXX_Unmarshal(b []byte) error {
+	return xxx_messageInfo_Room.Unmarshal(m, b)
+}
+func (m *Room) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
+	return xxx_messageInfo_Room.Marshal(b, m, deterministic)
+}
+func (m *Room) XXX_Merge(src proto.Message) {
+	xxx_messageInfo_Room.Merge(m, src)
+}
+func (m *Room) XXX_Size() int {
+	return xxx_messageInfo_Room.Size(m)
+}
+func (m *Room) XXX_DiscardUnknown() {
+	xxx_messageInfo_Room.DiscardUnknown(m)
+}
+
+var xxx_messageInfo_Room proto.InternalMessageInfo
+
+func (m *Room) GetTopicId() int32 {
+	if m != nil {
+		return m.TopicId
+	}
+	return 0
+}
+
+type CreateRoomRequest struct {
+	TopicId              int32    `protobuf:"varint,1,opt,name=topic_id,json=topicId,proto3" json:"topic_id,omitempty"`
+	XXX_NoUnkeyedLiteral struct{} `json:"-"`
+	XXX_unrecognized     []byte   `json:"-"`
+	XXX_sizecache        int32    `json:"-"`
+}
+
+func (m *CreateRoomRequest) Reset()         { *m = CreateRoomRequest{} }
+func (m *CreateRoomRequest) String() string { return proto.CompactTextString(m) }
+func (*CreateRoomRequest) ProtoMessage()    {}
+func (*CreateRoomRequest) Descriptor() ([]byte, []int) {
+	return fileDescriptor_f7c4a8088c4bf324, []int{8}
+}
+
+func (m *CreateRoomRequest) XXX_Unmarshal(b []byte) error {
+	return xxx_messageInfo_CreateRoomRequest.Unmarshal(m, b)
+}
+func (m *CreateRoomRequest) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
+	return xxx_messageInfo_CreateRoomRequest.Marshal(b, m, deterministic)
+}
+func (m *CreateRoomRequest) XXX_Merge(src proto.Message) {
+	xxx_messageInfo_CreateRoomRequest.Merge(m, src)
+}
+func (m *CreateRoomRequest) XXX_Size() int {
+	return xxx_messageInfo_CreateRoomRequest.Size(m)
+}
+func (m *CreateRoomRequest) XXX_DiscardUnknown() {
+	xxx_messageInfo_CreateRoomRequest.DiscardUnknown(m)
+}
+
+var xxx_messageInfo_CreateRoomRequest proto.InternalMessageInfo
+
+func (m *CreateRoomRequest) GetTopicId() int32 {
+	if m != nil {
+		return m.TopicId
+	}
+	return 0
+}
+
 type RecvMessageRequest struct {
 	TopicId              int32    `protobuf:"varint,1,opt,name=topic_id,json=topicId,proto3" json:"topic_id,omitempty"`
+	User                 *User    `protobuf:"bytes,2,opt,name=user,proto3" json:"user,omitempty"`
 	XXX_NoUnkeyedLiteral struct{} `json:"-"`
 	XXX_unrecognized     []byte   `json:"-"`
 	XXX_sizecache        int32    `json:"-"`
@@ -324,7 +411,7 @@ func (m *RecvMessageRequest) Reset()         { *m = RecvMessageRequest{} }
 func (m *RecvMessageRequest) String() string { return proto.CompactTextString(m) }
 func (*RecvMessageRequest) ProtoMessage()    {}
 func (*RecvMessageRequest) Descriptor() ([]byte, []int) {
-	return fileDescriptor_f7c4a8088c4bf324, []int{7}
+	return fileDescriptor_f7c4a8088c4bf324, []int{9}
 }
 
 func (m *RecvMessageRequest) XXX_Unmarshal(b []byte) error {
@@ -352,6 +439,13 @@ func (m *RecvMessageRequest) GetTopicId() int32 {
 	return 0
 }
 
+func (m *RecvMessageRequest) GetUser() *User {
+	if m != nil {
+		return m.User
+	}
+	return nil
+}
+
 type SendMessageRequest struct {
 	TopicId              int32        `protobuf:"varint,1,opt,name=topic_id,json=topicId,proto3" json:"topic_id,omitempty"`
 	Message              *ChatMessage `protobuf:"bytes,2,opt,name=message,proto3" json:"message,omitempty"`
@@ -364,7 +458,7 @@ func (m *SendMessageRequest) Reset()         { *m = SendMessageRequest{} }
 func (m *SendMessageRequest) String() string { return proto.CompactTextString(m) }
 func (*SendMessageRequest) ProtoMessage()    {}
 func (*SendMessageRequest) Descriptor() ([]byte, []int) {
-	return fileDescriptor_f7c4a8088c4bf324, []int{8}
+	return fileDescriptor_f7c4a8088c4bf324, []int{10}
 }
 
 func (m *SendMessageRequest) XXX_Unmarshal(b []byte) error {
@@ -399,96 +493,41 @@ func (m *SendMessageRequest) GetMessage() *ChatMessage {
 	return nil
 }
 
-type JoinRoomRequest struct {
-	TopicId              int32    `protobuf:"varint,1,opt,name=topic_id,json=topicId,proto3" json:"topic_id,omitempty"`
-	User                 *User    `protobuf:"bytes,2,opt,name=user,proto3" json:"user,omitempty"`
+type ListRoomResponse struct {
+	Rooms                []*Room  `protobuf:"bytes,1,rep,name=rooms,proto3" json:"rooms,omitempty"`
 	XXX_NoUnkeyedLiteral struct{} `json:"-"`
 	XXX_unrecognized     []byte   `json:"-"`
 	XXX_sizecache        int32    `json:"-"`
 }
 
-func (m *JoinRoomRequest) Reset()         { *m = JoinRoomRequest{} }
-func (m *JoinRoomRequest) String() string { return proto.CompactTextString(m) }
-func (*JoinRoomRequest) ProtoMessage()    {}
-func (*JoinRoomRequest) Descriptor() ([]byte, []int) {
-	return fileDescriptor_f7c4a8088c4bf324, []int{9}
+func (m *ListRoomResponse) Reset()         { *m = ListRoomResponse{} }
+func (m *ListRoomResponse) String() string { return proto.CompactTextString(m) }
+func (*ListRoomResponse) ProtoMessage()    {}
+func (*ListRoomResponse) Descriptor() ([]byte, []int) {
+	return fileDescriptor_f7c4a8088c4bf324, []int{11}
 }
 
-func (m *JoinRoomRequest) XXX_Unmarshal(b []byte) error {
-	return xxx_messageInfo_JoinRoomRequest.Unmarshal(m, b)
+func (m *ListRoomResponse) XXX_Unmarshal(b []byte) error {
+	return xxx_messageInfo_ListRoomResponse.Unmarshal(m, b)
 }
-func (m *JoinRoomRequest) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
-	return xxx_messageInfo_JoinRoomRequest.Marshal(b, m, deterministic)
+func (m *ListRoomResponse) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
+	return xxx_messageInfo_ListRoomResponse.Marshal(b, m, deterministic)
 }
-func (m *JoinRoomRequest) XXX_Merge(src proto.Message) {
-	xxx_messageInfo_JoinRoomRequest.Merge(m, src)
+func (m *ListRoomResponse) XXX_Merge(src proto.Message) {
+	xxx_messageInfo_ListRoomResponse.Merge(m, src)
 }
-func (m *JoinRoomRequest) XXX_Size() int {
-	return xxx_messageInfo_JoinRoomRequest.Size(m)
+func (m *ListRoomResponse) XXX_Size() int {
+	return xxx_messageInfo_ListRoomResponse.Size(m)
 }
-func (m *JoinRoomRequest) XXX_DiscardUnknown() {
-	xxx_messageInfo_JoinRoomRequest.DiscardUnknown(m)
+func (m *ListRoomResponse) XXX_DiscardUnknown() {
+	xxx_messageInfo_ListRoomResponse.DiscardUnknown(m)
 }
 
-var xxx_messageInfo_JoinRoomRequest proto.InternalMessageInfo
+var xxx_messageInfo_ListRoomResponse proto.InternalMessageInfo
 
-func (m *JoinRoomRequest) GetTopicId() int32 {
+func (m *ListRoomResponse) GetRooms() []*Room {
 	if m != nil {
-		return m.TopicId
-	}
-	return 0
-}
-
-func (m *JoinRoomRequest) GetUser() *User {
-	if m != nil {
-		return m.User
-	}
-	return nil
-}
-
-type LeftRoomRequest struct {
-	TopicId              int32    `protobuf:"varint,1,opt,name=topic_id,json=topicId,proto3" json:"topic_id,omitempty"`
-	User                 *User    `protobuf:"bytes,2,opt,name=user,proto3" json:"user,omitempty"`
-	XXX_NoUnkeyedLiteral struct{} `json:"-"`
-	XXX_unrecognized     []byte   `json:"-"`
-	XXX_sizecache        int32    `json:"-"`
-}
-
-func (m *LeftRoomRequest) Reset()         { *m = LeftRoomRequest{} }
-func (m *LeftRoomRequest) String() string { return proto.CompactTextString(m) }
-func (*LeftRoomRequest) ProtoMessage()    {}
-func (*LeftRoomRequest) Descriptor() ([]byte, []int) {
-	return fileDescriptor_f7c4a8088c4bf324, []int{10}
-}
-
-func (m *LeftRoomRequest) XXX_Unmarshal(b []byte) error {
-	return xxx_messageInfo_LeftRoomRequest.Unmarshal(m, b)
-}
-func (m *LeftRoomRequest) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
-	return xxx_messageInfo_LeftRoomRequest.Marshal(b, m, deterministic)
-}
-func (m *LeftRoomRequest) XXX_Merge(src proto.Message) {
-	xxx_messageInfo_LeftRoomRequest.Merge(m, src)
-}
-func (m *LeftRoomRequest) XXX_Size() int {
-	return xxx_messageInfo_LeftRoomRequest.Size(m)
-}
-func (m *LeftRoomRequest) XXX_DiscardUnknown() {
-	xxx_messageInfo_LeftRoomRequest.DiscardUnknown(m)
-}
-
-var xxx_messageInfo_LeftRoomRequest proto.InternalMessageInfo
-
-func (m *LeftRoomRequest) GetTopicId() int32 {
-	if m != nil {
-		return m.TopicId
-	}
-	return 0
-}
-
-func (m *LeftRoomRequest) GetUser() *User {
-	if m != nil {
-		return m.User
+		return m.Rooms
 	}
 	return nil
 }
@@ -504,7 +543,7 @@ func (m *ListTopicsResponse) Reset()         { *m = ListTopicsResponse{} }
 func (m *ListTopicsResponse) String() string { return proto.CompactTextString(m) }
 func (*ListTopicsResponse) ProtoMessage()    {}
 func (*ListTopicsResponse) Descriptor() ([]byte, []int) {
-	return fileDescriptor_f7c4a8088c4bf324, []int{11}
+	return fileDescriptor_f7c4a8088c4bf324, []int{12}
 }
 
 func (m *ListTopicsResponse) XXX_Unmarshal(b []byte) error {
@@ -543,7 +582,7 @@ func (m *GetTopicRequest) Reset()         { *m = GetTopicRequest{} }
 func (m *GetTopicRequest) String() string { return proto.CompactTextString(m) }
 func (*GetTopicRequest) ProtoMessage()    {}
 func (*GetTopicRequest) Descriptor() ([]byte, []int) {
-	return fileDescriptor_f7c4a8088c4bf324, []int{12}
+	return fileDescriptor_f7c4a8088c4bf324, []int{13}
 }
 
 func (m *GetTopicRequest) XXX_Unmarshal(b []byte) error {
@@ -579,10 +618,11 @@ func init() {
 	proto.RegisterType((*LoggedInRequest)(nil), "topicchat.LoggedInRequest")
 	proto.RegisterType((*SignoutRequest)(nil), "topicchat.SignoutRequest")
 	proto.RegisterType((*ChatMessage)(nil), "topicchat.ChatMessage")
+	proto.RegisterType((*Room)(nil), "topicchat.Room")
+	proto.RegisterType((*CreateRoomRequest)(nil), "topicchat.CreateRoomRequest")
 	proto.RegisterType((*RecvMessageRequest)(nil), "topicchat.RecvMessageRequest")
 	proto.RegisterType((*SendMessageRequest)(nil), "topicchat.SendMessageRequest")
-	proto.RegisterType((*JoinRoomRequest)(nil), "topicchat.JoinRoomRequest")
-	proto.RegisterType((*LeftRoomRequest)(nil), "topicchat.LeftRoomRequest")
+	proto.RegisterType((*ListRoomResponse)(nil), "topicchat.ListRoomResponse")
 	proto.RegisterType((*ListTopicsResponse)(nil), "topicchat.ListTopicsResponse")
 	proto.RegisterType((*GetTopicRequest)(nil), "topicchat.GetTopicRequest")
 }
@@ -590,38 +630,41 @@ func init() {
 func init() { proto.RegisterFile("pb/topicchat.proto", fileDescriptor_f7c4a8088c4bf324) }
 
 var fileDescriptor_f7c4a8088c4bf324 = []byte{
-	// 484 bytes of a gzipped FileDescriptorProto
-	0x1f, 0x8b, 0x08, 0x00, 0x00, 0x00, 0x00, 0x00, 0x02, 0xff, 0xac, 0x94, 0x51, 0x6f, 0xd3, 0x30,
-	0x10, 0xc7, 0xeb, 0xae, 0x6d, 0xb2, 0x8b, 0xb4, 0xa2, 0x43, 0x82, 0x2e, 0x12, 0x52, 0x6b, 0x5e,
-	0x0a, 0x48, 0xdb, 0x08, 0x2f, 0xc0, 0xc3, 0x10, 0x9a, 0x18, 0x2a, 0x2a, 0x0f, 0xb8, 0xf0, 0x8c,
-	0xb2, 0xe6, 0x48, 0x23, 0xad, 0x71, 0xa8, 0xdd, 0x09, 0xbe, 0x06, 0x12, 0x1f, 0x85, 0xef, 0x87,
-	0xe2, 0xc6, 0x9d, 0x9b, 0x80, 0xe8, 0x03, 0x6f, 0xb6, 0xef, 0x7f, 0x7f, 0x9f, 0xef, 0x7e, 0x09,
-	0x60, 0x71, 0x75, 0xaa, 0x65, 0x91, 0xcd, 0xe7, 0x8b, 0x58, 0x9f, 0x14, 0x2b, 0xa9, 0x25, 0x1e,
-	0x6e, 0x0f, 0xb8, 0x07, 0xdd, 0x37, 0xcb, 0x42, 0x7f, 0xe7, 0x97, 0xd0, 0xf9, 0xa4, 0x68, 0x85,
-	0x47, 0xd0, 0xce, 0x92, 0x01, 0x1b, 0xb2, 0xf1, 0xa1, 0x68, 0x67, 0x09, 0x22, 0x74, 0xf2, 0x78,
-	0x49, 0x83, 0xb6, 0x39, 0x31, 0x6b, 0x0c, 0xc1, 0xbf, 0x96, 0x69, 0x4a, 0xc9, 0x24, 0x1f, 0x1c,
-	0x0c, 0xd9, 0xd8, 0x17, 0xdb, 0x3d, 0x7f, 0x02, 0xdd, 0x8f, 0xa5, 0xfb, 0x3e, 0x46, 0x7c, 0x04,
-	0xc1, 0x3b, 0x99, 0xe5, 0x82, 0xbe, 0xae, 0x49, 0xe9, 0xad, 0x84, 0x39, 0x92, 0xc7, 0xd0, 0x9f,
-	0x56, 0xde, 0x56, 0x76, 0x1f, 0xbc, 0xb5, 0xa2, 0xd5, 0xe7, 0xad, 0x7d, 0xaf, 0xdc, 0x4e, 0x12,
-	0xfe, 0x08, 0x8e, 0x66, 0x59, 0x9a, 0xcb, 0xb5, 0xfe, 0xa7, 0x74, 0x04, 0xc1, 0xc5, 0x22, 0xd6,
-	0xef, 0x49, 0xa9, 0x38, 0xa5, 0xf2, 0x66, 0x4d, 0xdf, 0xb4, 0xbd, 0xb9, 0x5c, 0xf3, 0x53, 0x40,
-	0x41, 0xf3, 0x9b, 0x4a, 0x62, 0x1d, 0x8f, 0xc1, 0x37, 0xdd, 0xb3, 0x96, 0x5d, 0xe1, 0x99, 0xfd,
-	0x24, 0xe1, 0x31, 0xe0, 0x8c, 0xf2, 0x64, 0xef, 0x04, 0x3c, 0x03, 0x6f, 0xb9, 0x11, 0x9b, 0xae,
-	0x04, 0xd1, 0xbd, 0x93, 0xdb, 0x51, 0x39, 0xe5, 0x09, 0x2b, 0xe3, 0x1f, 0xa0, 0x6f, 0x1a, 0x26,
-	0xe5, 0x72, 0x0f, 0xff, 0x87, 0xd0, 0x29, 0x9f, 0x5b, 0x99, 0xf7, 0x1d, 0xf3, 0x72, 0xd4, 0xc2,
-	0x04, 0x4b, 0xcb, 0x29, 0x7d, 0xd1, 0xff, 0xd3, 0xf2, 0x1c, 0x70, 0x9a, 0x29, 0x6d, 0x38, 0x50,
-	0x82, 0x54, 0x21, 0x73, 0x45, 0x38, 0x86, 0x9e, 0x51, 0xab, 0x01, 0x1b, 0x1e, 0x8c, 0x83, 0xe8,
-	0x8e, 0x93, 0x6c, 0xa4, 0xa2, 0x8a, 0xf3, 0x11, 0xf4, 0xdf, 0xd2, 0x26, 0xdd, 0x96, 0x54, 0xa3,
-	0x29, 0xfa, 0xc5, 0x20, 0x78, 0xbd, 0xd6, 0x8b, 0x19, 0xad, 0x6e, 0xb2, 0x39, 0xe1, 0x53, 0xe8,
-	0x94, 0x8d, 0x41, 0xb7, 0x83, 0x0e, 0x5a, 0x61, 0xbd, 0x52, 0xde, 0xc2, 0x17, 0xe0, 0x5b, 0xb2,
-	0x30, 0x74, 0xc2, 0x35, 0xdc, 0xfe, 0x94, 0xfa, 0x1c, 0xbc, 0x0a, 0x34, 0x3c, 0x76, 0xa2, 0xbb,
-	0xf0, 0x85, 0xee, 0x03, 0x37, 0x1f, 0x59, 0x2b, 0xfa, 0xc9, 0x36, 0xe0, 0xd9, 0xba, 0x2f, 0x21,
-	0x70, 0x20, 0xc3, 0x07, 0x4e, 0x4a, 0x13, 0xbe, 0xf0, 0x2f, 0x7c, 0x9c, 0x31, 0x3c, 0x87, 0xc0,
-	0x61, 0x6f, 0xc7, 0xa7, 0xc9, 0x64, 0xb3, 0xb2, 0xe8, 0x07, 0x83, 0xbb, 0xa6, 0xe1, 0x17, 0xb1,
-	0x8e, 0xaf, 0x65, 0x6a, 0xeb, 0x7b, 0x05, 0x70, 0x3b, 0x4a, 0x6c, 0xe4, 0x85, 0xee, 0x45, 0xcd,
-	0x99, 0xf3, 0x16, 0xbe, 0x04, 0xdf, 0xce, 0x72, 0xa7, 0xcb, 0xb5, 0x01, 0x87, 0x0d, 0x1a, 0x78,
-	0xeb, 0xaa, 0x67, 0x7e, 0x57, 0xcf, 0x7e, 0x07, 0x00, 0x00, 0xff, 0xff, 0x44, 0x5c, 0x31, 0x96,
-	0xc4, 0x04, 0x00, 0x00,
+	// 532 bytes of a gzipped FileDescriptorProto
+	0x1f, 0x8b, 0x08, 0x00, 0x00, 0x00, 0x00, 0x00, 0x02, 0xff, 0x8c, 0x94, 0x5d, 0x6f, 0xd3, 0x3c,
+	0x14, 0xc7, 0x9b, 0xae, 0x2f, 0xd9, 0x89, 0xb4, 0xee, 0x39, 0x8f, 0x04, 0x5d, 0x60, 0x52, 0x6b,
+	0x84, 0x54, 0x40, 0x2a, 0xa3, 0xdc, 0x30, 0x90, 0x8a, 0x50, 0x45, 0x51, 0xd1, 0xb8, 0x49, 0xc7,
+	0x35, 0xca, 0x1a, 0x2b, 0x8d, 0xb4, 0xc4, 0x21, 0x76, 0x27, 0xf8, 0x1a, 0x7c, 0x17, 0xbe, 0x1f,
+	0xb2, 0x13, 0xa7, 0x6e, 0x52, 0x58, 0xef, 0x62, 0x9f, 0xff, 0xf9, 0x9f, 0x17, 0xff, 0x5a, 0xc0,
+	0xf4, 0xe6, 0xa5, 0x60, 0x69, 0xb4, 0x5a, 0xad, 0x7d, 0x31, 0x4e, 0x33, 0x26, 0x18, 0x1e, 0x97,
+	0x17, 0xa4, 0x0b, 0xed, 0x8f, 0x71, 0x2a, 0x7e, 0x92, 0x39, 0xb4, 0xbe, 0x72, 0x9a, 0xe1, 0x09,
+	0x34, 0xa3, 0xa0, 0x6f, 0x0d, 0xac, 0xd1, 0xb1, 0xd7, 0x8c, 0x02, 0x44, 0x68, 0x25, 0x7e, 0x4c,
+	0xfb, 0x4d, 0x75, 0xa3, 0xbe, 0xd1, 0x05, 0xfb, 0x96, 0x85, 0x21, 0x0d, 0x16, 0x49, 0xff, 0x68,
+	0x60, 0x8d, 0x6c, 0xaf, 0x3c, 0x93, 0x17, 0xd0, 0xbe, 0x96, 0xee, 0x87, 0x18, 0x91, 0x21, 0x38,
+	0x9f, 0x59, 0x94, 0x78, 0xf4, 0xfb, 0x86, 0x72, 0x51, 0x4a, 0x2c, 0x43, 0xf2, 0x1c, 0x7a, 0x57,
+	0x85, 0xb7, 0x96, 0x3d, 0x84, 0xee, 0x86, 0xd3, 0xec, 0x5b, 0x69, 0xdf, 0x91, 0xc7, 0x45, 0x40,
+	0x9e, 0xc1, 0xc9, 0x32, 0x0a, 0x13, 0xb6, 0x11, 0xf7, 0x4a, 0xe7, 0xe0, 0xcc, 0xd6, 0xbe, 0xf8,
+	0x42, 0x39, 0xf7, 0x43, 0x2a, 0x2b, 0x0b, 0xfa, 0x43, 0xe8, 0xca, 0xf2, 0x1b, 0x9f, 0x40, 0x4b,
+	0x8a, 0x55, 0xc3, 0xce, 0xa4, 0x37, 0xde, 0x6e, 0x51, 0x2e, 0xca, 0x53, 0x41, 0x32, 0x84, 0x96,
+	0xc7, 0x58, 0x8c, 0x67, 0x60, 0xab, 0xb8, 0xae, 0xd4, 0xf6, 0xba, 0xea, 0xbc, 0x08, 0xc8, 0x18,
+	0xfe, 0x9b, 0x65, 0xd4, 0x17, 0x54, 0x0a, 0x75, 0x63, 0xff, 0xd0, 0x5f, 0x03, 0x7a, 0x74, 0x75,
+	0x57, 0xb4, 0x76, 0x7f, 0xc2, 0x61, 0x8d, 0xfa, 0x80, 0x4b, 0x9a, 0x04, 0x87, 0xbb, 0x5e, 0x40,
+	0x37, 0xce, 0xc5, 0x85, 0xf1, 0x03, 0xc3, 0xd8, 0xd8, 0x9d, 0xa7, 0x65, 0xe4, 0x12, 0x4e, 0xaf,
+	0x22, 0x2e, 0xf2, 0x31, 0x79, 0xca, 0x12, 0x4e, 0xf1, 0x29, 0xb4, 0x33, 0xc6, 0x62, 0xde, 0xb7,
+	0x06, 0x47, 0x95, 0xe6, 0x94, 0x2e, 0x8f, 0x92, 0x29, 0xa0, 0x4c, 0x55, 0xe4, 0xf0, 0x32, 0x79,
+	0x04, 0x1d, 0x25, 0xd7, 0xd9, 0xa7, 0x46, 0xb6, 0x92, 0x7a, 0x45, 0x9c, 0x0c, 0xa1, 0xf7, 0x89,
+	0xe6, 0xe9, 0x7a, 0xb4, 0x0a, 0x7f, 0x93, 0xdf, 0x16, 0x38, 0x1f, 0x36, 0x62, 0xbd, 0xa4, 0xd9,
+	0x5d, 0xb4, 0xa2, 0xf8, 0x0a, 0x5a, 0x92, 0x3d, 0x34, 0xc7, 0x32, 0x60, 0x74, 0xab, 0x7b, 0x24,
+	0x0d, 0xbc, 0x04, 0x5b, 0xb3, 0x88, 0xae, 0x11, 0xae, 0x00, 0xba, 0x2f, 0xf5, 0x0d, 0x74, 0x0b,
+	0x34, 0xf1, 0xcc, 0x88, 0xee, 0xe2, 0xea, 0x9a, 0x03, 0xe6, 0x3f, 0xcb, 0xc6, 0xe4, 0x57, 0x33,
+	0x47, 0x55, 0xf7, 0x3d, 0x07, 0xc7, 0xc0, 0x03, 0xcf, 0xcd, 0x8d, 0xd6, 0xb0, 0x71, 0xff, 0xf2,
+	0x68, 0x17, 0x16, 0x4e, 0xc1, 0x31, 0x80, 0xd8, 0xf1, 0xa9, 0x83, 0x52, 0xef, 0x0c, 0xa7, 0x00,
+	0x5b, 0xac, 0xf1, 0xb1, 0x59, 0xa7, 0x4a, 0xfb, 0xbe, 0xb9, 0xf0, 0x1d, 0xd8, 0x9a, 0x16, 0xac,
+	0xc5, 0xdd, 0x47, 0xe6, 0x7a, 0x2b, 0x50, 0xc9, 0xa5, 0x58, 0xf0, 0xbf, 0x7a, 0xed, 0x99, 0x2f,
+	0xfc, 0x5b, 0x16, 0xea, 0xe5, 0xbc, 0x07, 0xd8, 0x72, 0xb4, 0xc7, 0xf6, 0xbc, 0x62, 0xbb, 0x0b,
+	0x1c, 0x69, 0xe0, 0x5b, 0xb0, 0x35, 0x48, 0x3b, 0x4f, 0x5c, 0xa1, 0xcb, 0xad, 0xa1, 0x48, 0x1a,
+	0x37, 0x1d, 0xf5, 0xef, 0xfa, 0xfa, 0x4f, 0x00, 0x00, 0x00, 0xff, 0xff, 0xe7, 0x15, 0x50, 0x9b,
+	0x73, 0x05, 0x00, 0x00,
 }
 
 // Reference imports to suppress errors if they are not otherwise used.
@@ -783,6 +826,9 @@ type ChatServiceClient interface {
 	// ---- Message ----
 	RecvMessage(ctx context.Context, in *RecvMessageRequest, opts ...grpc.CallOption) (ChatService_RecvMessageClient, error)
 	SendMessage(ctx context.Context, in *SendMessageRequest, opts ...grpc.CallOption) (*Empty, error)
+	// ---- Room ----
+	CreateRoom(ctx context.Context, in *CreateRoomRequest, opts ...grpc.CallOption) (*Empty, error)
+	ListRoom(ctx context.Context, in *Empty, opts ...grpc.CallOption) (*ListRoomResponse, error)
 }
 
 type chatServiceClient struct {
@@ -834,11 +880,32 @@ func (c *chatServiceClient) SendMessage(ctx context.Context, in *SendMessageRequ
 	return out, nil
 }
 
+func (c *chatServiceClient) CreateRoom(ctx context.Context, in *CreateRoomRequest, opts ...grpc.CallOption) (*Empty, error) {
+	out := new(Empty)
+	err := c.cc.Invoke(ctx, "/topicchat.ChatService/CreateRoom", in, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
+func (c *chatServiceClient) ListRoom(ctx context.Context, in *Empty, opts ...grpc.CallOption) (*ListRoomResponse, error) {
+	out := new(ListRoomResponse)
+	err := c.cc.Invoke(ctx, "/topicchat.ChatService/ListRoom", in, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
 // ChatServiceServer is the server API for ChatService service.
 type ChatServiceServer interface {
 	// ---- Message ----
 	RecvMessage(*RecvMessageRequest, ChatService_RecvMessageServer) error
 	SendMessage(context.Context, *SendMessageRequest) (*Empty, error)
+	// ---- Room ----
+	CreateRoom(context.Context, *CreateRoomRequest) (*Empty, error)
+	ListRoom(context.Context, *Empty) (*ListRoomResponse, error)
 }
 
 // UnimplementedChatServiceServer can be embedded to have forward compatible implementations.
@@ -850,6 +917,12 @@ func (*UnimplementedChatServiceServer) RecvMessage(req *RecvMessageRequest, srv 
 }
 func (*UnimplementedChatServiceServer) SendMessage(ctx context.Context, req *SendMessageRequest) (*Empty, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method SendMessage not implemented")
+}
+func (*UnimplementedChatServiceServer) CreateRoom(ctx context.Context, req *CreateRoomRequest) (*Empty, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method CreateRoom not implemented")
+}
+func (*UnimplementedChatServiceServer) ListRoom(ctx context.Context, req *Empty) (*ListRoomResponse, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method ListRoom not implemented")
 }
 
 func RegisterChatServiceServer(s *grpc.Server, srv ChatServiceServer) {
@@ -895,6 +968,42 @@ func _ChatService_SendMessage_Handler(srv interface{}, ctx context.Context, dec 
 	return interceptor(ctx, in, info, handler)
 }
 
+func _ChatService_CreateRoom_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(CreateRoomRequest)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(ChatServiceServer).CreateRoom(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: "/topicchat.ChatService/CreateRoom",
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(ChatServiceServer).CreateRoom(ctx, req.(*CreateRoomRequest))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
+func _ChatService_ListRoom_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(Empty)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(ChatServiceServer).ListRoom(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: "/topicchat.ChatService/ListRoom",
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(ChatServiceServer).ListRoom(ctx, req.(*Empty))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
 var _ChatService_serviceDesc = grpc.ServiceDesc{
 	ServiceName: "topicchat.ChatService",
 	HandlerType: (*ChatServiceServer)(nil),
@@ -902,6 +1011,14 @@ var _ChatService_serviceDesc = grpc.ServiceDesc{
 		{
 			MethodName: "SendMessage",
 			Handler:    _ChatService_SendMessage_Handler,
+		},
+		{
+			MethodName: "CreateRoom",
+			Handler:    _ChatService_CreateRoom_Handler,
+		},
+		{
+			MethodName: "ListRoom",
+			Handler:    _ChatService_ListRoom_Handler,
 		},
 	},
 	Streams: []grpc.StreamDesc{

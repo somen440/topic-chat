@@ -56,16 +56,29 @@ debug_catalog_list:
 		topicchat.TopicCatalogService/ListTopics
 .PHONY: debug_catalog_list
 
+debug_chat_create:
+	grpcurl -import-path pb/ \
+		-proto topicchat.proto \
+		-d "{\"topicId\":$(TOPIC_ID)}" \
+		-plaintext -v localhost:8083 topicchat.ChatService/CreateRoom
+.PHONY: debug_chat_create
+
+debug_chat_list:
+	grpcurl -import-path pb/ \
+		-proto topicchat.proto \
+		-plaintext -v localhost:8083 topicchat.ChatService/ListRoom
+.PHONY: debug_chat_list
+
 debug_chat_recv:
 	grpcurl -import-path pb/ \
 		-proto topicchat.proto \
-		-d "{\"topicId\":\"$(TOPIC_ID)\"}" \
+		-d "{\"topicId\":$(TOPIC_ID)}" \
 		-plaintext -v localhost:8083 topicchat.ChatService/RecvMessage
-.PHONY: debug_chat_stream
+.PHONY: debug_chat_recv
 
 debug_chat_send:
 	grpcurl -import-path pb/ \
 		-proto topicchat.proto \
 		-d '{"message":{"text":"$(TEXT)"},"topicId":$(TOPIC_ID)}' \
 		-plaintext -v localhost:8083 topicchat.ChatService/SendMessage
-.PHONY: debug_chat_stream
+.PHONY: debug_chat_send

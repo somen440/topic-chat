@@ -43,16 +43,26 @@ service ChatService {
   rpc SendMessage(SendMessageRequest) returns (Empty);
 
   // ---- Room ----
- // rpc JoinRoom(JoinRoomRequest) returns (Empty) {}
- // rpc LeftRoom(LeftRoomRequest) returns (Empty) {}
+  rpc CreateRoom(CreateRoomRequest) returns (Empty) {}
+  rpc ListRoom(Empty) returns (ListRoomResponse) {}
 }
 
 message ChatMessage {
   string text = 1;
+  User user = 2;
+}
+
+message Room {
+  int32 topic_id = 1;
+}
+
+message CreateRoomRequest {
+  int32 topic_id = 1;
 }
 
 message RecvMessageRequest {
   int32 topic_id = 1;
+  User user = 2;
 }
 
 message SendMessageRequest {
@@ -60,14 +70,8 @@ message SendMessageRequest {
   ChatMessage message = 2;
 }
 
-message JoinRoomRequest {
-  int32 topic_id = 1;
-  User user = 2;
-}
-
-message LeftRoomRequest {
-  int32 topic_id = 1;
-  User user = 2;
+message ListRoomResponse {
+  repeated Room rooms = 1;
 }
 
 // -------------------- Topic Catalog --------------------

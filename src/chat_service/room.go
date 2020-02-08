@@ -50,6 +50,28 @@ func (r *room) Forward(msg *pb.ChatMessage) {
 	r.forward <- msg
 }
 
+func (r *room) ExistsUser(userID UserID) bool {
+	for c := range r.member {
+		if userID == c.userID {
+			return true
+		}
+	}
+	return false
+}
+
+func (r *room) GetClient(userID UserID) (*client, error) {
+	for c := range r.member {
+		if userID == c.userID {
+			return c, nil
+		}
+	}
+	return nil, fmt.Errorf("client %v not found", userID)
+}
+
+func (r *room) GetID() TopicID {
+	return r.id
+}
+
 func newRoom(id TopicID) *room {
 	return &room{
 		id:      id,
@@ -58,6 +80,15 @@ func newRoom(id TopicID) *room {
 		forward: make(chan *pb.ChatMessage),
 		member:  map[*client]bool{},
 	}
+}
+
+func ExistsRoom(topicID TopicID) bool {
+	for id := range rooms {
+		if topicID == id {
+			return true
+		}
+	}
+	return false
 }
 
 func GetRoom(topicID TopicID) (*room, error) {
