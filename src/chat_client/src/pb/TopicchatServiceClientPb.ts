@@ -14,6 +14,8 @@ import {
   CreateRoomRequest,
   Empty,
   GetTopicRequest,
+  GetUserAllResponse,
+  GetUserRequest,
   JoinRequest,
   ListRoomResponse,
   ListTopicsResponse,
@@ -106,6 +108,50 @@ export class AuthServiceClient {
       request,
       metadata || {},
       this.methodInfoSignout,
+      callback);
+  }
+
+  methodInfoGetUser = new grpcWeb.AbstractClientBase.MethodInfo(
+    User,
+    (request: GetUserRequest) => {
+      return request.serializeBinary();
+    },
+    User.deserializeBinary
+  );
+
+  getUser(
+    request: GetUserRequest,
+    metadata: grpcWeb.Metadata | null,
+    callback: (err: grpcWeb.Error,
+               response: User) => void) {
+    return this.client_.rpcCall(
+      this.hostname_ +
+        '/topicchat.AuthService/GetUser',
+      request,
+      metadata || {},
+      this.methodInfoGetUser,
+      callback);
+  }
+
+  methodInfoGetUserAll = new grpcWeb.AbstractClientBase.MethodInfo(
+    GetUserAllResponse,
+    (request: Empty) => {
+      return request.serializeBinary();
+    },
+    GetUserAllResponse.deserializeBinary
+  );
+
+  getUserAll(
+    request: Empty,
+    metadata: grpcWeb.Metadata | null,
+    callback: (err: grpcWeb.Error,
+               response: GetUserAllResponse) => void) {
+    return this.client_.rpcCall(
+      this.hostname_ +
+        '/topicchat.AuthService/GetUserAll',
+      request,
+      metadata || {},
+      this.methodInfoGetUserAll,
       callback);
   }
 

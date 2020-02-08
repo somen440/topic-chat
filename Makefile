@@ -82,3 +82,16 @@ debug_chat_send:
 		-d '{"message":{"text":"$(TEXT)"},"topicId":$(TOPIC_ID)}' \
 		-plaintext -v localhost:8083 topicchat.ChatService/SendMessage
 .PHONY: debug_chat_send
+
+debug_user_get:
+	grpcurl -import-path pb/ \
+		-proto topicchat.proto \
+		-d '{"userId": $(USER_ID)}' \
+		-plaintext -v localhost:8082 topicchat.AuthService/GetUser
+.PHONY: debug_chat_send
+
+debug_user_get_all:
+	grpcurl -import-path pb/ \
+		-proto topicchat.proto \
+		-plaintext -v localhost:8082 topicchat.AuthService/GetUserAll
+.PHONY: debug_chat_send

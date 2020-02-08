@@ -3,12 +3,13 @@ package main
 import (
 	"context"
 	"fmt"
-	"strconv"
 
 	pb "github.com/somen440/topic-chat/src/auth_service/pb"
 )
 
-type authServiceServer struct{}
+type authServiceServer struct {
+	users map[int]*pb.User
+}
 
 func (srv *authServiceServer) Join(_ context.Context, req *pb.JoinRequest) (*pb.User, error) {
 	name := req.GetName()
@@ -16,28 +17,24 @@ func (srv *authServiceServer) Join(_ context.Context, req *pb.JoinRequest) (*pb.
 		return nil, fmt.Errorf("name is empty")
 	}
 
-	id := strconv.Itoa(len(users) + 1)
-	user := &pb.User{
-		Id:       id,
-		Name:     name,
-		LoggedIn: true,
-	}
-	users = append(users, user)
+	userID := srv.getNewUserID()
+	user := newUser(userID, name)
+	srv.users[userID] = user
 
 	log.WithField("name", name).
-		WithField("id", id).
-		WithField("users", users).
+		WithField("userID", userID).
 		Debug("join user")
 
 	return user, nil
 }
 
 func (srv *authServiceServer) LoggedIn(_ context.Context, req *pb.LoggedInRequest) (*pb.User, error) {
-	id := req.GetUserId()
-	log.WithField("id", id).
+	userID := int(req.GetUserId())
+
+	log.WithField("userID", userID).
 		Debug("logged in user")
 
-	user, err := findUser(id)
+	user, err := srv.findUser(userID)
 	if err != nil {
 		return nil, err
 	}
@@ -47,11 +44,12 @@ func (srv *authServiceServer) LoggedIn(_ context.Context, req *pb.LoggedInReques
 }
 
 func (srv *authServiceServer) Signout(_ context.Context, req *pb.SignoutRequest) (*pb.Empty, error) {
-	id := req.GetUserId()
-	log.WithField("id", id).
+	userID := int(req.GetUserId())
+
+	log.WithField("userID", userID).
 		Debug("sighout user")
 
-	user, err := findUser(id)
+	user, err := srv.findUser(userID)
 	if err != nil {
 		return nil, err
 	}
@@ -60,11 +58,32 @@ func (srv *authServiceServer) Signout(_ context.Context, req *pb.SignoutRequest)
 	return &pb.Empty{}, nil
 }
 
-func findUser(id string) (*pb.User, error) {
-	for _, v := range users {
-		if v.GetId() == id {
-			return v, nil
-		}
+func (srv *authServiceServer) GetUser(_ context.Context, req *pb.GetUserRequest) (*pb.User, error) {
+	userID := int(req.GetUserId())
+
+	log.WithField("userID", userID).
+		Debug("get user")
+
+	user, err := srv.findUser(userID)
+	if err != nil {
+		return nil, err
 	}
-	return nil, fmt.Errorf("not found user")
+
+	return user, nil
+}
+
+func (srv *authServiceServer) GetUserAll(_ context.Context, _ *pb.Empty) (*pb.GetUserAllResponse, error) {
+	var users []*pb.User
+	for _, v := range srv.users {
+		users = append(users, v)
+	}
+	return &pb.GetUserAllResponse{
+		Users: users,
+	}, nil
+}
+
+func newAuthServiceServer() *authServiceServer {
+	return &authServiceServer{
+		users: mockUser(),
+	}
 }

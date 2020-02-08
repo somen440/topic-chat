@@ -16,7 +16,13 @@ type room struct {
 	member  map[*client]bool
 }
 
-var rooms = map[TopicID]*room{}
+var rooms = map[TopicID]*room{
+	1: newRoom(1),
+	2: newRoom(2),
+	3: newRoom(3),
+	4: newRoom(4),
+	5: newRoom(5),
+}
 
 func (r *room) Run() {
 	for {

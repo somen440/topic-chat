@@ -15,8 +15,8 @@ export namespace Empty {
 }
 
 export class User extends jspb.Message {
-  getId(): string;
-  setId(value: string): void;
+  getId(): number;
+  setId(value: number): void;
 
   getName(): string;
   setName(value: string): void;
@@ -34,15 +34,15 @@ export class User extends jspb.Message {
 
 export namespace User {
   export type AsObject = {
-    id: string,
+    id: number,
     name: string,
     loggedin: boolean,
   }
 }
 
 export class Topic extends jspb.Message {
-  getId(): string;
-  setId(value: string): void;
+  getId(): number;
+  setId(value: number): void;
 
   getName(): string;
   setName(value: string): void;
@@ -57,7 +57,7 @@ export class Topic extends jspb.Message {
 
 export namespace Topic {
   export type AsObject = {
-    id: string,
+    id: number,
     name: string,
   }
 }
@@ -81,8 +81,8 @@ export namespace JoinRequest {
 }
 
 export class LoggedInRequest extends jspb.Message {
-  getUserId(): string;
-  setUserId(value: string): void;
+  getUserId(): number;
+  setUserId(value: number): void;
 
   serializeBinary(): Uint8Array;
   toObject(includeInstance?: boolean): LoggedInRequest.AsObject;
@@ -94,13 +94,13 @@ export class LoggedInRequest extends jspb.Message {
 
 export namespace LoggedInRequest {
   export type AsObject = {
-    userId: string,
+    userId: number,
   }
 }
 
 export class SignoutRequest extends jspb.Message {
-  getUserId(): string;
-  setUserId(value: string): void;
+  getUserId(): number;
+  setUserId(value: number): void;
 
   serializeBinary(): Uint8Array;
   toObject(includeInstance?: boolean): SignoutRequest.AsObject;
@@ -112,7 +112,45 @@ export class SignoutRequest extends jspb.Message {
 
 export namespace SignoutRequest {
   export type AsObject = {
-    userId: string,
+    userId: number,
+  }
+}
+
+export class GetUserRequest extends jspb.Message {
+  getUserId(): number;
+  setUserId(value: number): void;
+
+  serializeBinary(): Uint8Array;
+  toObject(includeInstance?: boolean): GetUserRequest.AsObject;
+  static toObject(includeInstance: boolean, msg: GetUserRequest): GetUserRequest.AsObject;
+  static serializeBinaryToWriter(message: GetUserRequest, writer: jspb.BinaryWriter): void;
+  static deserializeBinary(bytes: Uint8Array): GetUserRequest;
+  static deserializeBinaryFromReader(message: GetUserRequest, reader: jspb.BinaryReader): GetUserRequest;
+}
+
+export namespace GetUserRequest {
+  export type AsObject = {
+    userId: number,
+  }
+}
+
+export class GetUserAllResponse extends jspb.Message {
+  getUsersList(): Array<User>;
+  setUsersList(value: Array<User>): void;
+  clearUsersList(): void;
+  addUsers(value?: User, index?: number): User;
+
+  serializeBinary(): Uint8Array;
+  toObject(includeInstance?: boolean): GetUserAllResponse.AsObject;
+  static toObject(includeInstance: boolean, msg: GetUserAllResponse): GetUserAllResponse.AsObject;
+  static serializeBinaryToWriter(message: GetUserAllResponse, writer: jspb.BinaryWriter): void;
+  static deserializeBinary(bytes: Uint8Array): GetUserAllResponse;
+  static deserializeBinaryFromReader(message: GetUserAllResponse, reader: jspb.BinaryReader): GetUserAllResponse;
+}
+
+export namespace GetUserAllResponse {
+  export type AsObject = {
+    usersList: Array<User.AsObject>,
   }
 }
 
@@ -265,8 +303,8 @@ export namespace ListTopicsResponse {
 }
 
 export class GetTopicRequest extends jspb.Message {
-  getId(): string;
-  setId(value: string): void;
+  getId(): number;
+  setId(value: number): void;
 
   serializeBinary(): Uint8Array;
   toObject(includeInstance?: boolean): GetTopicRequest.AsObject;
@@ -278,7 +316,7 @@ export class GetTopicRequest extends jspb.Message {
 
 export namespace GetTopicRequest {
   export type AsObject = {
-    id: string,
+    id: number,
   }
 }
 

@@ -5,7 +5,7 @@ package topicchat;
 message Empty {}
 
 message User {
-  string id = 1;
+  int32 id = 1;
   string name = 2;
   bool loggedIn = 3;
 }
@@ -22,6 +22,7 @@ service AuthService {
   rpc LoggedIn(LoggedInRequest) returns (User) {}
   rpc Signout(SignoutRequest) returns (Empty) {}
   rpc GetUser(GetUserRequest) returns (User) {}
+  rpc GetUserAll(Empty) returns (GetUserAllResponse) {}
 }
 
 message JoinRequest {
@@ -29,15 +30,19 @@ message JoinRequest {
 }
 
 message LoggedInRequest {
-  string user_id = 1;
+  int32 user_id = 1;
 }
 
 message SignoutRequest {
-  string user_id = 1;
+  int32 user_id = 1;
 }
 
 message GetUserRequest {
-  string user_id = 1;
+  int32 user_id = 1;
+}
+
+message GetUserAllResponse {
+  repeated User users = 1;
 }
 
 // -------------------- Chat --------------------
@@ -92,5 +97,5 @@ message ListTopicsResponse {
 }
 
 message GetTopicRequest {
-  string id = 1;
+  int32 id = 1;
 }

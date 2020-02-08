@@ -18,8 +18,7 @@ const (
 )
 
 var (
-	users []*pb.User
-	log   *logrus.Logger
+	log *logrus.Logger
 )
 
 func init() {
@@ -50,7 +49,7 @@ func main() {
 	}
 
 	s := grpc.NewServer()
-	pb.RegisterAuthServiceServer(s, &authServiceServer{})
+	pb.RegisterAuthServiceServer(s, newAuthServiceServer())
 
 	log.Infof("starting grpc server at :%s", srvPort)
 	if err := s.Serve(l); err != nil {
