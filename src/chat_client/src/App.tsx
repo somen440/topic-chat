@@ -1,18 +1,18 @@
 import * as tsx from "vue-tsx-support";
 import { ChatServiceClient } from "@/pb/TopicchatServiceClientPb";
-import { Empty } from "@/pb/topicchat_pb";
+import { Empty, ChatMessage } from "@/pb/topicchat_pb";
 
 export default tsx.component({
   name: "App",
   data() {
     return {
       message: "hoge",
-      messages: ["a", "b", "c"]
+      messages: ["a", "b", "c"],
+      client: new ChatServiceClient("http://localhost:9090")
     };
   },
   created() {
-    const client = new ChatServiceClient("http://localhost:9090");
-    const stream = client.recvMessage(new Empty(), {});
+    const stream = this.client.recvMessage(new Empty(), {});
     stream.on("data", response => {
       console.log("data");
       console.log(response.getText());
@@ -47,6 +47,11 @@ export default tsx.component({
           onClick={() => {
             console.log("click");
             console.log(this.message);
+            const msg = new ChatMessage();
+            msg.setText(this.message);
+            this.client.sendMessage(msg, null, (err, _) => {
+              console.log(err);
+            });
           }}
         >
           send
