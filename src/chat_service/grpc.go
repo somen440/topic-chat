@@ -42,12 +42,29 @@ func (srv *chatServiceServer) RecvMessage(req *pb.RecvMessageRequest, stream pb.
 	if err != nil {
 		return err
 	}
+
+	// quit := make(chan os.Signal)
+	// signal.Notify(quit, os.Interrupt, os.Kill)
+
+	ctx := stream.Context()
 	defer r.Leave(c)
 
-	for {
-		msg := <-c.send
-		stream.Send(msg)
-	}
+	func() {
+		for {
+			select {
+			case msg := <-c.send:
+				stream.Send(msg)
+			case <-ctx.Done():
+				return
+			}
+		}
+	}()
+
+	log.WithField("userID", userID).
+		WithField("topicID", topicID).
+		Debug("end stream")
+
+	return nil
 }
 
 func (srv *chatServiceServer) SendMessage(_ context.Context, req *pb.SendMessageRequest) (*pb.Empty, error) {
@@ -133,6 +150,9 @@ func (srv *chatServiceServer) JoinRoom(ctx context.Context, req *pb.JoinRoomRequ
 		return nil, fmt.Errorf("already exists")
 	}
 
+	users := r.GetUsers()
+	users = append(users, user)
+
 	c := &client{
 		user: user,
 		send: make(chan *pb.ChatMessage),
@@ -141,7 +161,7 @@ func (srv *chatServiceServer) JoinRoom(ctx context.Context, req *pb.JoinRoomRequ
 	r.Join(c)
 
 	return &pb.JoinRoomResponse{
-		Users: r.GetUsers(),
+		Users: users,
 		Topic: topic,
 	}, nil
 }

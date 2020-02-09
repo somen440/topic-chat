@@ -41,6 +41,8 @@ services:
     image: gcr.io/topic-chat/chat_client:latest
     ports:
       - 8000:80
+    environment:
+      - CHAT_SERVICE_ADDR
     links:
       - envoy
       - chat

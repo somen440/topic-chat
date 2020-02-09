@@ -21,13 +21,23 @@ func (r *room) Run() {
 	for {
 		select {
 		case c := <-r.join:
+			log.WithField("userId", c.UserID()).
+				Debug("join")
 			r.member[c] = true
 		case c := <-r.leave:
+			log.WithField("userId", c.UserID()).
+				Debug("leave")
 			delete(r.member, c)
 			close(c.send)
 		case msg := <-r.forward:
 			for c := range r.member {
-				c.send <- msg
+				log.WithField("userId", c.UserID()).
+					Debug("send message")
+				select {
+				case c.send <- msg:
+				default:
+					r.Leave(c)
+				}
 			}
 		}
 	}
@@ -72,7 +82,7 @@ func (r *room) GetID() TopicID {
 }
 
 func (r *room) GetUsers() []*pb.User {
-	var users []*pb.User
+	users := []*pb.User{}
 	for v := range r.member {
 		users = append(users, v.user)
 	}
