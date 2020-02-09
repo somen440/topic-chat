@@ -17,17 +17,17 @@ func (fe *frontendServer) Join(ctx context.Context, name string) (*pb.User, erro
 		})
 }
 
-func (fe *frontendServer) LoggedIn(ctx context.Context, userID string) (*pb.User, error) {
+func (fe *frontendServer) LoggedIn(ctx context.Context, userID int) (*pb.User, error) {
 	return pb.NewAuthServiceClient(fe.authSvcConn).
 		LoggedIn(ctx, &pb.LoggedInRequest{
-			UserId: userID,
+			UserId: int32(userID),
 		})
 }
 
-func (fe *frontendServer) Signout(ctx context.Context, userID string) error {
+func (fe *frontendServer) Signout(ctx context.Context, userID int) error {
 	_, err := pb.NewAuthServiceClient(fe.authSvcConn).
 		Signout(ctx, &pb.SignoutRequest{
-			UserId: userID,
+			UserId: int32(userID),
 		})
 	return err
 }
@@ -36,10 +36,10 @@ func (fe *frontendServer) Signout(ctx context.Context, userID string) error {
 // Topic Catalog
 // -----------------------------------------------------------------------------------------
 
-func (fe *frontendServer) GetTopic(ctx context.Context, topicID string) (*pb.Topic, error) {
+func (fe *frontendServer) GetTopic(ctx context.Context, topicID int) (*pb.Topic, error) {
 	return pb.NewTopicCatalogServiceClient(fe.topicCatalogSvcConn).
 		GetTopic(ctx, &pb.GetTopicRequest{
-			Id: topicID,
+			TopicId: int32(topicID),
 		})
 }
 

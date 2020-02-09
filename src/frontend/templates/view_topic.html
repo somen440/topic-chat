@@ -5,7 +5,9 @@
 
   <p>{{ .topic }}</p>
 
-  <a href="http://localhost:8000/#/?topic_id={{ .topic.Id }}">join</a>
+  <button>
+    <a href="http://localhost:8000/#/?topic_id={{ .topic.Id }}&user_id={{ $.user.Id }}">join</a>
+  </button>
 
   {{ template "footer" . }}
 {{ end }}

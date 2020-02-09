@@ -7,7 +7,7 @@
   {{ range $i, $v := .topics }}
     <li value="{{ $i }}">
       <a href="/topic/{{ $v.Id }}">{{ $v }}</a>
-      <a href="http://localhost:8000/#/?topic_id={{ $v.Id }}">join</a>
+      <button><a href="http://localhost:8000/#/?topic_id={{ $v.Id }}&user_id={{ $.user.Id }}">join</a></button>
     </li>
   {{ end }}
   </ul>

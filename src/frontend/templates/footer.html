@@ -2,6 +2,7 @@
   <h3>footer</h3>
 
   <form method="POST" action="/signout">
+    <input type="hidden" name="id" value="{{ $.user.Id }}" />
     <button type="submit">signout</button>
   </form>
 

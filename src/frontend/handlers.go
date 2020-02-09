@@ -6,6 +6,7 @@ import (
 	"fmt"
 	"html/template"
 	"net/http"
+	"strconv"
 
 	pb "github.com/somen440/topic-chat/src/frontend/pb"
 
@@ -19,23 +20,14 @@ var (
 		ParseGlob("templates/*.html"))
 )
 
+type emptyData map[string]interface{}
+
+var empty = emptyData{}
+
 func (fe *frontendServer) HomeHandler(w http.ResponseWriter, r *http.Request) {
 	log := r.Context().Value(ctxKeyLog{}).(logrus.FieldLogger)
 	log.Info("home")
-
-	data := map[string]interface{}{
-		"session_id": sessionID(r),
-		"request_id": r.Context().Value(ctxKeyRequestID{}),
-	}
-
-	if isLoggedIn(r) {
-		data["user"] = getLoggedInUser(r)
-	}
-
-	if err := templates.ExecuteTemplate(w, "home", data); err != nil {
-		renderHTTPError(log, r, w, err, http.StatusInternalServerError)
-		return
-	}
+	fe.execute(w, r, "home", empty)
 }
 
 func (fe *frontendServer) ListTopicHandler(w http.ResponseWriter, r *http.Request) {
@@ -43,26 +35,23 @@ func (fe *frontendServer) ListTopicHandler(w http.ResponseWriter, r *http.Reques
 
 	topics, err := fe.ListTopics(r.Context())
 	if err != nil {
-		renderHTTPError(log, r, w, err, http.StatusInternalServerError)
+		renderHTTPError(r, w, err, http.StatusInternalServerError)
 		return
 	}
 	log.WithField("topics", topics).Debug("list topics")
 
-	if err := templates.ExecuteTemplate(w, "list_topic", map[string]interface{}{
-		"session_id": sessionID(r),
-		"request_id": r.Context().Value(ctxKeyRequestID{}),
-		"topics":     topics,
-	}); err != nil {
-		renderHTTPError(log, r, w, err, http.StatusInternalServerError)
-		return
-	}
+	fe.execute(w, r, "list_topic", map[string]interface{}{"topics": topics})
 }
 
 func (fe *frontendServer) ViewTopicHandler(w http.ResponseWriter, r *http.Request) {
 	log := r.Context().Value(ctxKeyLog{}).(logrus.FieldLogger)
-	id := mux.Vars(r)["id"]
-	if id == "" {
-		renderHTTPError(log, r, w, fmt.Errorf("id is empty"), http.StatusInternalServerError)
+	id, err := strconv.Atoi(mux.Vars(r)["id"])
+	if err != nil {
+		renderHTTPError(r, w, fmt.Errorf("id is empty"), http.StatusInternalServerError)
+		return
+	}
+	if id == 0 {
+		renderHTTPError(r, w, fmt.Errorf("id is empty"), http.StatusInternalServerError)
 		return
 	}
 	log.WithField("id", id).
@@ -70,19 +59,14 @@ func (fe *frontendServer) ViewTopicHandler(w http.ResponseWriter, r *http.Reques
 
 	topic, err := fe.GetTopic(r.Context(), id)
 	if err != nil {
-		renderHTTPError(log, r, w, err, http.StatusInternalServerError)
+		renderHTTPError(r, w, err, http.StatusInternalServerError)
 		return
 	}
 	log.WithField("topic", topic).Debug("view topic")
 
-	if err := templates.ExecuteTemplate(w, "view_topic", map[string]interface{}{
-		"session_id": sessionID(r),
-		"request_id": r.Context().Value(ctxKeyRequestID{}),
-		"topic":      topic,
-	}); err != nil {
-		renderHTTPError(log, r, w, err, http.StatusInternalServerError)
-		return
-	}
+	fe.execute(w, r, "view_topic", map[string]interface{}{
+		"topic": topic,
+	})
 }
 
 func (fe *frontendServer) JoinHandler(w http.ResponseWriter, r *http.Request) {
@@ -95,7 +79,7 @@ func (fe *frontendServer) JoinHandler(w http.ResponseWriter, r *http.Request) {
 			"session_id": sessionID(r),
 			"request_id": r.Context().Value(ctxKeyRequestID{}),
 		}); err != nil {
-			renderHTTPError(log, r, w, err, http.StatusInternalServerError)
+			renderHTTPError(r, w, err, http.StatusInternalServerError)
 			return
 		}
 		return
@@ -103,19 +87,19 @@ func (fe *frontendServer) JoinHandler(w http.ResponseWriter, r *http.Request) {
 
 	name := r.FormValue("name")
 	if name == "" {
-		renderHTTPError(log, r, w, fmt.Errorf("name is empty"), http.StatusInternalServerError)
+		renderHTTPError(r, w, fmt.Errorf("name is empty"), http.StatusInternalServerError)
 		return
 	}
 	log.WithField("name", name).Debug("join")
 
 	user, err := fe.Join(r.Context(), name)
 	if err != nil {
-		renderHTTPError(log, r, w, err, http.StatusInternalServerError)
+		renderHTTPError(r, w, err, http.StatusInternalServerError)
 		return
 	}
 
 	if err := loggedIn(w, user); err != nil {
-		renderHTTPError(log, r, w, err, http.StatusInternalServerError)
+		renderHTTPError(r, w, err, http.StatusInternalServerError)
 		return
 	}
 	log.WithField("user", user).Debug("join user")
@@ -129,30 +113,28 @@ func (fe *frontendServer) LoggedInHandler(w http.ResponseWriter, r *http.Request
 
 	if r.Method == http.MethodGet {
 		log.Debug("loggedin")
-		if err := templates.ExecuteTemplate(w, "login", map[string]interface{}{
-			"session_id": sessionID(r),
-			"request_id": r.Context().Value(ctxKeyRequestID{}),
-		}); err != nil {
-			renderHTTPError(log, r, w, err, http.StatusInternalServerError)
-			return
-		}
+		fe.execute(w, r, "login", empty)
 		return
 	}
 
-	userID := r.FormValue("id")
-	if userID == "" {
-		renderHTTPError(log, r, w, fmt.Errorf("id is empty"), http.StatusInternalServerError)
+	userID, err := strconv.Atoi(r.FormValue("id"))
+	if err != nil {
+		renderHTTPError(r, w, err, http.StatusInternalServerError)
+		return
+	}
+	if userID == 0 {
+		renderHTTPError(r, w, fmt.Errorf("id is empty"), http.StatusInternalServerError)
 		return
 	}
 	log.WithField("userID", userID).Debug("logged in")
 
 	user, err := fe.LoggedIn(r.Context(), userID)
 	if err != nil {
-		renderHTTPError(log, r, w, err, http.StatusInternalServerError)
+		renderHTTPError(r, w, err, http.StatusInternalServerError)
 		return
 	}
 	if err := loggedIn(w, user); err != nil {
-		renderHTTPError(log, r, w, err, http.StatusInternalServerError)
+		renderHTTPError(r, w, err, http.StatusInternalServerError)
 		return
 	}
 	log.WithField("user", user).Debug("logged in user")
@@ -162,15 +144,19 @@ func (fe *frontendServer) LoggedInHandler(w http.ResponseWriter, r *http.Request
 
 func (fe *frontendServer) SignoutHandler(w http.ResponseWriter, r *http.Request) {
 	log := r.Context().Value(ctxKeyLog{}).(logrus.FieldLogger)
-	userID := r.FormValue("id")
-	if userID == "" {
-		renderHTTPError(log, r, w, fmt.Errorf("id is empty"), http.StatusInternalServerError)
+	userID, err := strconv.Atoi(r.FormValue("id"))
+	if err != nil {
+		renderHTTPError(r, w, err, http.StatusInternalServerError)
+		return
+	}
+	if userID == 0 {
+		renderHTTPError(r, w, fmt.Errorf("id is empty"), http.StatusInternalServerError)
 		return
 	}
 	log.WithField("userID", userID).Debug("signout")
 
 	if err := fe.Signout(r.Context(), userID); err != nil {
-		renderHTTPError(log, r, w, err, http.StatusInternalServerError)
+		renderHTTPError(r, w, err, http.StatusInternalServerError)
 		return
 	}
 
@@ -181,38 +167,6 @@ func (fe *frontendServer) SignoutHandler(w http.ResponseWriter, r *http.Request)
 	})
 
 	redirectIndex(w)
-}
-
-func (fe *frontendServer) RoomHandler(w http.ResponseWriter, r *http.Request) {
-	log := r.Context().Value(ctxKeyLog{}).(logrus.FieldLogger)
-	log.Debug("room")
-
-	if !isLoggedIn(r) {
-		log.Debug("not logged in")
-		redirectIndex(w)
-		return
-	}
-
-	topicID := r.URL.Query().Get("topic_id")
-	if topicID == "" {
-		renderHTTPError(log, r, w, fmt.Errorf("not choice topic"), http.StatusInternalServerError)
-		return
-	}
-
-	topic, err := fe.GetTopic(r.Context(), topicID)
-	if err != nil {
-		renderHTTPError(log, r, w, err, http.StatusInternalServerError)
-		return
-	}
-	log.WithField("topic", topic).Debug("get topic")
-
-	if err := templates.ExecuteTemplate(w, "room", map[string]interface{}{
-		"session_id": sessionID(r),
-		"request_id": r.Context().Value(ctxKeyRequestID{}),
-		"topic":      topic,
-	}); err != nil {
-		log.Error(err)
-	}
 }
 
 func (fe *frontendServer) RoomJoinHandler(w http.ResponseWriter, r *http.Request) {
@@ -228,7 +182,7 @@ func (fe *frontendServer) RoomJoinHandler(w http.ResponseWriter, r *http.Request
 	user := getLoggedInUser(r)
 	topicID := r.FormValue("topic_id")
 	if topicID == "" {
-		renderHTTPError(log, r, w, fmt.Errorf("topic_id is empty"), http.StatusInternalServerError)
+		renderHTTPError(r, w, fmt.Errorf("topic_id is empty"), http.StatusInternalServerError)
 		return
 	}
 	log.WithField("topic_id", topicID).
@@ -244,6 +198,20 @@ func (fe *frontendServer) RoomLeftHandler(w http.ResponseWriter, r *http.Request
 
 	w.Header().Set("location", "/topic")
 	w.WriteHeader(http.StatusFound)
+}
+
+func (fe *frontendServer) execute(w http.ResponseWriter, r *http.Request, name string, data map[string]interface{}) {
+	if isLoggedIn(r) {
+		data["user"] = getLoggedInUser(r)
+	}
+
+	data["session_id"] = sessionID(r)
+	data["request_id"] = r.Context().Value(ctxKeyRequestID{})
+
+	if err := templates.ExecuteTemplate(w, name, data); err != nil {
+		renderHTTPError(r, w, err, http.StatusInternalServerError)
+		return
+	}
 }
 
 func sessionID(r *http.Request) string {
@@ -294,7 +262,8 @@ func redirectIndex(w http.ResponseWriter) {
 	w.WriteHeader(http.StatusFound)
 }
 
-func renderHTTPError(log logrus.FieldLogger, r *http.Request, w http.ResponseWriter, err error, code int) {
+func renderHTTPError(r *http.Request, w http.ResponseWriter, err error, code int) {
+	log := r.Context().Value(ctxKeyLog{}).(logrus.FieldLogger)
 	log.WithField("error", err).Error("request error")
 	errMsg := fmt.Sprintf("%+v", err)
 

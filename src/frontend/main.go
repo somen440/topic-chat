@@ -72,7 +72,6 @@ func main() {
 	r.HandleFunc("/", srv.HomeHandler).Methods(http.MethodGet, http.MethodHead)
 	r.HandleFunc("/topic", srv.ListTopicHandler).Methods(http.MethodGet, http.MethodHead)
 	r.HandleFunc("/topic/{id}", srv.ViewTopicHandler).Methods(http.MethodGet, http.MethodHead)
-	r.HandleFunc("/room", srv.RoomHandler).Methods(http.MethodGet, http.MethodHead)
 	r.HandleFunc("/room/join", srv.RoomJoinHandler).Methods(http.MethodPost, http.MethodHead)
 	r.HandleFunc("/room/left", srv.RoomLeftHandler).Methods(http.MethodPost, http.MethodHead)
 	r.HandleFunc("/join", srv.JoinHandler).Methods(http.MethodGet, http.MethodHead, http.MethodPost)
