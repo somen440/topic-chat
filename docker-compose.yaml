@@ -4,34 +4,39 @@ services:
   frontend:
     image: gcr.io/topic-chat/frontend:latest
     environment:
-      FRONTEND_PORT: 8080
-      FRONTEND_LISTEN_ADDR: 0.0.0.0
-      TOPIC_CATALOG_SERVICE_ADDR: topic_catalog:8081
-      AUTH_SERVICE_ADDR: auth:8082
-      DEBUG: "on"
+      - FRONTEND_PORT
+      - FRONTEND_LISTEN_ADDR
+      - TOPIC_CATALOG_SERVICE_ADDR
+      - AUTH_SERVICE_ADDR
+      - DEBUG
     ports:
       - 8080:8080
   topic_catalog:
     image: gcr.io/topic-chat/topic_catalog:latest
     environment:
-      TOPIC_CATALOG_SERVICE_PORT: 8081
-      DEBUG: "on"
+      - TOPIC_CATALOG_SERVICE_PORT
+      - DEBUG
     ports:
       - 8081:8081
   auth:
     image: gcr.io/topic-chat/auth:latest
     environment:
-      AUTH_SERVICE_PORT: 8082
-      DEBUG: "on"
+      - AUTH_SERVICE_PORT
+      - DEBUG
     ports:
       - 8082:8082
   chat:
     image: gcr.io/topic-chat/chat:latest
     environment:
-      CHAT_SERVICE_PORT: 8083
-      DEBUG: "on"
+      - CHAT_SERVICE_PORT
+      - DEBUG
+      - TOPIC_CATALOG_SERVICE_ADDR
+      - AUTH_SERVICE_ADDR
     ports:
       - 8083:8083
+    links:
+      - auth
+      - topic_catalog
   chat_client:
     image: gcr.io/topic-chat/chat_client:latest
     ports:

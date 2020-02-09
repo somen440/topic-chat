@@ -69,17 +69,21 @@ debug_chat_list:
 		-plaintext -v localhost:8083 topicchat.ChatService/ListRoom
 .PHONY: debug_chat_list
 
-debug_chat_recv:
+debug_chat_join:
 	grpcurl -import-path pb/ \
 		-proto topicchat.proto \
-		-d "{\"topicId\":$(TOPIC_ID)}" \
+		-d '{"userId": $(USER_ID), "topicId": $(TOPIC_ID)}' \
+		-plaintext -v localhost:8083 topicchat.ChatService/JoinRoom
+	grpcurl -import-path pb/ \
+		-proto topicchat.proto \
+		-d '{"userId": $(USER_ID), "topicId": $(TOPIC_ID)}' \
 		-plaintext -v localhost:8083 topicchat.ChatService/RecvMessage
 .PHONY: debug_chat_recv
 
 debug_chat_send:
 	grpcurl -import-path pb/ \
 		-proto topicchat.proto \
-		-d '{"message":{"text":"$(TEXT)"},"topicId":$(TOPIC_ID)}' \
+		-d '{"message":{"text":"$(TEXT)","user":{"id":$(USER_ID),"name":"hoge","loggedIn":"true"}},"topicId":$(TOPIC_ID)}' \
 		-plaintext -v localhost:8083 topicchat.ChatService/SendMessage
 .PHONY: debug_chat_send
 
@@ -88,10 +92,23 @@ debug_user_get:
 		-proto topicchat.proto \
 		-d '{"userId": $(USER_ID)}' \
 		-plaintext -v localhost:8082 topicchat.AuthService/GetUser
-.PHONY: debug_chat_send
+.PHONY: debug_user_get
 
 debug_user_get_all:
 	grpcurl -import-path pb/ \
 		-proto topicchat.proto \
 		-plaintext -v localhost:8082 topicchat.AuthService/GetUserAll
-.PHONY: debug_chat_send
+.PHONY: debug_user_get_all
+
+debug_topic_get_all:
+	grpcurl -import-path pb/ \
+		-proto topicchat.proto \
+		-plaintext -v localhost:8081 topicchat.TopicCatalogService/ListTopics
+.PHONY: debug_topic_get_all
+
+debug_topic_get:
+	grpcurl -import-path pb/ \
+		-proto topicchat.proto \
+		-d '{"topicId":$(TOPIC_ID)}' \
+		-plaintext -v localhost:8081 topicchat.TopicCatalogService/GetTopic
+.PHONY: debug_topic_get

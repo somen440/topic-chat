@@ -1,6 +1,7 @@
 package main
 
 import (
+	"context"
 	"fmt"
 	"net"
 	"os"
@@ -10,6 +11,7 @@ import (
 	pb "github.com/somen440/topic-chat/src/chat_service/pb"
 
 	"github.com/sirupsen/logrus"
+	"go.opencensus.io/plugin/ocgrpc"
 	"google.golang.org/grpc"
 )
 
@@ -35,6 +37,8 @@ func init() {
 }
 
 func main() {
+	ctx := context.Background()
+
 	srvPort := os.Getenv("CHAT_SERVICE_PORT")
 	if srvPort == "" {
 		srvPort = strconv.Itoa(port)
@@ -45,11 +49,29 @@ func main() {
 		log.Fatal(err)
 	}
 
+	srv := newChatServiceServer()
+	srv.topicCatalogSvcAddr = os.Getenv("TOPIC_CATALOG_SERVICE_ADDR")
+	srv.authSvcAddr = os.Getenv("AUTH_SERVICE_ADDR")
+
+	mustConnGRPC(ctx, &srv.topicCatalogSvcConn, srv.topicCatalogSvcAddr)
+	mustConnGRPC(ctx, &srv.authSvcConn, srv.authSvcAddr)
+
 	s := grpc.NewServer()
-	pb.RegisterChatServiceServer(s, newChatServiceServer())
+	pb.RegisterChatServiceServer(s, srv)
 
 	log.Infof("starting grpc server at :%s", srvPort)
 	if err := s.Serve(l); err != nil {
 		log.Fatalf("failed to serve: %v", err)
+	}
+}
+
+func mustConnGRPC(ctx context.Context, conn **grpc.ClientConn, addr string) {
+	var err error
+	*conn, err = grpc.DialContext(ctx, addr,
+		grpc.WithInsecure(),
+		grpc.WithTimeout(time.Second*3),
+		grpc.WithStatsHandler(&ocgrpc.ClientHandler{}))
+	if err != nil {
+		panic(err)
 	}
 }

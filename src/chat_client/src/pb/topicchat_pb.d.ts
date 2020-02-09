@@ -62,6 +62,48 @@ export namespace Topic {
   }
 }
 
+export class ChatMessage extends jspb.Message {
+  getText(): string;
+  setText(value: string): void;
+
+  getUser(): User | undefined;
+  setUser(value?: User): void;
+  hasUser(): boolean;
+  clearUser(): void;
+
+  serializeBinary(): Uint8Array;
+  toObject(includeInstance?: boolean): ChatMessage.AsObject;
+  static toObject(includeInstance: boolean, msg: ChatMessage): ChatMessage.AsObject;
+  static serializeBinaryToWriter(message: ChatMessage, writer: jspb.BinaryWriter): void;
+  static deserializeBinary(bytes: Uint8Array): ChatMessage;
+  static deserializeBinaryFromReader(message: ChatMessage, reader: jspb.BinaryReader): ChatMessage;
+}
+
+export namespace ChatMessage {
+  export type AsObject = {
+    text: string,
+    user?: User.AsObject,
+  }
+}
+
+export class Room extends jspb.Message {
+  getTopicId(): number;
+  setTopicId(value: number): void;
+
+  serializeBinary(): Uint8Array;
+  toObject(includeInstance?: boolean): Room.AsObject;
+  static toObject(includeInstance: boolean, msg: Room): Room.AsObject;
+  static serializeBinaryToWriter(message: Room, writer: jspb.BinaryWriter): void;
+  static deserializeBinary(bytes: Uint8Array): Room;
+  static deserializeBinaryFromReader(message: Room, reader: jspb.BinaryReader): Room;
+}
+
+export namespace Room {
+  export type AsObject = {
+    topicId: number,
+  }
+}
+
 export class JoinRequest extends jspb.Message {
   getName(): string;
   setName(value: string): void;
@@ -154,48 +196,6 @@ export namespace GetUserAllResponse {
   }
 }
 
-export class ChatMessage extends jspb.Message {
-  getText(): string;
-  setText(value: string): void;
-
-  getUser(): User | undefined;
-  setUser(value?: User): void;
-  hasUser(): boolean;
-  clearUser(): void;
-
-  serializeBinary(): Uint8Array;
-  toObject(includeInstance?: boolean): ChatMessage.AsObject;
-  static toObject(includeInstance: boolean, msg: ChatMessage): ChatMessage.AsObject;
-  static serializeBinaryToWriter(message: ChatMessage, writer: jspb.BinaryWriter): void;
-  static deserializeBinary(bytes: Uint8Array): ChatMessage;
-  static deserializeBinaryFromReader(message: ChatMessage, reader: jspb.BinaryReader): ChatMessage;
-}
-
-export namespace ChatMessage {
-  export type AsObject = {
-    text: string,
-    user?: User.AsObject,
-  }
-}
-
-export class Room extends jspb.Message {
-  getTopicId(): number;
-  setTopicId(value: number): void;
-
-  serializeBinary(): Uint8Array;
-  toObject(includeInstance?: boolean): Room.AsObject;
-  static toObject(includeInstance: boolean, msg: Room): Room.AsObject;
-  static serializeBinaryToWriter(message: Room, writer: jspb.BinaryWriter): void;
-  static deserializeBinary(bytes: Uint8Array): Room;
-  static deserializeBinaryFromReader(message: Room, reader: jspb.BinaryReader): Room;
-}
-
-export namespace Room {
-  export type AsObject = {
-    topicId: number,
-  }
-}
-
 export class CreateRoomRequest extends jspb.Message {
   getTopicId(): number;
   setTopicId(value: number): void;
@@ -218,10 +218,8 @@ export class RecvMessageRequest extends jspb.Message {
   getTopicId(): number;
   setTopicId(value: number): void;
 
-  getUser(): User | undefined;
-  setUser(value?: User): void;
-  hasUser(): boolean;
-  clearUser(): void;
+  getUserId(): number;
+  setUserId(value: number): void;
 
   serializeBinary(): Uint8Array;
   toObject(includeInstance?: boolean): RecvMessageRequest.AsObject;
@@ -234,7 +232,7 @@ export class RecvMessageRequest extends jspb.Message {
 export namespace RecvMessageRequest {
   export type AsObject = {
     topicId: number,
-    user?: User.AsObject,
+    userId: number,
   }
 }
 
@@ -282,6 +280,54 @@ export namespace ListRoomResponse {
   }
 }
 
+export class JoinRoomRequest extends jspb.Message {
+  getUserId(): number;
+  setUserId(value: number): void;
+
+  getTopicId(): number;
+  setTopicId(value: number): void;
+
+  serializeBinary(): Uint8Array;
+  toObject(includeInstance?: boolean): JoinRoomRequest.AsObject;
+  static toObject(includeInstance: boolean, msg: JoinRoomRequest): JoinRoomRequest.AsObject;
+  static serializeBinaryToWriter(message: JoinRoomRequest, writer: jspb.BinaryWriter): void;
+  static deserializeBinary(bytes: Uint8Array): JoinRoomRequest;
+  static deserializeBinaryFromReader(message: JoinRoomRequest, reader: jspb.BinaryReader): JoinRoomRequest;
+}
+
+export namespace JoinRoomRequest {
+  export type AsObject = {
+    userId: number,
+    topicId: number,
+  }
+}
+
+export class JoinRoomResponse extends jspb.Message {
+  getTopic(): Topic | undefined;
+  setTopic(value?: Topic): void;
+  hasTopic(): boolean;
+  clearTopic(): void;
+
+  getUsersList(): Array<User>;
+  setUsersList(value: Array<User>): void;
+  clearUsersList(): void;
+  addUsers(value?: User, index?: number): User;
+
+  serializeBinary(): Uint8Array;
+  toObject(includeInstance?: boolean): JoinRoomResponse.AsObject;
+  static toObject(includeInstance: boolean, msg: JoinRoomResponse): JoinRoomResponse.AsObject;
+  static serializeBinaryToWriter(message: JoinRoomResponse, writer: jspb.BinaryWriter): void;
+  static deserializeBinary(bytes: Uint8Array): JoinRoomResponse;
+  static deserializeBinaryFromReader(message: JoinRoomResponse, reader: jspb.BinaryReader): JoinRoomResponse;
+}
+
+export namespace JoinRoomResponse {
+  export type AsObject = {
+    topic?: Topic.AsObject,
+    usersList: Array<User.AsObject>,
+  }
+}
+
 export class ListTopicsResponse extends jspb.Message {
   getTopicsList(): Array<Topic>;
   setTopicsList(value: Array<Topic>): void;
@@ -303,8 +349,8 @@ export namespace ListTopicsResponse {
 }
 
 export class GetTopicRequest extends jspb.Message {
-  getId(): number;
-  setId(value: number): void;
+  getTopicId(): number;
+  setTopicId(value: number): void;
 
   serializeBinary(): Uint8Array;
   toObject(includeInstance?: boolean): GetTopicRequest.AsObject;
@@ -316,7 +362,7 @@ export class GetTopicRequest extends jspb.Message {
 
 export namespace GetTopicRequest {
   export type AsObject = {
-    id: number,
+    topicId: number,
   }
 }
 

@@ -17,6 +17,8 @@ import {
   GetUserAllResponse,
   GetUserRequest,
   JoinRequest,
+  JoinRoomRequest,
+  JoinRoomResponse,
   ListRoomResponse,
   ListTopicsResponse,
   LoggedInRequest,
@@ -258,6 +260,28 @@ export class ChatServiceClient {
       request,
       metadata || {},
       this.methodInfoListRoom,
+      callback);
+  }
+
+  methodInfoJoinRoom = new grpcWeb.AbstractClientBase.MethodInfo(
+    JoinRoomResponse,
+    (request: JoinRoomRequest) => {
+      return request.serializeBinary();
+    },
+    JoinRoomResponse.deserializeBinary
+  );
+
+  joinRoom(
+    request: JoinRoomRequest,
+    metadata: grpcWeb.Metadata | null,
+    callback: (err: grpcWeb.Error,
+               response: JoinRoomResponse) => void) {
+    return this.client_.rpcCall(
+      this.hostname_ +
+        '/topicchat.ChatService/JoinRoom',
+      request,
+      metadata || {},
+      this.methodInfoJoinRoom,
       callback);
   }
 

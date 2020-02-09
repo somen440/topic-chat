@@ -15,6 +15,15 @@ message Topic {
   string name = 2;
 }
 
+message ChatMessage {
+  string text = 1;
+  User user = 2;
+}
+
+message Room {
+  int32 topic_id = 1;
+}
+
 // -------------------- Auth --------------------
 
 service AuthService {
@@ -53,17 +62,9 @@ service ChatService {
   rpc SendMessage(SendMessageRequest) returns (Empty);
 
   // ---- Room ----
-  rpc CreateRoom(CreateRoomRequest) returns (Empty) {}
-  rpc ListRoom(Empty) returns (ListRoomResponse) {}
-}
-
-message ChatMessage {
-  string text = 1;
-  User user = 2;
-}
-
-message Room {
-  int32 topic_id = 1;
+  rpc CreateRoom(CreateRoomRequest) returns (Empty);
+  rpc ListRoom(Empty) returns (ListRoomResponse);
+  rpc JoinRoom(JoinRoomRequest) returns (JoinRoomResponse);
 }
 
 message CreateRoomRequest {
@@ -72,7 +73,7 @@ message CreateRoomRequest {
 
 message RecvMessageRequest {
   int32 topic_id = 1;
-  User user = 2;
+  int32 user_id = 2;
 }
 
 message SendMessageRequest {
@@ -82,6 +83,16 @@ message SendMessageRequest {
 
 message ListRoomResponse {
   repeated Room rooms = 1;
+}
+
+message JoinRoomRequest {
+  int32 user_id = 1;
+  int32 topic_id = 2;
+}
+
+message JoinRoomResponse {
+  Topic topic = 1;
+  repeated User users = 2;
 }
 
 // -------------------- Topic Catalog --------------------
@@ -97,5 +108,5 @@ message ListTopicsResponse {
 }
 
 message GetTopicRequest {
-  int32 id = 1;
+  int32 topic_id = 1;
 }

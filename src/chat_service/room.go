@@ -7,6 +7,7 @@ import (
 )
 
 type TopicID int
+type RoomMap map[TopicID]*room
 
 type room struct {
 	id      TopicID
@@ -14,14 +15,6 @@ type room struct {
 	leave   chan *client
 	forward chan *pb.ChatMessage
 	member  map[*client]bool
-}
-
-var rooms = map[TopicID]*room{
-	1: newRoom(1),
-	2: newRoom(2),
-	3: newRoom(3),
-	4: newRoom(4),
-	5: newRoom(5),
 }
 
 func (r *room) Run() {
@@ -58,7 +51,7 @@ func (r *room) Forward(msg *pb.ChatMessage) {
 
 func (r *room) ExistsUser(userID UserID) bool {
 	for c := range r.member {
-		if userID == c.userID {
+		if userID == c.UserID() {
 			return true
 		}
 	}
@@ -67,7 +60,7 @@ func (r *room) ExistsUser(userID UserID) bool {
 
 func (r *room) GetClient(userID UserID) (*client, error) {
 	for c := range r.member {
-		if userID == c.userID {
+		if userID == c.UserID() {
 			return c, nil
 		}
 	}
@@ -78,18 +71,28 @@ func (r *room) GetID() TopicID {
 	return r.id
 }
 
+func (r *room) GetUsers() []*pb.User {
+	var users []*pb.User
+	for v := range r.member {
+		users = append(users, v.user)
+	}
+	return users
+}
+
 func newRoom(id TopicID) *room {
-	return &room{
+	r := &room{
 		id:      id,
 		join:    make(chan *client),
 		leave:   make(chan *client),
 		forward: make(chan *pb.ChatMessage),
 		member:  map[*client]bool{},
 	}
+	go r.Run()
+	return r
 }
 
-func ExistsRoom(topicID TopicID) bool {
-	for id := range rooms {
+func (srv *chatServiceServer) ExistsRoom(topicID TopicID) bool {
+	for id := range srv.rooms {
 		if topicID == id {
 			return true
 		}
@@ -97,11 +100,21 @@ func ExistsRoom(topicID TopicID) bool {
 	return false
 }
 
-func GetRoom(topicID TopicID) (*room, error) {
-	for id, r := range rooms {
+func (srv *chatServiceServer) GetRoom(topicID TopicID) (*room, error) {
+	for id, r := range srv.rooms {
 		if topicID == id {
 			return r, nil
 		}
 	}
 	return nil, fmt.Errorf("room %v not found", topicID)
+}
+
+func mockRoom() RoomMap {
+	return RoomMap{
+		1: newRoom(1),
+		2: newRoom(2),
+		3: newRoom(3),
+		4: newRoom(4),
+		5: newRoom(5),
+	}
 }

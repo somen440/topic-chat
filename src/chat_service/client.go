@@ -4,9 +4,13 @@ import (
 	pb "github.com/somen440/topic-chat/src/chat_service/pb"
 )
 
-type UserID string
+type UserID int
 
 type client struct {
-	userID UserID
-	send   chan *pb.ChatMessage
+	user *pb.User
+	send chan *pb.ChatMessage
+}
+
+func (c *client) UserID() UserID {
+	return UserID(c.user.GetId())
 }

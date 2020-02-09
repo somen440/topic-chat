@@ -5,15 +5,27 @@ import (
 	"fmt"
 
 	pb "github.com/somen440/topic-chat/src/chat_service/pb"
+	"google.golang.org/grpc"
 )
 
-type chatServiceServer struct{}
+type chatServiceServer struct {
+	topicCatalogSvcAddr string
+	topicCatalogSvcConn *grpc.ClientConn
+
+	authSvcAddr string
+	authSvcConn *grpc.ClientConn
+
+	rooms RoomMap
+}
 
 func (srv *chatServiceServer) RecvMessage(req *pb.RecvMessageRequest, stream pb.ChatService_RecvMessageServer) error {
 	topicID := TopicID(req.GetTopicId())
-	userID := UserID(req.GetUser().GetId())
+	userID := UserID(req.GetUserId())
+	if topicID == 0 || userID == 0 {
+		return fmt.Errorf("invalid param")
+	}
 
-	if !ExistsRoom(topicID) {
+	if !srv.ExistsRoom(topicID) {
 		return fmt.Errorf("not found room")
 	}
 
@@ -21,17 +33,15 @@ func (srv *chatServiceServer) RecvMessage(req *pb.RecvMessageRequest, stream pb.
 		WithField("topicID", topicID).
 		Debug("get stream")
 
-	r, err := GetRoom(topicID)
+	r, err := srv.GetRoom(topicID)
 	if err != nil {
 		return err
 	}
 
-	c := &client{
-		userID: userID,
-		send:   make(chan *pb.ChatMessage),
+	c, err := r.GetClient(userID)
+	if err != nil {
+		return err
 	}
-
-	r.Join(c)
 	defer r.Leave(c)
 
 	for {
@@ -44,11 +54,19 @@ func (srv *chatServiceServer) SendMessage(_ context.Context, req *pb.SendMessage
 	topicID := TopicID(req.GetTopicId())
 	msg := req.GetMessage()
 
+	if topicID == 0 {
+		return nil, fmt.Errorf("invalid param")
+	}
+	if msg.GetUser() == nil {
+		return nil, fmt.Errorf("not found user")
+	}
+
 	log.WithField("topicID", topicID).
 		WithField("msg text", msg.GetText()).
+		WithField("msg user", msg.GetUser().GetId()).
 		Debug("send")
 
-	r, err := GetRoom(topicID)
+	r, err := srv.GetRoom(topicID)
 	if err != nil {
 		return nil, err
 	}
@@ -63,12 +81,12 @@ func (srv *chatServiceServer) CreateRoom(_ context.Context, req *pb.CreateRoomRe
 	log.WithField("topicID", topicID).
 		Debug("create")
 
-	if ExistsRoom(topicID) {
+	if srv.ExistsRoom(topicID) {
 		return nil, fmt.Errorf("exists")
 	}
 
 	r := newRoom(topicID)
-	rooms[topicID] = r
+	srv.rooms[topicID] = r
 	go r.Run()
 
 	return &pb.Empty{}, nil
@@ -76,14 +94,74 @@ func (srv *chatServiceServer) CreateRoom(_ context.Context, req *pb.CreateRoomRe
 
 func (srv *chatServiceServer) ListRoom(_ context.Context, _ *pb.Empty) (*pb.ListRoomResponse, error) {
 	var result []*pb.Room
-	for id := range rooms {
+	for id := range srv.rooms {
 		result = append(result, &pb.Room{
 			TopicId: int32(id),
 		})
 	}
+	log.WithField("room num", len(result)).
+		Debug("list room")
 	return &pb.ListRoomResponse{Rooms: result}, nil
 }
 
+func (srv *chatServiceServer) JoinRoom(ctx context.Context, req *pb.JoinRoomRequest) (*pb.JoinRoomResponse, error) {
+	userID := UserID(req.GetUserId())
+	topicID := TopicID(req.GetTopicId())
+	if userID == 0 || topicID == 0 {
+		return nil, fmt.Errorf("invalid param")
+	}
+	log.WithField("topicID", topicID).
+		WithField("ruserID", userID).
+		Debug("join room")
+
+	topic, err := srv.GetTopic(ctx, topicID)
+	if err != nil {
+		return nil, err
+	}
+
+	user, err := srv.GetUser(ctx, userID)
+	if err != nil {
+		return nil, err
+	}
+
+	r, err := srv.GetRoom(topicID)
+	if err != nil {
+		return nil, err
+	}
+
+	if r.ExistsUser(userID) {
+		return nil, fmt.Errorf("already exists")
+	}
+
+	c := &client{
+		user: user,
+		send: make(chan *pb.ChatMessage),
+	}
+
+	r.Join(c)
+
+	return &pb.JoinRoomResponse{
+		Users: r.GetUsers(),
+		Topic: topic,
+	}, nil
+}
+
+func (srv *chatServiceServer) GetUser(ctx context.Context, userID UserID) (*pb.User, error) {
+	return pb.NewAuthServiceClient(srv.authSvcConn).
+		GetUser(ctx, &pb.GetUserRequest{
+			UserId: int32(userID),
+		})
+}
+
+func (srv *chatServiceServer) GetTopic(ctx context.Context, topicID TopicID) (*pb.Topic, error) {
+	return pb.NewTopicCatalogServiceClient(srv.topicCatalogSvcConn).
+		GetTopic(ctx, &pb.GetTopicRequest{
+			TopicId: int32(topicID),
+		})
+}
+
 func newChatServiceServer() *chatServiceServer {
-	return &chatServiceServer{}
+	return &chatServiceServer{
+		rooms: mockRoom(),
+	}
 }
