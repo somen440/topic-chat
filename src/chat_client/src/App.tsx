@@ -1,10 +1,17 @@
 import * as tsx from "vue-tsx-support";
 import { ChatServiceClient } from "@/pb/TopicchatServiceClientPb";
-import { ChatMessage, RecvMessageRequest, User, SendMessageRequest, JoinRoomRequest, Topic } from "@/pb/topicchat_pb";
+import {
+  ChatMessage,
+  RecvMessageRequest,
+  User,
+  SendMessageRequest,
+  JoinRoomRequest,
+  Topic
+} from "@/pb/topicchat_pb";
 
 interface AppData {
   message: string;
-  messages: string[];
+  messages: ChatMessage[];
   client: ChatServiceClient;
   topicId: number;
   userId: number;
@@ -12,18 +19,20 @@ interface AppData {
   users: User[];
 }
 
-const CHAT_SERVICE_ADDR = process.env.CHAT_SERVICE_ADDR ?? 'localhost:9090'
+const CHAT_SERVICE_ADDR = process.env.CHAT_SERVICE_ADDR ?? "localhost:9090";
 
 export default tsx.component({
   name: "App",
   data(): AppData {
-    const client = new ChatServiceClient(`http://${CHAT_SERVICE_ADDR}`)
+    const client = new ChatServiceClient(`http://${CHAT_SERVICE_ADDR}`);
     const topicId = Number.parseInt(this.$route.query.topic_id.toString());
     const userId = Number.parseInt(this.$route.query.user_id.toString()); // todo: セキュアな方法に
 
+    console.log({ topicId, userId });
+
     return {
       message: "hoge",
-      messages: ["a", "b", "c"],
+      messages: [],
       client: client,
       topicId: topicId,
       userId: userId,
@@ -37,9 +46,9 @@ export default tsx.component({
       req.setUserId(this.userId);
       req.setTopicId(this.topicId);
 
-      return this.client.joinRoom(req, {}, (err) => {
+      return this.client.joinRoom(req, {}, err => {
         console.log(err);
-      })
+      });
     },
     recvMessage() {
       const req = new RecvMessageRequest();
@@ -50,7 +59,7 @@ export default tsx.component({
       stream.on("data", response => {
         console.log("data");
         console.log(response.getText());
-        this.messages.push(response.getText());
+        this.messages.push(response);
       });
       stream.on("status", status => {
         console.log("status");
@@ -61,15 +70,20 @@ export default tsx.component({
         console.log(err);
       });
     },
+    getUser(): User {
+      const user = new User();
+      user.setId(this.userId);
+      user.setName("hoge");
+      return user;
+    }
   },
   created() {
-    this.joinRoom()
-      .on("data", (res) => {
-        this.topic = res.getTopic();
-        this.users = res.getUsersList();
-        console.log(this.users);
-        this.recvMessage();
-      });
+    this.joinRoom().on("data", res => {
+      this.topic = res.getTopic();
+      this.users = res.getUsersList();
+      console.log(this.users);
+      this.recvMessage();
+    });
   },
   render() {
     return (
@@ -83,20 +97,20 @@ export default tsx.component({
 
         <h2>users</h2>
         <ul>
-          {this.users.map(value => {
+          {this.users.map(value => (
             <li>
               <ul>
                 <li>{value.getId()}</li>
                 <li>{value.getName()}</li>
               </ul>
             </li>
-          })}
+          ))}
         </ul>
 
         <h2>messages</h2>
         <ul>
           {this.messages.map(value => (
-            <li>{value}</li>
+            <li>[{value.getUser()?.getName() ?? "undefined"}] {value.getText()}</li>
           ))}
         </ul>
 
@@ -111,12 +125,16 @@ export default tsx.component({
           onClick={() => {
             console.log("click");
             console.log(this.message);
+
             const req = new SendMessageRequest();
             req.setTopicId(this.topicId);
+
             const msg = new ChatMessage();
             msg.setText(this.message);
+            msg.setUser(this.getUser());
+
             req.setMessage(msg);
-            this.client.sendMessage(req, null, (err, _) => {
+            this.client.sendMessage(req, null, err => {
               console.log(err);
             });
           }}

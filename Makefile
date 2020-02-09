@@ -42,6 +42,7 @@ build_chat:
 
 build_chat_client:
 	cd src/chat_client && \
+		export NODE_ENV=debug && \
 		yarn build && \
 		docker build -t gcr.io/$(PROJECT)/chat_client .
 .PHONY: build_chat_client
