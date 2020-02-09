@@ -8,16 +8,23 @@ message User {
   int32 id = 1;
   string name = 2;
   bool loggedIn = 3;
+  // avator
 }
 
 message Topic {
   int32 id = 1;
   string name = 2;
+  // todo: image
+  // todo: description
+  // todo: member_num
+  // todo: msg_num
+  // todo: updated_at
 }
 
 message ChatMessage {
   string text = 1;
   User user = 2;
+  // todo: actioned_at
 }
 
 message Room {
@@ -63,7 +70,6 @@ service ChatService {
 
   // ---- Room ----
   rpc CreateRoom(CreateRoomRequest) returns (Empty);
-  rpc ListRoom(Empty) returns (ListRoomResponse);
   rpc JoinRoom(JoinRoomRequest) returns (JoinRoomResponse);
 }
 
@@ -79,10 +85,6 @@ message RecvMessageRequest {
 message SendMessageRequest {
   int32 topic_id = 1;
   ChatMessage message = 2;
-}
-
-message ListRoomResponse {
-  repeated Room rooms = 1;
 }
 
 message JoinRoomRequest {
@@ -101,7 +103,10 @@ message JoinRoomResponse {
 service TopicCatalogService {
   rpc ListTopics(Empty) returns (ListTopicsResponse) {}
   rpc GetTopic(GetTopicRequest) returns (Topic) {}
-//  rpc SearchTopics(SearchTopicsRequest) returns (SearchTopicsResponse) {}
+  // todo: add
+  // todo: delete
+  // todo: update
+  // todo: rpc SearchTopics(SearchTopicsRequest) returns (SearchTopicsResponse) {}
 }
 
 message ListTopicsResponse {

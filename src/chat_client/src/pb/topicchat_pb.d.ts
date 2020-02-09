@@ -260,26 +260,6 @@ export namespace SendMessageRequest {
   }
 }
 
-export class ListRoomResponse extends jspb.Message {
-  getRoomsList(): Array<Room>;
-  setRoomsList(value: Array<Room>): void;
-  clearRoomsList(): void;
-  addRooms(value?: Room, index?: number): Room;
-
-  serializeBinary(): Uint8Array;
-  toObject(includeInstance?: boolean): ListRoomResponse.AsObject;
-  static toObject(includeInstance: boolean, msg: ListRoomResponse): ListRoomResponse.AsObject;
-  static serializeBinaryToWriter(message: ListRoomResponse, writer: jspb.BinaryWriter): void;
-  static deserializeBinary(bytes: Uint8Array): ListRoomResponse;
-  static deserializeBinaryFromReader(message: ListRoomResponse, reader: jspb.BinaryReader): ListRoomResponse;
-}
-
-export namespace ListRoomResponse {
-  export type AsObject = {
-    roomsList: Array<Room.AsObject>,
-  }
-}
-
 export class JoinRoomRequest extends jspb.Message {
   getUserId(): number;
   setUserId(value: number): void;
@@ -371,3 +351,4 @@ export namespace GetTopicRequest {
     topicId: number,
   }
 }
+
