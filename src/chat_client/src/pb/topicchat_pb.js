@@ -2647,7 +2647,7 @@ proto.topicchat.JoinRoomRequest.prototype.setTopicId = function(value) {
  * @private {!Array<number>}
  * @const
  */
-proto.topicchat.JoinRoomResponse.repeatedFields_ = [2];
+proto.topicchat.JoinRoomResponse.repeatedFields_ = [3];
 
 
 
@@ -2681,7 +2681,8 @@ proto.topicchat.JoinRoomResponse.prototype.toObject = function(opt_includeInstan
 proto.topicchat.JoinRoomResponse.toObject = function(includeInstance, msg) {
   var f, obj = {
     topic: (f = msg.getTopic()) && proto.topicchat.Topic.toObject(includeInstance, f),
-    usersList: jspb.Message.toObjectList(msg.getUsersList(),
+    person: (f = msg.getPerson()) && proto.topicchat.User.toObject(includeInstance, f),
+    memberList: jspb.Message.toObjectList(msg.getMemberList(),
     proto.topicchat.User.toObject, includeInstance)
   };
 
@@ -2727,7 +2728,12 @@ proto.topicchat.JoinRoomResponse.deserializeBinaryFromReader = function(msg, rea
     case 2:
       var value = new proto.topicchat.User;
       reader.readMessage(value,proto.topicchat.User.deserializeBinaryFromReader);
-      msg.addUsers(value);
+      msg.setPerson(value);
+      break;
+    case 3:
+      var value = new proto.topicchat.User;
+      reader.readMessage(value,proto.topicchat.User.deserializeBinaryFromReader);
+      msg.addMember(value);
       break;
     default:
       reader.skipField();
@@ -2766,10 +2772,18 @@ proto.topicchat.JoinRoomResponse.serializeBinaryToWriter = function(message, wri
       proto.topicchat.Topic.serializeBinaryToWriter
     );
   }
-  f = message.getUsersList();
+  f = message.getPerson();
+  if (f != null) {
+    writer.writeMessage(
+      2,
+      f,
+      proto.topicchat.User.serializeBinaryToWriter
+    );
+  }
+  f = message.getMemberList();
   if (f.length > 0) {
     writer.writeRepeatedMessage(
-      2,
+      3,
       f,
       proto.topicchat.User.serializeBinaryToWriter
     );
@@ -2815,12 +2829,49 @@ proto.topicchat.JoinRoomResponse.prototype.hasTopic = function() {
 
 
 /**
- * repeated User users = 2;
+ * optional User person = 2;
+ * @return {?proto.topicchat.User}
+ */
+proto.topicchat.JoinRoomResponse.prototype.getPerson = function() {
+  return /** @type{?proto.topicchat.User} */ (
+    jspb.Message.getWrapperField(this, proto.topicchat.User, 2));
+};
+
+
+/**
+ * @param {?proto.topicchat.User|undefined} value
+ * @return {!proto.topicchat.JoinRoomResponse} returns this
+*/
+proto.topicchat.JoinRoomResponse.prototype.setPerson = function(value) {
+  return jspb.Message.setWrapperField(this, 2, value);
+};
+
+
+/**
+ * Clears the message field making it undefined.
+ * @return {!proto.topicchat.JoinRoomResponse} returns this
+ */
+proto.topicchat.JoinRoomResponse.prototype.clearPerson = function() {
+  return this.setPerson(undefined);
+};
+
+
+/**
+ * Returns whether this field is set.
+ * @return {boolean}
+ */
+proto.topicchat.JoinRoomResponse.prototype.hasPerson = function() {
+  return jspb.Message.getField(this, 2) != null;
+};
+
+
+/**
+ * repeated User member = 3;
  * @return {!Array<!proto.topicchat.User>}
  */
-proto.topicchat.JoinRoomResponse.prototype.getUsersList = function() {
+proto.topicchat.JoinRoomResponse.prototype.getMemberList = function() {
   return /** @type{!Array<!proto.topicchat.User>} */ (
-    jspb.Message.getRepeatedWrapperField(this, proto.topicchat.User, 2));
+    jspb.Message.getRepeatedWrapperField(this, proto.topicchat.User, 3));
 };
 
 
@@ -2828,8 +2879,8 @@ proto.topicchat.JoinRoomResponse.prototype.getUsersList = function() {
  * @param {!Array<!proto.topicchat.User>} value
  * @return {!proto.topicchat.JoinRoomResponse} returns this
 */
-proto.topicchat.JoinRoomResponse.prototype.setUsersList = function(value) {
-  return jspb.Message.setRepeatedWrapperField(this, 2, value);
+proto.topicchat.JoinRoomResponse.prototype.setMemberList = function(value) {
+  return jspb.Message.setRepeatedWrapperField(this, 3, value);
 };
 
 
@@ -2838,8 +2889,8 @@ proto.topicchat.JoinRoomResponse.prototype.setUsersList = function(value) {
  * @param {number=} opt_index
  * @return {!proto.topicchat.User}
  */
-proto.topicchat.JoinRoomResponse.prototype.addUsers = function(opt_value, opt_index) {
-  return jspb.Message.addToRepeatedWrapperField(this, 2, opt_value, proto.topicchat.User, opt_index);
+proto.topicchat.JoinRoomResponse.prototype.addMember = function(opt_value, opt_index) {
+  return jspb.Message.addToRepeatedWrapperField(this, 3, opt_value, proto.topicchat.User, opt_index);
 };
 
 
@@ -2847,8 +2898,8 @@ proto.topicchat.JoinRoomResponse.prototype.addUsers = function(opt_value, opt_in
  * Clears the list making it empty but non-null.
  * @return {!proto.topicchat.JoinRoomResponse} returns this
  */
-proto.topicchat.JoinRoomResponse.prototype.clearUsersList = function() {
-  return this.setUsersList([]);
+proto.topicchat.JoinRoomResponse.prototype.clearMemberList = function() {
+  return this.setMemberList([]);
 };
 
 

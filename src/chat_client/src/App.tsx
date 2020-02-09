@@ -1,12 +1,12 @@
 import * as tsx from "vue-tsx-support";
-import { ChatServiceClient } from "@/pb/TopicchatServiceClientPb";
+import { ChatServiceClient, AuthServiceClient } from "@/pb/TopicchatServiceClientPb";
 import {
   ChatMessage,
   RecvMessageRequest,
   User,
   SendMessageRequest,
   JoinRoomRequest,
-  Topic
+  Topic,
 } from "@/pb/topicchat_pb";
 
 interface AppData {
@@ -16,6 +16,7 @@ interface AppData {
   topicId: number;
   userId: number;
   topic: Topic | undefined;
+  user: User | undefined;
   users: User[];
 }
 
@@ -28,8 +29,6 @@ export default tsx.component({
     const topicId = Number.parseInt(this.$route.query.topic_id.toString());
     const userId = Number.parseInt(this.$route.query.user_id.toString()); // todo: セキュアな方法に
 
-    console.log({ topicId, userId });
-
     return {
       message: "hoge",
       messages: [],
@@ -37,6 +36,7 @@ export default tsx.component({
       topicId: topicId,
       userId: userId,
       topic: undefined,
+      user: undefined,
       users: []
     };
   },
@@ -70,18 +70,15 @@ export default tsx.component({
         console.log(err);
       });
     },
-    getUser(): User {
-      const user = new User();
-      user.setId(this.userId);
-      user.setName("hoge");
-      return user;
+    validSend() {
+      return this.user !== undefined
     }
   },
   created() {
     this.joinRoom().on("data", res => {
       this.topic = res.getTopic();
-      this.users = res.getUsersList();
-      console.log(this.users);
+      this.users = res.getMemberList();
+      this.user = res.getPerson();
       this.recvMessage();
     });
   },
@@ -125,16 +122,21 @@ export default tsx.component({
           onClick={() => {
             console.log("click");
             console.log(this.message);
+            if (!this.validSend()) {
+              return
+            }
 
             const req = new SendMessageRequest();
             req.setTopicId(this.topicId);
 
             const msg = new ChatMessage();
             msg.setText(this.message);
-            msg.setUser(this.getUser());
+            msg.setUser(this.user);
 
             req.setMessage(msg);
             this.client.sendMessage(req, null, err => {
+              console.log(err);
+            }).on("error", (err) => {
               console.log(err);
             });
           }}

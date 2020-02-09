@@ -308,10 +308,15 @@ export class JoinRoomResponse extends jspb.Message {
   hasTopic(): boolean;
   clearTopic(): void;
 
-  getUsersList(): Array<User>;
-  setUsersList(value: Array<User>): void;
-  clearUsersList(): void;
-  addUsers(value?: User, index?: number): User;
+  getPerson(): User | undefined;
+  setPerson(value?: User): void;
+  hasPerson(): boolean;
+  clearPerson(): void;
+
+  getMemberList(): Array<User>;
+  setMemberList(value: Array<User>): void;
+  clearMemberList(): void;
+  addMember(value?: User, index?: number): User;
 
   serializeBinary(): Uint8Array;
   toObject(includeInstance?: boolean): JoinRoomResponse.AsObject;
@@ -324,7 +329,8 @@ export class JoinRoomResponse extends jspb.Message {
 export namespace JoinRoomResponse {
   export type AsObject = {
     topic?: Topic.AsObject,
-    usersList: Array<User.AsObject>,
+    person?: User.AsObject,
+    memberList: Array<User.AsObject>,
   }
 }
 
@@ -365,4 +371,3 @@ export namespace GetTopicRequest {
     topicId: number,
   }
 }
-

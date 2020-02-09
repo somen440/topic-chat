@@ -161,8 +161,9 @@ func (srv *chatServiceServer) JoinRoom(ctx context.Context, req *pb.JoinRoomRequ
 	r.Join(c)
 
 	return &pb.JoinRoomResponse{
-		Users: users,
-		Topic: topic,
+		Member: users,
+		Person: user,
+		Topic:  topic,
 	}, nil
 }
 

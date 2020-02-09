@@ -92,7 +92,8 @@ message JoinRoomRequest {
 
 message JoinRoomResponse {
   Topic topic = 1;
-  repeated User users = 2;
+  User person = 2;
+  repeated User member = 3;
 }
 
 // -------------------- Topic Catalog --------------------
