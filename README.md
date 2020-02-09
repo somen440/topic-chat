@@ -10,7 +10,7 @@ todo
 
 ## Service Architecture
 
-![](https://storage.googleapis.com/topic-chat/images/topic-chat.png)
+![](https://storage.googleapis.com/topic-chat/images/topic-chat.v2.png)
 
 Find Protocol Buffers Descriptions at the ./pb directory.
 
