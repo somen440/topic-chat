@@ -103,9 +103,9 @@ message JoinRoomResponse {
 service TopicCatalogService {
   rpc ListTopics(Empty) returns (ListTopicsResponse) {}
   rpc GetTopic(GetTopicRequest) returns (Topic) {}
-  // todo: add
-  // todo: delete
-  // todo: update
+  rpc AddTopic(AddTopicRequest) returns (Topic) {}
+  rpc UpdateTopic(UpdateTopicRequest) returns (Empty) {}
+  rpc DeleteTopic(DeleteTopicRequest) returns (Empty) {}
   // todo: rpc SearchTopics(SearchTopicsRequest) returns (SearchTopicsResponse) {}
 }
 
@@ -114,5 +114,17 @@ message ListTopicsResponse {
 }
 
 message GetTopicRequest {
+  int32 topic_id = 1;
+}
+
+message AddTopicRequest {
+  Topic topic = 1;
+}
+
+message UpdateTopicRequest {
+  Topic topic = 1;
+}
+
+message DeleteTopicRequest {
   int32 topic_id = 1;
 }

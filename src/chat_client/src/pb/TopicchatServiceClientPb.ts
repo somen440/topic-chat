@@ -10,8 +10,10 @@
 import * as grpcWeb from 'grpc-web';
 
 import {
+  AddTopicRequest,
   ChatMessage,
   CreateRoomRequest,
+  DeleteTopicRequest,
   Empty,
   GetTopicRequest,
   GetUserAllResponse,
@@ -25,6 +27,7 @@ import {
   SendMessageRequest,
   SignoutRequest,
   Topic,
+  UpdateTopicRequest,
   User} from './topicchat_pb';
 
 export class AuthServiceClient {
@@ -324,6 +327,72 @@ export class TopicCatalogServiceClient {
       request,
       metadata || {},
       this.methodInfoGetTopic,
+      callback);
+  }
+
+  methodInfoAddTopic = new grpcWeb.AbstractClientBase.MethodInfo(
+    Topic,
+    (request: AddTopicRequest) => {
+      return request.serializeBinary();
+    },
+    Topic.deserializeBinary
+  );
+
+  addTopic(
+    request: AddTopicRequest,
+    metadata: grpcWeb.Metadata | null,
+    callback: (err: grpcWeb.Error,
+               response: Topic) => void) {
+    return this.client_.rpcCall(
+      this.hostname_ +
+        '/topicchat.TopicCatalogService/AddTopic',
+      request,
+      metadata || {},
+      this.methodInfoAddTopic,
+      callback);
+  }
+
+  methodInfoUpdateTopic = new grpcWeb.AbstractClientBase.MethodInfo(
+    Empty,
+    (request: UpdateTopicRequest) => {
+      return request.serializeBinary();
+    },
+    Empty.deserializeBinary
+  );
+
+  updateTopic(
+    request: UpdateTopicRequest,
+    metadata: grpcWeb.Metadata | null,
+    callback: (err: grpcWeb.Error,
+               response: Empty) => void) {
+    return this.client_.rpcCall(
+      this.hostname_ +
+        '/topicchat.TopicCatalogService/UpdateTopic',
+      request,
+      metadata || {},
+      this.methodInfoUpdateTopic,
+      callback);
+  }
+
+  methodInfoDeleteTopic = new grpcWeb.AbstractClientBase.MethodInfo(
+    Empty,
+    (request: DeleteTopicRequest) => {
+      return request.serializeBinary();
+    },
+    Empty.deserializeBinary
+  );
+
+  deleteTopic(
+    request: DeleteTopicRequest,
+    metadata: grpcWeb.Metadata | null,
+    callback: (err: grpcWeb.Error,
+               response: Empty) => void) {
+    return this.client_.rpcCall(
+      this.hostname_ +
+        '/topicchat.TopicCatalogService/DeleteTopic',
+      request,
+      metadata || {},
+      this.methodInfoDeleteTopic,
       callback);
   }
 

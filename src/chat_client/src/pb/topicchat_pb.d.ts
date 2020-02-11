@@ -352,3 +352,61 @@ export namespace GetTopicRequest {
   }
 }
 
+export class AddTopicRequest extends jspb.Message {
+  getTopic(): Topic | undefined;
+  setTopic(value?: Topic): void;
+  hasTopic(): boolean;
+  clearTopic(): void;
+
+  serializeBinary(): Uint8Array;
+  toObject(includeInstance?: boolean): AddTopicRequest.AsObject;
+  static toObject(includeInstance: boolean, msg: AddTopicRequest): AddTopicRequest.AsObject;
+  static serializeBinaryToWriter(message: AddTopicRequest, writer: jspb.BinaryWriter): void;
+  static deserializeBinary(bytes: Uint8Array): AddTopicRequest;
+  static deserializeBinaryFromReader(message: AddTopicRequest, reader: jspb.BinaryReader): AddTopicRequest;
+}
+
+export namespace AddTopicRequest {
+  export type AsObject = {
+    topic?: Topic.AsObject,
+  }
+}
+
+export class UpdateTopicRequest extends jspb.Message {
+  getTopic(): Topic | undefined;
+  setTopic(value?: Topic): void;
+  hasTopic(): boolean;
+  clearTopic(): void;
+
+  serializeBinary(): Uint8Array;
+  toObject(includeInstance?: boolean): UpdateTopicRequest.AsObject;
+  static toObject(includeInstance: boolean, msg: UpdateTopicRequest): UpdateTopicRequest.AsObject;
+  static serializeBinaryToWriter(message: UpdateTopicRequest, writer: jspb.BinaryWriter): void;
+  static deserializeBinary(bytes: Uint8Array): UpdateTopicRequest;
+  static deserializeBinaryFromReader(message: UpdateTopicRequest, reader: jspb.BinaryReader): UpdateTopicRequest;
+}
+
+export namespace UpdateTopicRequest {
+  export type AsObject = {
+    topic?: Topic.AsObject,
+  }
+}
+
+export class DeleteTopicRequest extends jspb.Message {
+  getTopicId(): number;
+  setTopicId(value: number): void;
+
+  serializeBinary(): Uint8Array;
+  toObject(includeInstance?: boolean): DeleteTopicRequest.AsObject;
+  static toObject(includeInstance: boolean, msg: DeleteTopicRequest): DeleteTopicRequest.AsObject;
+  static serializeBinaryToWriter(message: DeleteTopicRequest, writer: jspb.BinaryWriter): void;
+  static deserializeBinary(bytes: Uint8Array): DeleteTopicRequest;
+  static deserializeBinaryFromReader(message: DeleteTopicRequest, reader: jspb.BinaryReader): DeleteTopicRequest;
+}
+
+export namespace DeleteTopicRequest {
+  export type AsObject = {
+    topicId: number,
+  }
+}
+
