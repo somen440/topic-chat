@@ -11,21 +11,38 @@ type InMemoryTopicRepository struct {
 }
 
 // Create topic
-func (r *InMemoryTopicRepository) Create(topic domain.Topic) (domain.Topic, error) {
+func (r *InMemoryTopicRepository) Create(topic *domain.Topic) (*domain.Topic, error) {
+	topicID := domain.TopicID(len(r.topics) + 1)
+	topic.Id = int32(topicID)
+	r.topics[topicID] = topic
+	return topic, nil
 }
 
 // Update topic
-func (r *InMemoryTopicRepository) Update(topic domain.Topic) error {
-
+func (r *InMemoryTopicRepository) Update(topic *domain.Topic) error {
+	topicID := topic.TopicID()
+	if !r.Exists(topicID) {
+		return exception.NewRuntimeException("record not found", map[string]interface{}{
+			"topicID": topicID,
+		})
+	}
+	r.topics[topicID] = topic
+	return nil
 }
 
-// FindAll topic
-func (r *InMemoryTopicRepository) Find(topicID domain.TopicID) (domain.Topic, error) {
-
+// Find topic
+func (r *InMemoryTopicRepository) Find(topicID domain.TopicID) (*domain.Topic, error) {
+	if !r.Exists(topicID) {
+		return nil, exception.NewRuntimeException("record not found", map[string]interface{}{
+			"topicID": topicID,
+		})
+	}
+	return r.topics[topicID], nil
 }
 
 // FindAll topics
 func (r *InMemoryTopicRepository) FindAll() domain.TopicList {
+	return domain.TopicMapToList(r.topics)
 }
 
 // Exists is exists topic from topicID
@@ -35,7 +52,7 @@ func (r *InMemoryTopicRepository) Exists(topicID domain.TopicID) bool {
 }
 
 // Delete topic
-func (r *InMemoryTopicRepository) Delete(topic domain.Topic) error {
+func (r *InMemoryTopicRepository) Delete(topic *domain.Topic) error {
 	topicID := topic.TopicID()
 	if !r.Exists(topicID) {
 		return exception.NewRuntimeException("record not found", map[string]interface{}{

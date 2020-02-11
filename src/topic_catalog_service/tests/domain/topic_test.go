@@ -45,16 +45,16 @@ func TestTopicID(t *testing.T) {
 }
 
 func TestTopicMapToList(t *testing.T) {
+	a := domain.NewTopic(1, "topic1")
+	b := domain.NewTopic(2, "topic2")
+	c := domain.NewTopic(3, "topic3")
+
 	topicMap := domain.TopicMap{
-		1: domain.NewTopic(1, "topic1"),
-		2: domain.NewTopic(2, "topic2"),
-		3: domain.NewTopic(3, "topic3"),
+		1: a,
+		2: b,
+		3: c,
 	}
-	expectList := domain.TopicList{
-		domain.NewTopic(1, "topic1"),
-		domain.NewTopic(2, "topic2"),
-		domain.NewTopic(3, "topic3"),
-	}
+	expectList := domain.TopicList{a, b, c}
 	actualList := domain.TopicMapToList(topicMap)
 	if !reflect.DeepEqual(expectList, actualList) {
 		t.Errorf("%v != %v", expectList, actualList)
