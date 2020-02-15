@@ -5,7 +5,6 @@ import (
 	"testing"
 
 	pb "github.com/somen440/topic-chat/src/topic_catalog_service/pb"
-
 	"github.com/somen440/topic-chat/src/topic_catalog_service/src/domain"
 )
 
@@ -16,8 +15,8 @@ func TestNewTopic(t *testing.T) {
 	}
 	actual := domain.NewTopic(1, "topic1")
 
-	if reflect.DeepEqual(expect, actual) {
-		t.Errorf("%v != %v", expect, actual)
+	if !reflect.DeepEqual(expect, actual) {
+		t.Errorf("expect [%v] != actual [%v]", expect, actual)
 	}
 }
 
@@ -32,15 +31,7 @@ func TestCreateTopicMapMock(t *testing.T) {
 	actual := domain.CreateTopicMapMock()
 
 	if reflect.DeepEqual(expect, actual) {
-		t.Errorf("%v != %v", expect, actual)
-	}
-}
-
-func TestTopicID(t *testing.T) {
-	expect := domain.TopicID(3)
-	actual := domain.NewTopic(3, "test topic").TopicID()
-	if expect != actual {
-		t.Errorf("%v != %v", expect, actual)
+		t.Errorf("expect [%v] != actual [%v]", expect, actual)
 	}
 }
 
@@ -54,9 +45,9 @@ func TestTopicMapToList(t *testing.T) {
 		2: b,
 		3: c,
 	}
-	expectList := domain.TopicList{a, b, c}
+	expectList := []*pb.Topic{a, b, c}
 	actualList := domain.TopicMapToList(topicMap)
 	if !reflect.DeepEqual(expectList, actualList) {
-		t.Errorf("%v != %v", expectList, actualList)
+		t.Errorf("expect [%v] != actual [%v]", expectList, actualList)
 	}
 }
