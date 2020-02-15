@@ -4,9 +4,9 @@ import (
 	"reflect"
 
 	"github.com/sirupsen/logrus"
+	"github.com/somen440/topic-chat/src/common"
 	pb "github.com/somen440/topic-chat/src/topic_catalog_service/pb"
 	"github.com/somen440/topic-chat/src/topic_catalog_service/src/domain"
-	"github.com/somen440/topic-chat/src/topic_catalog_service/src/exception"
 )
 
 type inMemoryTopicRepository struct {
@@ -53,7 +53,7 @@ func (r *inMemoryTopicRepository) Update(topic *pb.Topic) error {
 
 func (r *inMemoryTopicRepository) Find(topicID domain.TopicID) (*pb.Topic, error) {
 	if !r.Exists(topicID) {
-		return nil, exception.NewRuntimeException("record not found", map[string]interface{}{
+		return nil, common.NewRuntimeException("record not found", map[string]interface{}{
 			"topicID": topicID,
 		})
 	}
@@ -83,7 +83,7 @@ func (r *inMemoryTopicRepository) Exists(topicID domain.TopicID) bool {
 
 func (r *inMemoryTopicRepository) Delete(topicID domain.TopicID) error {
 	if !r.Exists(topicID) {
-		return exception.NewRuntimeException("record not found", map[string]interface{}{
+		return common.NewRuntimeException("record not found", map[string]interface{}{
 			"topicID": topicID,
 		})
 	}

@@ -21,6 +21,9 @@ github.com/sirupsen/logrus v1.4.2 h1:SPIRibHv4MatM3XXNO2BJeFLZwZ2LvZgfQ5+UNI2im4
 github.com/sirupsen/logrus v1.4.2/go.mod h1:tLMulIdttU9McNUspp0xgXVQah82FyeX6MwdIuYE2rE=
 github.com/somen440/topic-chat v0.0.0-20200201083918-77541e2e2060 h1:6imLjlYkq9D8p62EbdhMOIMy3lYPTWMQ2D/MP8TYH/s=
 github.com/somen440/topic-chat v0.0.0-20200212145503-81952ce53643 h1:3qcHYy/JU30KT+ehG6WWkZ3GcL5W2uPsdp8HZ3uGm7Q=
+github.com/somen440/topic-chat v0.0.0-20200215061654-65fad34e27e2 h1:uNpzQ7r/SgfrUGuYjH+hu3ansOLYDO7g9bNZhADVV3k=
+github.com/somen440/topic-chat/src/common v0.0.0-20200215055404-08620efd3eed h1:qHfcr/dfj00lpCvfvgbK2uHTqhBdPyHnNwWPToj4/Yw=
+github.com/somen440/topic-chat/src/common v0.0.0-20200215055404-08620efd3eed/go.mod h1:46EqQTuPyboRGSty+7JJXA98Gr8k5gHE3IkU28T0ZMA=
 github.com/stretchr/objx v0.1.1/go.mod h1:HFkY916IF+rwdDfMAkV7OtwuqBVzrE8GR6GFx+wExME=
 github.com/stretchr/testify v1.2.2 h1:bSDNvY7ZPG5RlJ8otE/7V6gMiyenm9RtJ7IUVIAoJ1w=
 github.com/stretchr/testify v1.2.2/go.mod h1:a8OnRcib4nhh0OaRAV+Yts87kKdq0PP7pXfy6kDkUVs=
