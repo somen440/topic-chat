@@ -8,6 +8,8 @@ import (
 	"time"
 
 	pb "github.com/somen440/topic-chat/src/topic_catalog_service/pb"
+	"github.com/somen440/topic-chat/src/topic_catalog_service/src/handler"
+	"github.com/somen440/topic-chat/src/topic_catalog_service/src/infrastructure"
 
 	"github.com/sirupsen/logrus"
 	"google.golang.org/grpc"
@@ -19,6 +21,7 @@ const (
 
 var (
 	log *logrus.Logger
+	srv pb.TopicCatalogServiceServer
 )
 
 func init() {
@@ -35,6 +38,11 @@ func init() {
 		TimestampFormat: time.RFC3339Nano,
 	}
 	log.Out = os.Stdout
+
+	srv = handler.NewTopicCatalogServiceServer(
+		infrastructure.NewInMemoryTopicRepository(log),
+		log,
+	)
 }
 
 func main() {
@@ -49,7 +57,7 @@ func main() {
 	}
 
 	s := grpc.NewServer()
-	pb.RegisterTopicCatalogServiceServer(s, newTopicCatalogServiceServer())
+	pb.RegisterTopicCatalogServiceServer(s, srv)
 
 	log.Infof("starting grpc server at :%s", srvPort)
 	if err := s.Serve(l); err != nil {
