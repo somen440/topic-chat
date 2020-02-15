@@ -49,6 +49,16 @@ build_chat_client:
 
 ####################################################################
 
+test:
+	cd src/topic_catalog_service/ && make test
+.PHONY: test
+
+fmt:
+	cd src/topic_catalog_service/ && make fmt
+.PHONY: fmt
+
+####################################################################
+
 debug_catalog_list:
 	grpcurl -plaintext \
 		-import-path pb/ \

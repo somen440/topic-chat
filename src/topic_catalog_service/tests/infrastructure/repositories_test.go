@@ -7,6 +7,8 @@ import (
 	pb "github.com/somen440/topic-chat/src/topic_catalog_service/pb"
 	"github.com/somen440/topic-chat/src/topic_catalog_service/src/domain"
 	"github.com/somen440/topic-chat/src/topic_catalog_service/src/infrastructure"
+
+	"github.com/sirupsen/logrus"
 )
 
 func TestInMemoryTopicRepository(t *testing.T) {
@@ -19,7 +21,7 @@ func TestInMemoryTopicRepository(t *testing.T) {
 	t.Run("NewInMemoryTopicRepository", func(t *testing.T) {
 		expect := "*infrastructure.inMemoryTopicRepository"
 
-		r = infrastructure.NewInMemoryTopicRepository()
+		r = infrastructure.NewInMemoryTopicRepository(logrus.New())
 		actual := reflect.TypeOf(r).String()
 
 		if expect != actual {
