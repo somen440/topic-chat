@@ -22,11 +22,11 @@ func TestNewTopic(t *testing.T) {
 
 func TestCreateTopicMapMock(t *testing.T) {
 	expect := map[int32]*pb.Topic{
-		1: &pb.Topic{Id: 1, Name: "topic1"},
-		2: &pb.Topic{Id: 2, Name: "topic2"},
-		3: &pb.Topic{Id: 3, Name: "topic3"},
-		4: &pb.Topic{Id: 4, Name: "topic4"},
-		5: &pb.Topic{Id: 5, Name: "topic5"},
+		1: {Id: 1, Name: "topic1"},
+		2: {Id: 2, Name: "topic2"},
+		3: {Id: 3, Name: "topic3"},
+		4: {Id: 4, Name: "topic4"},
+		5: {Id: 5, Name: "topic5"},
 	}
 	actual := domain.CreateTopicMapMock()
 

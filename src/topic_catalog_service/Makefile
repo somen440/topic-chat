@@ -4,4 +4,5 @@ test:
 .PHONY: test
 
 fmt:
+	gofmt -l -s -w .
 .PHONY: fmt
