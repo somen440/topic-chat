@@ -24,6 +24,8 @@ github.com/somen440/topic-chat v0.0.0-20200212145503-81952ce53643 h1:3qcHYy/JU30
 github.com/somen440/topic-chat v0.0.0-20200215061654-65fad34e27e2 h1:uNpzQ7r/SgfrUGuYjH+hu3ansOLYDO7g9bNZhADVV3k=
 github.com/somen440/topic-chat/src/common v0.0.0-20200215055404-08620efd3eed h1:qHfcr/dfj00lpCvfvgbK2uHTqhBdPyHnNwWPToj4/Yw=
 github.com/somen440/topic-chat/src/common v0.0.0-20200215055404-08620efd3eed/go.mod h1:46EqQTuPyboRGSty+7JJXA98Gr8k5gHE3IkU28T0ZMA=
+github.com/somen440/topic-chat/src/common v0.0.0-20200215063246-14a05f7e9df0 h1:HEhiLFoyu0fK/rDqwSL5u1FxdB6ewF2vkmAYhoJCgnw=
+github.com/somen440/topic-chat/src/common v0.0.0-20200215063246-14a05f7e9df0/go.mod h1:ZCDI3sVhmBH+bZrrv/mZgLhYNX+L1dxJo/r6DAKDY24=
 github.com/stretchr/objx v0.1.1/go.mod h1:HFkY916IF+rwdDfMAkV7OtwuqBVzrE8GR6GFx+wExME=
 github.com/stretchr/testify v1.2.2 h1:bSDNvY7ZPG5RlJ8otE/7V6gMiyenm9RtJ7IUVIAoJ1w=
 github.com/stretchr/testify v1.2.2/go.mod h1:a8OnRcib4nhh0OaRAV+Yts87kKdq0PP7pXfy6kDkUVs=
@@ -60,6 +62,8 @@ google.golang.org/grpc v1.19.0/go.mod h1:mqu4LbDTu4XGKhr4mRzUsmM4RtVoemTSY81AxZi
 google.golang.org/grpc v1.23.0/go.mod h1:Y5yQAOtifL1yxbo5wqy6BxZv8vAUGQwXBOALyacEbxg=
 google.golang.org/grpc v1.27.0 h1:rRYRFMVgRv6E0D70Skyfsr28tDXIuuPZyWGMPdMcnXg=
 google.golang.org/grpc v1.27.0/go.mod h1:qbnxyOmOxrQa7FizSgH+ReBfzJrCY1pSN7KXBS8abTk=
+google.golang.org/grpc v1.27.1 h1:zvIju4sqAGvwKspUQOhwnpcqSbzi7/H6QomNNjTL4sk=
+google.golang.org/grpc v1.27.1/go.mod h1:qbnxyOmOxrQa7FizSgH+ReBfzJrCY1pSN7KXBS8abTk=
 gopkg.in/check.v1 v0.0.0-20161208181325-20d25e280405/go.mod h1:Co6ibVJAznAaIkqp8huTwlJQCZ016jof/cbN4VW5Yz0=
 gopkg.in/yaml.v2 v2.2.8 h1:obN1ZagJSUGI0Ek/LBmuj4SNLPfIny3KsKFopxRdj10=
 gopkg.in/yaml.v2 v2.2.8/go.mod h1:hI93XBmqTisBFMUTm0b8Fm+jr3Dg1NNxqwp+5A1VGuI=

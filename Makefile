@@ -3,17 +3,15 @@ PROJECT=topic-chat
 
 AUTH_SERVICE_OUT_DIR=src/auth_service
 FRONTEND_OUT_DIR=src/frontend
-TOPIC_CATALOG_SERVICE_OUT_DIR=src/topic_catalog_service
 CHAT_SERVICE_OUT_DIR=src/chat_service
 CHAT_CLIENT_OUT_DIR=src/chat_client/src
+
+PB_OUT_DIR=src/common
 
 genproto:
 	protoc -I/usr/local/include -I. \
       -I$(GOPATH)/src \
-			--go_out=plugins=grpc:$(AUTH_SERVICE_OUT_DIR) \
-			--go_out=plugins=grpc:$(FRONTEND_OUT_DIR) \
-			--go_out=plugins=grpc:$(TOPIC_CATALOG_SERVICE_OUT_DIR) \
-			--go_out=plugins=grpc:$(CHAT_SERVICE_OUT_DIR) \
+			--go_out=plugins=grpc:$(PB_OUT_DIR) \
 			--js_out=import_style=commonjs:$(CHAT_CLIENT_OUT_DIR) \
 			--grpc-web_out=import_style=typescript,mode=grpcwebtext:$(CHAT_CLIENT_OUT_DIR) \
 			-I$(PROTODIR) \

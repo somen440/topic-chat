@@ -4,7 +4,7 @@ import (
 	"context"
 
 	"github.com/sirupsen/logrus"
-	pb "github.com/somen440/topic-chat/src/topic_catalog_service/pb"
+	pb "github.com/somen440/topic-chat/src/common/pb"
 	"github.com/somen440/topic-chat/src/topic_catalog_service/src/domain"
 )
 

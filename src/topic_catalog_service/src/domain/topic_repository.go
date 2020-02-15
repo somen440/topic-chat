@@ -1,7 +1,7 @@
 package domain
 
 import (
-	pb "github.com/somen440/topic-chat/src/topic_catalog_service/pb"
+	pb "github.com/somen440/topic-chat/src/common/pb"
 )
 
 // TopicRepositoryInterface is the topic infrastructure interface

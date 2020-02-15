@@ -7,7 +7,7 @@ import (
 	"strconv"
 	"time"
 
-	pb "github.com/somen440/topic-chat/src/topic_catalog_service/pb"
+	pb "github.com/somen440/topic-chat/src/common/pb"
 	"github.com/somen440/topic-chat/src/topic_catalog_service/src/handler"
 	"github.com/somen440/topic-chat/src/topic_catalog_service/src/infrastructure"
 
