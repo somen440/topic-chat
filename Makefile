@@ -49,10 +49,12 @@ build_chat_client:
 
 test:
 	cd src/topic_catalog_service/ && make test
+	cd src/auth_service/ && make test
 .PHONY: test
 
 fmt:
 	cd src/topic_catalog_service/ && make fmt
+	cd src/auth_service/ && make fmt
 .PHONY: fmt
 
 ####################################################################

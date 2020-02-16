@@ -7,7 +7,10 @@ import (
 	"strconv"
 	"time"
 
-	pb "github.com/somen440/topic-chat/src/auth_service/pb"
+	"github.com/somen440/topic-chat/src/auth_service/src/domain"
+	"github.com/somen440/topic-chat/src/auth_service/src/handler"
+	"github.com/somen440/topic-chat/src/auth_service/src/infrastructure"
+	pb "github.com/somen440/topic-chat/src/common/pb"
 
 	"github.com/sirupsen/logrus"
 	"google.golang.org/grpc"
@@ -18,6 +21,7 @@ const (
 )
 
 var (
+	srv pb.AuthServiceServer
 	log *logrus.Logger
 )
 
@@ -35,6 +39,13 @@ func init() {
 		TimestampFormat: time.RFC3339Nano,
 	}
 	log.Out = os.Stdout
+
+	srv = handler.NewAuthServiceServer(
+		infrastructure.NewInMemoryUserRepository(
+			domain.CreateMockUserMap(),
+			log,
+		), log,
+	)
 }
 
 func main() {
@@ -49,7 +60,7 @@ func main() {
 	}
 
 	s := grpc.NewServer()
-	pb.RegisterAuthServiceServer(s, newAuthServiceServer())
+	pb.RegisterAuthServiceServer(s, srv)
 
 	log.Infof("starting grpc server at :%s", srvPort)
 	if err := s.Serve(l); err != nil {
