@@ -7,7 +7,6 @@ message Empty {}
 message User {
   int32 id = 1;
   string name = 2;
-  bool loggedIn = 3;
   // avator
 }
 
@@ -23,7 +22,7 @@ message Topic {
 
 message ChatMessage {
   string text = 1;
-  User user = 2;
+  int32 user_id = 2;
   // todo: actioned_at
 }
 
@@ -35,8 +34,6 @@ message Room {
 
 service AuthService {
   rpc Join(JoinRequest) returns (User) {}
-  rpc LoggedIn(LoggedInRequest) returns (User) {}
-  rpc Signout(SignoutRequest) returns (Empty) {}
   rpc GetUser(GetUserRequest) returns (User) {}
   rpc GetUserAll(Empty) returns (GetUserAllResponse) {}
 }
@@ -93,9 +90,7 @@ message JoinRoomRequest {
 }
 
 message JoinRoomResponse {
-  Topic topic = 1;
-  User person = 2;
-  repeated User member = 3;
+  repeated User member = 1;
 }
 
 // -------------------- Topic Catalog --------------------

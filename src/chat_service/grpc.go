@@ -116,7 +116,7 @@ func (srv *chatServiceServer) JoinRoom(ctx context.Context, req *pb.JoinRoomRequ
 		WithField("ruserID", userID).
 		Debug("join room")
 
-	topic, err := srv.GetTopic(ctx, topicID)
+	_, err := srv.GetTopic(ctx, topicID)
 	if err != nil {
 		return nil, err
 	}
@@ -147,8 +147,6 @@ func (srv *chatServiceServer) JoinRoom(ctx context.Context, req *pb.JoinRoomRequ
 
 	return &pb.JoinRoomResponse{
 		Member: users,
-		Person: user,
-		Topic:  topic,
 	}, nil
 }
 
