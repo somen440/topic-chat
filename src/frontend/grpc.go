@@ -3,7 +3,7 @@ package main
 import (
 	"context"
 
-	pb "github.com/somen440/topic-chat/src/frontend/pb"
+	pb "github.com/somen440/topic-chat/src/common/pb"
 )
 
 // -----------------------------------------------------------------------------------------

@@ -8,9 +8,8 @@ import (
 	"strconv"
 	"time"
 
-	pb "github.com/somen440/topic-chat/src/chat_service/pb"
-
 	"github.com/sirupsen/logrus"
+	pb "github.com/somen440/topic-chat/src/common/pb"
 	"go.opencensus.io/plugin/ocgrpc"
 	"google.golang.org/grpc"
 )

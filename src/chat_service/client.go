@@ -1,9 +1,10 @@
 package main
 
 import (
-	pb "github.com/somen440/topic-chat/src/chat_service/pb"
+	pb "github.com/somen440/topic-chat/src/common/pb"
 )
 
+// UserID is user id
 type UserID int
 
 type client struct {

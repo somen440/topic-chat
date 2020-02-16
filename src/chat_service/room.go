@@ -3,10 +3,13 @@ package main
 import (
 	"fmt"
 
-	pb "github.com/somen440/topic-chat/src/chat_service/pb"
+	pb "github.com/somen440/topic-chat/src/common/pb"
 )
 
+// TopicID is topicID
 type TopicID int
+
+// RoomMap is room map
 type RoomMap map[TopicID]*room
 
 type room struct {
@@ -43,7 +46,7 @@ func (r *room) Run() {
 	}
 }
 
-func (r *room) NewClientId() int {
+func (r *room) NewClientID() int {
 	return len(r.member) + 1
 }
 
