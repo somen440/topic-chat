@@ -34,7 +34,7 @@ const getters = {
   }
 }
 
-export const readClient = read(getters.getClient);
+const readClient = read(getters.getClient);
 
 //
 // mutations

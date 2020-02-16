@@ -1,7 +1,7 @@
 import Vue from "vue";
 import Vuex from "vuex";
 import { State } from "@/store/state";
-import { auth, chat, counter, topicCatalog } from "@/store/modules";
+import { auth, chat, counter, topicCatalog, user } from "@/store/modules";
 
 Vue.use(Vuex);
 
@@ -11,7 +11,8 @@ export const createStore = () =>
       auth,
       chat,
       counter,
-      topicCatalog
+      topicCatalog,
+      user
     }
   });
 
