@@ -4,7 +4,7 @@ import (
 	"context"
 	"fmt"
 
-	pb "github.com/somen440/topic-chat/src/chat_service/pb"
+	pb "github.com/somen440/topic-chat/src/common/pb"
 	"google.golang.org/grpc"
 )
 
@@ -42,9 +42,6 @@ func (srv *chatServiceServer) RecvMessage(req *pb.RecvMessageRequest, stream pb.
 	if err != nil {
 		return err
 	}
-
-	// quit := make(chan os.Signal)
-	// signal.Notify(quit, os.Interrupt, os.Kill)
 
 	ctx := stream.Context()
 	defer r.Leave(c)
@@ -107,18 +104,6 @@ func (srv *chatServiceServer) CreateRoom(_ context.Context, req *pb.CreateRoomRe
 	go r.Run()
 
 	return &pb.Empty{}, nil
-}
-
-func (srv *chatServiceServer) ListRoom(_ context.Context, _ *pb.Empty) (*pb.ListRoomResponse, error) {
-	var result []*pb.Room
-	for id := range srv.rooms {
-		result = append(result, &pb.Room{
-			TopicId: int32(id),
-		})
-	}
-	log.WithField("room num", len(result)).
-		Debug("list room")
-	return &pb.ListRoomResponse{Rooms: result}, nil
 }
 
 func (srv *chatServiceServer) JoinRoom(ctx context.Context, req *pb.JoinRoomRequest) (*pb.JoinRoomResponse, error) {

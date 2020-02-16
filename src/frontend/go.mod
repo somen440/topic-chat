@@ -8,6 +8,7 @@ require (
 	github.com/gorilla/mux v1.7.3
 	github.com/pkg/errors v0.9.1
 	github.com/sirupsen/logrus v1.4.2
+	github.com/somen440/topic-chat/src/common v0.0.0-20200216022416-6756521cb067
 	go.opencensus.io v0.22.2
-	google.golang.org/grpc v1.27.0
+	google.golang.org/grpc v1.27.1
 )
