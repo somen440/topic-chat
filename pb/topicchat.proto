@@ -23,7 +23,7 @@ message Topic {
 message ChatMessage {
   string text = 1;
   int32 user_id = 2;
-  // todo: actioned_at
+  string actioned_at = 3;
 }
 
 message Room {
