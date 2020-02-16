@@ -108,13 +108,13 @@ debug_user_get:
 debug_user_get_all:
 	grpcurl -import-path pb/ \
 		-proto topicchat.proto \
-		-plaintext -v localhost:8082 topicchat.AuthService/GetUserAll
+		-plaintext -v localhost:9093 topicchat.AuthService/GetUserAll
 .PHONY: debug_user_get_all
 
 debug_topic_get_all:
 	grpcurl -import-path pb/ \
 		-proto topicchat.proto \
-		-plaintext -v localhost:8081 topicchat.TopicCatalogService/ListTopics
+		-plaintext -v localhost:9092 topicchat.TopicCatalogService/ListTopics
 .PHONY: debug_topic_get_all
 
 debug_topic_get:

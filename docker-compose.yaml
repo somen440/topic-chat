@@ -52,6 +52,8 @@ services:
       context: docker/envoy
     ports:
       - 9090:9090
+      - 9092:9092
+      - 9093:9093
     links:
       - chat
   redis:
