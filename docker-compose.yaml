@@ -3,14 +3,15 @@ version: '3'
 services:
   frontend:
     image: gcr.io/topic-chat/frontend:latest
-    environment:
-      - FRONTEND_PORT
-      - FRONTEND_LISTEN_ADDR
-      - TOPIC_CATALOG_SERVICE_ADDR
-      - AUTH_SERVICE_ADDR
-      - DEBUG
     ports:
-      - 8080:8080
+      - 8080:80
+    environment:
+      - CHAT_SERVICE_ADDR
+      - AUTH_SERVICE_ADDR
+      - TOPIC_CATALOG_SERVICE_ADDR
+    links:
+      - envoy
+      - chat
   topic_catalog:
     image: gcr.io/topic-chat/topic_catalog:latest
     environment:
@@ -37,16 +38,6 @@ services:
     links:
       - auth
       - topic_catalog
-  chat_client:
-    image: gcr.io/topic-chat/chat_client:latest
-    ports:
-      - 8000:80
-    environment:
-      - CHAT_SERVICE_ADDR
-      - AUTH_SERVICE_ADDR
-    links:
-      - envoy
-      - chat
   envoy:
     build:
       context: docker/envoy
