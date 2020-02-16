@@ -23,10 +23,10 @@ export default tsx.component({
             </li>
           ) : (
             <li>
-            <router-link tag="li" to="/join">
-              <a>join</a>
-            </router-link>
-          </li>
+              <router-link tag="li" to="/join">
+                <a>join</a>
+              </router-link>
+            </li>
           )}
         </ul>
         {user.readIsLoggedIn(this.$store) && (

@@ -33,3 +33,13 @@ func NewRuntimeException(msg string, context interface{}) *RuntimeException {
 		actionedAt: time.Now(),
 	}
 }
+
+// InvalidParameterException is return InvalidParameterException
+type InvalidParameterException struct {
+	actual string
+	expect string
+}
+
+func (e *InvalidParameterException) Error() string {
+	return fmt.Sprintf("expect: [%s] actual: [%s]", e.expect, e.actual)
+}

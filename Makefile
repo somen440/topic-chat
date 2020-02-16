@@ -86,7 +86,7 @@ debug_chat_join:
 debug_chat_send:
 	grpcurl -import-path pb/ \
 		-proto topicchat.proto \
-		-d '{"message":{"text":"$(TEXT)","user":{"id":$(USER_ID),"name":"hoge","loggedIn":"true"}},"topicId":$(TOPIC_ID)}' \
+		-d '{"message":{"text":"$(TEXT)","user_id":$(USER_ID)},"topicId":$(TOPIC_ID)}' \
 		-plaintext -v localhost:8083 topicchat.ChatService/SendMessage
 .PHONY: debug_chat_send
 

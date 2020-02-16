@@ -1,13 +1,15 @@
 import * as tsx from "vue-tsx-support";
 import * as chat from "@/store/modules/chat";
 import * as user from "@/store/modules/user";
-import { User, ChatMessage } from '@/pb/topicchat_pb';
+import { User, ChatMessage, Topic } from "@/pb/topicchat_pb";
 
 interface RoomData {
-  title: string
-  member: User[]
-  messages: ChatMessage[],
-  sendText: string
+  title: string;
+  member: User[];
+  messages: ChatMessage[];
+  sendText: string;
+  mine: User | undefined;
+  topic: Topic | undefined;
 }
 
 export default tsx.component({
@@ -17,30 +19,49 @@ export default tsx.component({
       title: "Room",
       member: [],
       messages: [],
-      sendText: ""
+      sendText: "",
+      mine: undefined,
+      topic: undefined
     };
   },
   methods: {
     validSend(): boolean {
-      return this.sendText !== ""
+      return this.sendText !== "";
     },
     message(): ChatMessage {
       const message = new ChatMessage();
       message.setText(this.sendText);
-      message.setUser(user.readGetMine(this.$store));
+      message.setUserId(this.getMineId());
       return message;
+    },
+    getMineId(): number {
+      return this.mine?.getId() ?? -1;
+    },
+    getTopicId(): number {
+      return this.topic?.getId() ?? -1;
+    },
+    getMemberUser(userId: number): User | undefined {
+      return this.member.find(v => v.getId() === userId);
     }
   },
   created() {
-    const userId = user.readGetMine(this.$store)?.getId() ?? -1;
-    const topicId = user.readGetSelectedTopic(this.$store)?.getId() ?? -1;
-    const payload = { userId, topicId };
+    this.mine = user.readGetMine(this.$store);
+    this.topic = user.readGetSelectedTopic(this.$store);
+    if (this.mine === undefined || this.topic === undefined) {
+      this.$router.push("/");
+      alert("login");
+    }
+
+    const payload = {
+      userId: this.getMineId(),
+      topicId: this.getTopicId()
+    };
 
     chat.dispatchJoinRoom(this.$store, payload).then(res => {
-      res.on("data", (res) => {
+      res.on("data", res => {
         this.member = res.getMemberList();
         chat.dispatchRecvMessage(this.$store, payload).then(res => {
-          res.on("data", (res) => {
+          res.on("data", res => {
             this.messages.push(res);
           });
         });
@@ -55,36 +76,45 @@ export default tsx.component({
         <ul>
           {this.member.map(e => (
             <li>
-            {user.isEqualsUser(user.readGetMine(this.$store), e) ? (
-              <b>[my] { e.getId() }: { e.getName() }</b>
-            ) : (
-              <div>{ e.getId() }: { e.getName() }</div>
-            )}
+              {user.isEqualsUser(user.readGetMine(this.$store), e) ? (
+                <b>
+                  [my] {e.getId()}: {e.getName()}
+                </b>
+              ) : (
+                <div>
+                  {e.getId()}: {e.getName()}
+                </div>
+              )}
             </li>
           ))}
         </ul>
         <h2>messages</h2>
         <ul>
           {this.messages.map(e => (
-            <li>{ e.getUser()?.getName() ?? "unknown" }: { e.getText() }</li>
+            <li>
+              {this.getMemberUser(e.getUserId())?.getName() ?? "unknown"}:{" "}
+              {e.getText()}
+            </li>
           ))}
         </ul>
         <input
           type="text"
           onInput={e => {
-            this.sendText = e.target.value?.toString() ?? ""
+            this.sendText = e.target.value?.toString() ?? "";
           }}
         />
         {this.validSend() && (
           <button
-          onClick={() => {
-            const payload = {
-              topicId: user.readGetSelectedTopic(this.$store)?.getId() ?? -1,
-              message: this.message(),
-            }
-            chat.dispatchSendMessage(this.$store, payload);
-          }}
-          >send</button>
+            onClick={() => {
+              const payload = {
+                topicId: user.readGetSelectedTopic(this.$store)?.getId() ?? -1,
+                message: this.message()
+              };
+              chat.dispatchSendMessage(this.$store, payload);
+            }}
+          >
+            send
+          </button>
         )}
       </div>
     );

@@ -4,6 +4,7 @@ import (
 	"context"
 	"fmt"
 
+	"github.com/somen440/topic-chat/src/common"
 	pb "github.com/somen440/topic-chat/src/common/pb"
 	"google.golang.org/grpc"
 )
@@ -67,17 +68,21 @@ func (srv *chatServiceServer) RecvMessage(req *pb.RecvMessageRequest, stream pb.
 func (srv *chatServiceServer) SendMessage(_ context.Context, req *pb.SendMessageRequest) (*pb.Empty, error) {
 	topicID := TopicID(req.GetTopicId())
 	msg := req.GetMessage()
+	userID := UserID(msg.GetUserId())
 
-	if topicID == 0 {
-		return nil, fmt.Errorf("invalid param")
-	}
-	if msg.GetUser() == nil {
-		return nil, fmt.Errorf("not found user")
+	if topicID == 0 || userID == 0 {
+		return nil, common.NewRuntimeException(
+			"invalid param",
+			map[string]string{
+				"expect": fmt.Sprintf("userID > 0 && topicID > 0"),
+				"actual": fmt.Sprintf("userID: [%d] topicID: [%d]", userID, topicID),
+			},
+		)
 	}
 
 	log.WithField("topicID", topicID).
 		WithField("msg text", msg.GetText()).
-		WithField("msg user", msg.GetUser().GetId()).
+		WithField("user id", msg.GetUserId()).
 		Debug("send")
 
 	r, err := srv.GetRoom(topicID)

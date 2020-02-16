@@ -21,7 +21,7 @@ export default tsx.component({
         <h1>{this.title}</h1>
         <input
           type="text"
-          onInput={(e) => {
+          onInput={e => {
             this.name = e.target.value?.toString() ?? "";
           }}
         />
@@ -29,15 +29,16 @@ export default tsx.component({
           <button
             onClick={() => {
               console.log("click");
-              auth.dispatchJoin(this.$store, this.name)
-                .then(res => {
-                  res.on("data", res => {
-                    user.commitLoggedIn(this.$store, res);
-                    this.$router.push("/");
-                  });
+              auth.dispatchJoin(this.$store, this.name).then(res => {
+                res.on("data", res => {
+                  user.commitLoggedIn(this.$store, res);
+                  this.$router.push("/");
                 });
+              });
             }}
-          >register</button>
+          >
+            register
+          </button>
         )}
       </div>
     );

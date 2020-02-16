@@ -1,15 +1,22 @@
 import { ActionContext } from "vuex";
-import { State as RootState } from "@/store/state"
+import { State as RootState } from "@/store/state";
 import { getStoreAccessors } from "vuex-typescript";
-import { ChatServiceClient } from "@/pb/TopicchatServiceClientPb"
-import { SendMessageRequest, JoinRoomRequest, JoinRoomResponse, RecvMessageRequest, ChatMessage, Empty } from "@/pb/topicchat_pb";
-import { ClientReadableStream } from 'grpc-web';
+import { ChatServiceClient } from "@/pb/TopicchatServiceClientPb";
+import {
+  SendMessageRequest,
+  JoinRoomRequest,
+  JoinRoomResponse,
+  RecvMessageRequest,
+  ChatMessage,
+  Empty
+} from "@/pb/topicchat_pb";
+import { ClientReadableStream } from "grpc-web";
 
 const SCHEME = process.env.SCHEME ?? "http";
 const CHAT_SERVICE_ADDR = process.env.CHAT_SERVICE_ADDR ?? "localhost:9090";
 
 export interface ChatState {
-  client: ChatServiceClient,
+  client: ChatServiceClient;
 }
 
 type ChatContext = ActionContext<ChatState, RootState>;
@@ -23,7 +30,7 @@ const { commit, read, dispatch } = getStoreAccessors<ChatState, RootState>(
 //
 const state = {
   client: new ChatServiceClient(`${SCHEME}://${CHAT_SERVICE_ADDR}`)
-}
+};
 
 //
 // getters
@@ -32,32 +39,38 @@ const getters = {
   getClient(state: ChatState) {
     return state.client;
   }
-}
+};
 
 export const readGetClient = read(getters.getClient);
 
 //
 // mutations
 //
-const mutations = {}
+const mutations = {};
 
 //
 // actions
 //
 const actions = {
-  joinRoom(context: ChatContext, item: { userId: number, topicId: number }): Promise<ClientReadableStream<JoinRoomResponse>> {
+  joinRoom(
+    context: ChatContext,
+    item: { userId: number; topicId: number }
+  ): Promise<ClientReadableStream<JoinRoomResponse>> {
     const req = new JoinRoomRequest();
     req.setUserId(item.userId);
     req.setTopicId(item.topicId);
 
     return new Promise(resolve => {
-      const stream = readGetClient(context).joinRoom(req, {}, (err) => {
+      const stream = readGetClient(context).joinRoom(req, {}, err => {
         console.log(err);
       });
       resolve(stream);
     });
   },
-  recvMessage(context: ChatContext, item: { userId: number, topicId: number }): Promise<ClientReadableStream<ChatMessage>> {
+  recvMessage(
+    context: ChatContext,
+    item: { userId: number; topicId: number }
+  ): Promise<ClientReadableStream<ChatMessage>> {
     const req = new RecvMessageRequest();
     req.setUserId(item.userId);
     req.setTopicId(item.topicId);
@@ -67,19 +80,22 @@ const actions = {
       resolve(stream);
     });
   },
-  sendMessage(context: ChatContext, item: { topicId: number, message: ChatMessage }): Promise<ClientReadableStream<Empty>> {
+  sendMessage(
+    context: ChatContext,
+    item: { topicId: number; message: ChatMessage }
+  ): Promise<ClientReadableStream<Empty>> {
     const req = new SendMessageRequest();
     req.setTopicId(item.topicId);
     req.setMessage(item.message);
 
     return new Promise(resolve => {
-      const stream = readGetClient(context).sendMessage(req, {}, (err) => {
+      const stream = readGetClient(context).sendMessage(req, {}, err => {
         console.log(err);
       });
       resolve(stream);
     });
   }
-}
+};
 
 export const dispatchJoinRoom = dispatch(actions.joinRoom);
 export const dispatchRecvMessage = dispatch(actions.recvMessage);

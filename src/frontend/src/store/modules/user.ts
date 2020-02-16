@@ -1,14 +1,14 @@
 import { ActionContext } from "vuex";
-import { State as RootState } from "@/store/state"
+import { State as RootState } from "@/store/state";
 import { getStoreAccessors } from "vuex-typescript";
-import { User, Topic } from '@/pb/topicchat_pb';
+import { User, Topic } from "@/pb/topicchat_pb";
 
-type UnUser = User | undefined
-type UnTopic = Topic | undefined
+type UnUser = User | undefined;
+type UnTopic = Topic | undefined;
 
 export interface UserState {
-  mine: UnUser
-  selectedTopicId: UnTopic
+  mine: UnUser;
+  selectedTopicId: UnTopic;
 }
 
 type UserContext = ActionContext<UserState, RootState>;
@@ -23,7 +23,7 @@ const { commit, read, dispatch } = getStoreAccessors<UserState, RootState>(
 const state = {
   mine: undefined,
   selectedTopicId: undefined
-}
+};
 
 //
 // getters
@@ -42,7 +42,7 @@ const getters = {
   isSelectedTopic(state: UserState): boolean {
     return state.selectedTopicId !== undefined;
   }
-}
+};
 
 export const readGetMine = read(getters.getMine);
 export const readIsLoggedIn = read(getters.isLoggedIn);
@@ -67,7 +67,7 @@ export const commitSelectTopic = commit(mutations.selectTopic);
 //
 // actions
 //
-const actions = {}
+const actions = {};
 
 export const user = {
   namespaced: true,
