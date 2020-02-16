@@ -1,6 +1,7 @@
 import * as tsx from "vue-tsx-support";
 import * as topicCatalog from "@/store/modules/topic-catalog";
 import { Topic } from '@/pb/topicchat_pb';
+import * as user from "@/store/modules/user";
 
 interface TopicCatalogData {
   title: string
@@ -31,10 +32,13 @@ export default tsx.component({
         {this.topics.map(e => (
           <li>
             { e.getId() }: { e.getName() }
-            <button>
-              <router-link tag="button" to="room">
+            <button
+              onClick={() => {
+                user.commitSelectTopic(this.$store, e);
+                this.$router.push("/room");
+              }}
+            >
               join
-              </router-link>
             </button>
           </li>
         ))}
