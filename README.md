@@ -20,6 +20,14 @@ Find Protocol Buffers Descriptions at the ./pb directory.
 |RoomService||
 |TopicCatalogService||
 
+## (local) Proxy
+
+envoy
+
+- chat: 9090 -> 8083
+- topic_catalog: 9092 -> 8081
+- auth: 9093 -> 8082
+
 ## Features
 
 todo

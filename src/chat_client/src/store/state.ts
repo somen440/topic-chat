@@ -1,5 +1,8 @@
-import { CounterState } from "./modules/counter";
+import { CounterState, TopicCatalogState, AuthState, ChatState } from "./modules";
 
 export interface State {
-  counter: CounterState;
+  auth: AuthState,
+  chat: ChatState,
+  counter: CounterState,
+  topicCatalog: TopicCatalogState,
 }
