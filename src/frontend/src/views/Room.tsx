@@ -92,6 +92,7 @@ export default tsx.component({
         <ul>
           {this.messages.map(e => (
             <li>
+              {e.getActionedAt()}:{" "}
               {this.getMemberUser(e.getUserId())?.getName() ?? "unknown"}:{" "}
               {e.getText()}
             </li>

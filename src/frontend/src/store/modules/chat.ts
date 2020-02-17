@@ -11,6 +11,7 @@ import {
   Empty
 } from "@/pb/topicchat_pb";
 import { ClientReadableStream } from "grpc-web";
+import * as moment from "moment-timezone";
 
 const SCHEME = process.env.SCHEME ?? "http";
 const CHAT_SERVICE_ADDR = process.env.CHAT_SERVICE_ADDR ?? "localhost:9090";
@@ -86,6 +87,9 @@ const actions = {
   ): Promise<ClientReadableStream<Empty>> {
     const req = new SendMessageRequest();
     req.setTopicId(item.topicId);
+
+    const now = moment.tz("Asia/Tokyo").format("YYYY-MM-DD HH:mm:ss");
+    item.message.setActionedAt(now);
     req.setMessage(item.message);
 
     return new Promise(resolve => {
