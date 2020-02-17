@@ -42,6 +42,12 @@ export default tsx.component({
     },
     getMemberUser(userId: number): User | undefined {
       return this.member.find(v => v.getId() === userId);
+    },
+    getTopicInfo(): string {
+      if (this.topic === undefined) {
+        return "unknown";
+      }
+      return `${this.topic.getId()}: ${this.topic.getName()}`
     }
   },
   created() {
@@ -72,7 +78,10 @@ export default tsx.component({
     return (
       <div>
         <h1>{this.title}</h1>
-        <h2>member</h2>
+        <h2>room info</h2>
+        <h3>topic</h3>
+        <p>{this.getTopicInfo()}</p>
+        <h3>member</h3>
         <ul>
           {this.member.map(e => (
             <li>
