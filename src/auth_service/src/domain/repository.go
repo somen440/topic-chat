@@ -1,7 +1,7 @@
 package domain
 
 import (
-	pb "github.com/somen440/topic-chat/src/common/pb"
+	pb "github.com/somen440/topic-chat/src/auth_service/pb"
 )
 
 // UserRepository is user infrastructure interface

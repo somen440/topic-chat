@@ -28,6 +28,8 @@ github.com/somen440/topic-chat/src/common v0.0.0-20200216022416-6756521cb067 h1:
 github.com/somen440/topic-chat/src/common v0.0.0-20200216022416-6756521cb067/go.mod h1:ZCDI3sVhmBH+bZrrv/mZgLhYNX+L1dxJo/r6DAKDY24=
 github.com/somen440/topic-chat/src/common v0.0.0-20200216224711-dca41da9e6f0 h1:SUOWa7y8dxLI5mrynxTRD+mtySd9v5ld5x50c0eY8Jc=
 github.com/somen440/topic-chat/src/common v0.0.0-20200216224711-dca41da9e6f0/go.mod h1:ZCDI3sVhmBH+bZrrv/mZgLhYNX+L1dxJo/r6DAKDY24=
+github.com/somen440/topic-chat/src/common v0.0.0-20200216233545-bb2f1c48c779 h1:dG4KAsDEfKtx257+dEemH0vMv+N/gP9r4lQ4dkf2yo4=
+github.com/somen440/topic-chat/src/common v0.0.0-20200216233545-bb2f1c48c779/go.mod h1:ZCDI3sVhmBH+bZrrv/mZgLhYNX+L1dxJo/r6DAKDY24=
 github.com/stretchr/objx v0.1.0/go.mod h1:HFkY916IF+rwdDfMAkV7OtwuqBVzrE8GR6GFx+wExME=
 github.com/stretchr/objx v0.1.1/go.mod h1:HFkY916IF+rwdDfMAkV7OtwuqBVzrE8GR6GFx+wExME=
 github.com/stretchr/testify v1.2.2/go.mod h1:a8OnRcib4nhh0OaRAV+Yts87kKdq0PP7pXfy6kDkUVs=

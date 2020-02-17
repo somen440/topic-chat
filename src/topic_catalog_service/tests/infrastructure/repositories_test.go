@@ -4,7 +4,7 @@ import (
 	"reflect"
 	"testing"
 
-	pb "github.com/somen440/topic-chat/src/common/pb"
+	pb "github.com/somen440/topic-chat/src/topic_catalog_service/pb"
 	"github.com/somen440/topic-chat/src/topic_catalog_service/src/domain"
 	"github.com/somen440/topic-chat/src/topic_catalog_service/src/infrastructure"
 

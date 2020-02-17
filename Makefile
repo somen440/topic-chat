@@ -1,13 +1,17 @@
 PROTODIR=pb
 PROJECT=topic-chat
 
+AUTH_OUT_DIR=src/auth_service
+CHAT_OUT_DIR=src/chat_service
 FRONTEND_OUT_DIR=src/frontend/src
-PB_OUT_DIR=src/common
+TOPIC_CATALOG_OUT_DIR=src/topic_catalog_service
 
 genproto:
 	protoc -I/usr/local/include -I. \
       -I$(GOPATH)/src \
-			--go_out=plugins=grpc:$(PB_OUT_DIR) \
+			--go_out=plugins=grpc:$(AUTH_OUT_DIR) \
+			--go_out=plugins=grpc:$(CHAT_OUT_DIR) \
+			--go_out=plugins=grpc:$(TOPIC_CATALOG_OUT_DIR) \
 			--js_out=import_style=commonjs:$(FRONTEND_OUT_DIR) \
 			--grpc-web_out=import_style=typescript,mode=grpcwebtext:$(FRONTEND_OUT_DIR) \
 			-I$(PROTODIR) \

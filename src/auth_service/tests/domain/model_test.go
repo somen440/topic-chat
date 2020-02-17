@@ -4,8 +4,8 @@ import (
 	"reflect"
 	"testing"
 
+	pb "github.com/somen440/topic-chat/src/auth_service/pb"
 	"github.com/somen440/topic-chat/src/auth_service/src/domain"
-	pb "github.com/somen440/topic-chat/src/common/pb"
 )
 
 func TestNewUser(t *testing.T) {

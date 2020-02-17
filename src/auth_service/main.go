@@ -7,10 +7,10 @@ import (
 	"strconv"
 	"time"
 
+	pb "github.com/somen440/topic-chat/src/auth_service/pb"
 	"github.com/somen440/topic-chat/src/auth_service/src/domain"
 	"github.com/somen440/topic-chat/src/auth_service/src/handler"
 	"github.com/somen440/topic-chat/src/auth_service/src/infrastructure"
-	pb "github.com/somen440/topic-chat/src/common/pb"
 
 	"github.com/sirupsen/logrus"
 	"google.golang.org/grpc"

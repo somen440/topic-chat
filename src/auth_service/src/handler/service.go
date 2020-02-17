@@ -4,9 +4,9 @@ import (
 	"context"
 
 	"github.com/sirupsen/logrus"
+	pb "github.com/somen440/topic-chat/src/auth_service/pb"
 	"github.com/somen440/topic-chat/src/auth_service/src/domain"
 	"github.com/somen440/topic-chat/src/common"
-	pb "github.com/somen440/topic-chat/src/common/pb"
 )
 
 type authServiceServer struct {

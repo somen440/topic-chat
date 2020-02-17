@@ -3,7 +3,7 @@ package domain
 import (
 	"sort"
 
-	pb "github.com/somen440/topic-chat/src/common/pb"
+	pb "github.com/somen440/topic-chat/src/auth_service/pb"
 )
 
 // UserID is pb user id
