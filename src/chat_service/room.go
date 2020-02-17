@@ -3,7 +3,11 @@ package main
 import (
 	"fmt"
 
-	pb "github.com/somen440/topic-chat/src/common/pb"
+	pb "github.com/somen440/topic-chat/src/chat_service/pb"
+)
+
+const (
+	systemUserID = -1
 )
 
 // TopicID is topicID
@@ -26,6 +30,7 @@ func (r *room) Run() {
 		case c := <-r.join:
 			log.WithField("userId", c.UserID()).
 				Debug("join")
+
 			r.member[c] = true
 		case c := <-r.leave:
 			log.WithField("userId", c.UserID()).

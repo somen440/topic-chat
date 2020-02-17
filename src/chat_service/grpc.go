@@ -4,8 +4,8 @@ import (
 	"context"
 	"fmt"
 
+	pb "github.com/somen440/topic-chat/src/chat_service/pb"
 	"github.com/somen440/topic-chat/src/common"
-	pb "github.com/somen440/topic-chat/src/common/pb"
 	"google.golang.org/grpc"
 )
 

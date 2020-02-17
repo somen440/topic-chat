@@ -9,7 +9,7 @@ import (
 	"time"
 
 	"github.com/sirupsen/logrus"
-	pb "github.com/somen440/topic-chat/src/common/pb"
+	pb "github.com/somen440/topic-chat/src/chat_service/pb"
 	"go.opencensus.io/plugin/ocgrpc"
 	"google.golang.org/grpc"
 )
