@@ -68,6 +68,9 @@ service ChatService {
   // ---- Room ----
   rpc CreateRoom(CreateRoomRequest) returns (Empty);
   rpc JoinRoom(JoinRoomRequest) returns (JoinRoomResponse);
+
+  // ---- Member ----
+  rpc RecvMember(RecvMemberRequest) returns (stream User);
 }
 
 message CreateRoomRequest {
@@ -91,6 +94,11 @@ message JoinRoomRequest {
 
 message JoinRoomResponse {
   repeated User member = 1;
+}
+
+message RecvMemberRequest {
+  int32 topic_id = 1;
+  int32 user_id = 2;
 }
 
 // -------------------- Topic Catalog --------------------

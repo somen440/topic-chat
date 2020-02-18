@@ -2,6 +2,7 @@ import * as tsx from "vue-tsx-support";
 import * as chat from "@/store/modules/chat";
 import * as user from "@/store/modules/user";
 import { User, ChatMessage, Topic } from "@/pb/topicchat_pb";
+import * as moment from "moment-timezone";
 
 interface RoomData {
   title: string;
@@ -71,6 +72,18 @@ export default tsx.component({
             this.messages.push(res);
           });
         });
+        chat.dispatchRecvMember(this.$store, payload).then(res => {
+          res.on("data", res => {
+            const systemJoinMessage = new ChatMessage();
+            systemJoinMessage.setText(`${res.getName()} さんが入室しました。`);
+
+            const now = moment.tz("Asia/Tokyo").format("YYYY-MM-DD HH:mm:ss");
+            systemJoinMessage.setActionedAt(now);
+
+            this.messages.push(systemJoinMessage);
+            this.member.push(res);
+          });
+        });
       });
     });
   },
@@ -102,7 +115,7 @@ export default tsx.component({
           {this.messages.map(e => (
             <li>
               {e.getActionedAt()}:{" "}
-              {this.getMemberUser(e.getUserId())?.getName() ?? "unknown"}:{" "}
+              {this.getMemberUser(e.getUserId())?.getName() ?? "system"}:{" "}
               {e.getText()}
             </li>
           ))}

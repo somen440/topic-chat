@@ -8,7 +8,9 @@ import {
   JoinRoomResponse,
   RecvMessageRequest,
   ChatMessage,
-  Empty
+  Empty,
+  RecvMemberRequest,
+  User
 } from "@/pb/topicchat_pb";
 import { ClientReadableStream } from "grpc-web";
 import * as moment from "moment-timezone";
@@ -98,12 +100,26 @@ const actions = {
       });
       resolve(stream);
     });
+  },
+  recvMember(
+    context: ChatContext,
+    item: { topicId: number; userId: number; }
+  ): Promise<ClientReadableStream<User>> {
+    const req = new RecvMemberRequest();
+    req.setUserId(item.userId);
+    req.setTopicId(item.topicId);
+
+    return new Promise(resolve => {
+      const stream = readGetClient(context).recvMember(req, {});
+      resolve(stream);
+    });
   }
 };
 
 export const dispatchJoinRoom = dispatch(actions.joinRoom);
 export const dispatchRecvMessage = dispatch(actions.recvMessage);
 export const dispatchSendMessage = dispatch(actions.sendMessage);
+export const dispatchRecvMember = dispatch(actions.recvMember);
 
 export const chat = {
   namespaced: true,

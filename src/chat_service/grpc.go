@@ -143,16 +143,55 @@ func (srv *chatServiceServer) JoinRoom(ctx context.Context, req *pb.JoinRoomRequ
 	users := r.GetUsers()
 	users = append(users, user)
 
-	c := &client{
-		user: user,
-		send: make(chan *pb.ChatMessage),
-	}
-
+	c := NewClient(user).(*client)
 	r.Join(c)
 
 	return &pb.JoinRoomResponse{
 		Member: users,
 	}, nil
+}
+
+func (srv *chatServiceServer) RecvMember(req *pb.RecvMemberRequest, stream pb.ChatService_RecvMemberServer) error {
+	topicID := TopicID(req.GetTopicId())
+	userID := UserID(req.GetUserId())
+	if topicID == 0 || userID == 0 {
+		return fmt.Errorf("invalid param")
+	}
+
+	if !srv.ExistsRoom(topicID) {
+		return fmt.Errorf("not found room")
+	}
+
+	log.WithField("topicID", topicID).
+		Debug("get stream")
+
+	r, err := srv.GetRoom(topicID)
+	if err != nil {
+		return err
+	}
+	c, err := r.GetClient(userID)
+	if err != nil {
+		return err
+	}
+
+	ctx := stream.Context()
+
+	func() {
+		for {
+			select {
+			case user := <-c.add:
+				stream.Send(user)
+			case <-ctx.Done():
+				return
+			}
+		}
+	}()
+
+	log.WithField("userID", userID).
+		WithField("topicID", topicID).
+		Debug("end stream")
+
+	return nil
 }
 
 func (srv *chatServiceServer) GetUser(ctx context.Context, userID UserID) (*pb.User, error) {

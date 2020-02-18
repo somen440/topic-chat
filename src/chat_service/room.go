@@ -30,8 +30,19 @@ func (r *room) Run() {
 		case c := <-r.join:
 			log.WithField("userId", c.UserID()).
 				Debug("join")
-
 			r.member[c] = true
+			for m := range r.member {
+				if c.UserID() == m.UserID() {
+					continue
+				}
+				log.WithField("userId", c.UserID()).
+					Debug("join user")
+				select {
+				case m.add <- c.user:
+				default:
+					r.Leave(m)
+				}
+			}
 		case c := <-r.leave:
 			log.WithField("userId", c.UserID()).
 				Debug("leave")
