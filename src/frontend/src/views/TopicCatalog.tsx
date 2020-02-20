@@ -27,21 +27,29 @@ export default tsx.component({
     return (
       <div>
         <h1>{this.title}</h1>
-        <ul>
+
+        <div class="list-group">
           {this.topics.map(e => (
-            <li>
-              {e.getId()}: {e.getName()}
-              <button
-                onClick={() => {
-                  user.commitSelectTopic(this.$store, e);
-                  this.$router.push("/room");
-                }}
-              >
-                join
-              </button>
-            </li>
+            <a href="#" class="list-group-item list-group-item-action">
+              <div class="d-flex w-100 justify-content-between">
+                <h5 class="mb-1">{ e.getId() }: { e.getName() }</h5>
+                <small>timestamp</small>
+              </div>
+              <div class="d-flex w-100 justify-content-between">
+                <p class="mb-1">topic detail.</p>
+                <button
+                  class="btn btn-outline-primary"
+                  onClick={() => {
+                    user.commitSelectTopic(this.$store, e);
+                    this.$router.push("/room");
+                  }}
+                >
+                  Join
+                </button>
+              </div>
+            </a>
           ))}
-        </ul>
+        </div>
       </div>
     );
   }

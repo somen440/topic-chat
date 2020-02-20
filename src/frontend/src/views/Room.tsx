@@ -3,10 +3,10 @@ import * as chat from "@/store/modules/chat";
 import * as user from "@/store/modules/user";
 import { User, ChatMessage, Topic } from "@/pb/topicchat_pb";
 import * as moment from "moment-timezone";
+import * as room from "@/store/modules/room";
 
 interface RoomData {
   title: string;
-  member: User[];
   messages: ChatMessage[];
   sendText: string;
   mine: User | undefined;
@@ -18,7 +18,6 @@ export default tsx.component({
   data(): RoomData {
     return {
       title: "Room",
-      member: [],
       messages: [],
       sendText: "",
       mine: undefined,
@@ -41,14 +40,21 @@ export default tsx.component({
     getTopicId(): number {
       return this.topic?.getId() ?? -1;
     },
-    getMemberUser(userId: number): User | undefined {
-      return this.member.find(v => v.getId() === userId);
-    },
     getTopicInfo(): string {
       if (this.topic === undefined) {
         return "unknown";
       }
       return `${this.topic.getId()}: ${this.topic.getName()}`
+    },
+    getMemberUser(userId: number): User {
+      const user = room.readMember(this.$store)
+        .find(e => e.getId() === userId)
+      if (user === undefined) {
+        const unUser = new User();
+        unUser.setName("system");
+        return unUser;
+      }
+      return user;
     }
   },
   created() {
@@ -66,7 +72,8 @@ export default tsx.component({
 
     chat.dispatchJoinRoom(this.$store, payload).then(res => {
       res.on("data", res => {
-        this.member = res.getMemberList();
+        console.log(res.getMemberList());
+        room.commitInitializeMember(this.$store, res.getMemberList());
         chat.dispatchRecvMessage(this.$store, payload).then(res => {
           res.on("data", res => {
             this.messages.push(res);
@@ -81,7 +88,7 @@ export default tsx.component({
             systemJoinMessage.setActionedAt(now);
 
             this.messages.push(systemJoinMessage);
-            this.member.push(res);
+            room.commitAddMember(this.$store, res);
           });
         });
       });
@@ -90,55 +97,49 @@ export default tsx.component({
   render() {
     return (
       <div>
-        <h1>{this.title}</h1>
-        <h2>room info</h2>
-        <h3>topic</h3>
-        <p>{this.getTopicInfo()}</p>
-        <h3>member</h3>
-        <ul>
-          {this.member.map(e => (
-            <li>
-              {user.isEqualsUser(user.readGetMine(this.$store), e) ? (
-                <b>
-                  [my] {e.getId()}: {e.getName()}
-                </b>
-              ) : (
-                <div>
-                  {e.getId()}: {e.getName()}
-                </div>
-              )}
-            </li>
-          ))}
-        </ul>
-        <h2>messages</h2>
-        <ul>
-          {this.messages.map(e => (
-            <li>
-              {e.getActionedAt()}:{" "}
-              {this.getMemberUser(e.getUserId())?.getName() ?? "system"}:{" "}
-              {e.getText()}
-            </li>
-          ))}
-        </ul>
-        <input
-          type="text"
-          onInput={e => {
-            this.sendText = e.target.value?.toString() ?? "";
-          }}
-        />
-        {this.validSend() && (
-          <button
-            onClick={() => {
-              const payload = {
-                topicId: user.readGetSelectedTopic(this.$store)?.getId() ?? -1,
-                message: this.message()
-              };
-              chat.dispatchSendMessage(this.$store, payload);
+        {this.messages.map(e => (
+          <div class="media my-sm-2">
+            <img
+              src="//storage.googleapis.com/topic-chat/images/guest_user.png"
+              width="64"
+              height="64"
+              class="bd-placeholder-img mr-3"
+            />
+            <div class="media-body text-monospace">
+              <h5 class="mt-0">
+                { this.getMemberUser(e.getUserId())?.getName() ?? "system" }{" "}
+                <small class="text-muted">{ e.getActionedAt() }</small>
+              </h5>
+              { e.getText() }
+            </div>
+          </div>
+        ))}
+
+        <div class="input-group mb-3">
+          <input
+            type="text"
+            class="form-control"
+            placeholder="Message"
+            onInput={e => {
+              this.sendText = e.target.value?.toString() ?? "";
             }}
-          >
-            send
-          </button>
-        )}
+          />
+          <div class="input-group-append">
+            <button
+              class="btn btn-outline-secondary"
+              type="button"
+              onClick={() => {
+                const payload = {
+                  topicId: user.readGetSelectedTopic(this.$store)?.getId() ?? -1,
+                  message: this.message()
+                };
+                chat.dispatchSendMessage(this.$store, payload);
+              }}
+            >
+              Send
+            </button>
+          </div>
+        </div>
       </div>
     );
   }

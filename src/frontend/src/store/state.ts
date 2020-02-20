@@ -3,13 +3,15 @@ import {
   TopicCatalogState,
   AuthState,
   ChatState,
-  UserState
+  UserState,
+  RoomState
 } from "./modules";
 
 export interface State {
   auth: AuthState;
   chat: ChatState;
   counter: CounterState;
+  room: RoomState;
   topicCatalog: TopicCatalogState;
   user: UserState;
 }

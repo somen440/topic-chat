@@ -19,16 +19,21 @@ export default tsx.component({
     return (
       <div>
         <h1>{this.title}</h1>
-        <input
-          type="text"
-          onInput={e => {
-            this.name = e.target.value?.toString() ?? "";
-          }}
-        />
+        <div class="form-group">
+          <label for="inputName">Name</label>
+          <input
+            id="inputName"
+            class="form-control"
+            type="text"
+            onInput={e => {
+              this.name = e.target.value?.toString() ?? "";
+            }}
+          />
+        </div>
         {this.validName && (
           <button
+            class="btn btn-outline-primary"
             onClick={() => {
-              console.log("click");
               auth.dispatchJoin(this.$store, this.name).then(res => {
                 res.on("data", res => {
                   user.commitLoggedIn(this.$store, res);
