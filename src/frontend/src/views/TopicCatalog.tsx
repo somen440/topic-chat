@@ -32,7 +32,9 @@ export default tsx.component({
           {this.topics.map(e => (
             <a href="#" class="list-group-item list-group-item-action">
               <div class="d-flex w-100 justify-content-between">
-                <h5 class="mb-1">{ e.getId() }: { e.getName() }</h5>
+                <h5 class="mb-1">
+                  {e.getId()}: {e.getName()}
+                </h5>
                 <small>timestamp</small>
               </div>
               <div class="d-flex w-100 justify-content-between">

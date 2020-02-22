@@ -7,7 +7,7 @@ export default tsx.component({
   props: {
     current: {
       type: String
-    },
+    }
   },
   methods: {
     routerLinkClass(to: string): string {
@@ -24,9 +24,16 @@ export default tsx.component({
           <div>
             <hr />
             <div class="card">
-              <img src="//storage.googleapis.com/topic-chat/images/no_img.png" class="rounded-circle" width="128" height="128" />
+              <img
+                src="//storage.googleapis.com/topic-chat/images/no_img.png"
+                class="rounded-circle"
+                width="128"
+                height="128"
+              />
               <div class="card-body">
-                <h5 class="card-title">{ user.readGetSelectedTopic(this.$store)?.getName() }</h5>
+                <h5 class="card-title">
+                  {user.readGetSelectedTopic(this.$store)?.getName()}
+                </h5>
                 <p class="card-text">topic detail</p>
               </div>
             </div>
@@ -34,13 +41,16 @@ export default tsx.component({
           </div>
         )}
 
-        {room.readIsNotEmptyMember(this.$store) &&  (
+        {room.readIsNotEmptyMember(this.$store) && (
           <div>
             <h3>members</h3>
             <ul class="list-group">
               {room.readMember(this.$store).map(e => (
                 <li class="list-group-item">
-                  { e.getName() }{ user.readGetMine(this.$store)?.getId() === e.getId() && (<span> (you)</span>)}
+                  {e.getName()}
+                  {user.readGetMine(this.$store)?.getId() === e.getId() && (
+                    <span> (you)</span>
+                  )}
                 </li>
               ))}
             </ul>
@@ -53,7 +63,7 @@ export default tsx.component({
           <router-link
             tag="li"
             to="/"
-            class={ this.routerLinkClass("Home") }
+            class={this.routerLinkClass("Home")}
             style="cursor: pointer;"
           >
             home
@@ -62,7 +72,7 @@ export default tsx.component({
             <router-link
               tag="li"
               to="/topic"
-              class={ this.routerLinkClass("TopicCatalog") }
+              class={this.routerLinkClass("TopicCatalog")}
               style="cursor: pointer;"
             >
               topic
@@ -71,7 +81,7 @@ export default tsx.component({
             <router-link
               tag="li"
               to="/join"
-              class={ this.routerLinkClass("Join") }
+              class={this.routerLinkClass("Join")}
               style="cursor: pointer;"
             >
               join

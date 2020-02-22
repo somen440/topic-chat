@@ -47,10 +47,11 @@ const mutations = {};
 const actions = {
   join(
     context: AuthContext,
-    name: string
+    item: { name: string; avator: string }
   ): Promise<ClientReadableStream<User>> {
     const req = new JoinRequest();
-    req.setName(name);
+    req.setName(item.name);
+    req.setAvator(item.avator);
     return new Promise(resolve => {
       const stream = readClient(context).join(req, {}, err => {
         console.log(err);

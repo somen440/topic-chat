@@ -1,6 +1,6 @@
 import * as tsx from "vue-tsx-support";
 import Header from "@/components/Header";
-import Sidebar from './components/Sidebar';
+import Sidebar from "./components/Sidebar";
 
 export default tsx.component({
   name: "App",
@@ -11,7 +11,7 @@ export default tsx.component({
         <div class="container-fluid">
           <div class="row">
             <div class="col-sm-3">
-              <Sidebar current={ this.$router.currentRoute.name } />
+              <Sidebar current={this.$router.currentRoute.name} />
             </div>
             <div class="col-sm-9">
               <router-view />

@@ -103,7 +103,7 @@ const actions = {
   },
   recvMember(
     context: ChatContext,
-    item: { topicId: number; userId: number; }
+    item: { topicId: number; userId: number }
   ): Promise<ClientReadableStream<User>> {
     const req = new RecvMemberRequest();
     req.setUserId(item.userId);

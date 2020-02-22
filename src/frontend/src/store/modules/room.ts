@@ -1,7 +1,7 @@
 import { ActionContext } from "vuex";
 import { State as RootState } from "@/store/state";
 import { getStoreAccessors } from "vuex-typescript";
-import { User } from '@/pb/topicchat_pb';
+import { User } from "@/pb/topicchat_pb";
 
 export interface RoomState {
   member: User[];
@@ -9,10 +9,9 @@ export interface RoomState {
 
 type RoomContext = ActionContext<RoomState, RootState>;
 
-const { commit, read, dispatch } = getStoreAccessors<
-  RoomState,
-  RootState
->("room");
+const { commit, read, dispatch } = getStoreAccessors<RoomState, RootState>(
+  "room"
+);
 
 //
 // state
@@ -45,7 +44,7 @@ const mutations = {
   },
   addMember(state: RoomState, user: User): void {
     state.member.push(user);
-  },
+  }
 };
 
 export const commitInitializeMember = commit(mutations.initializeMember);

@@ -13,6 +13,9 @@ interface RoomData {
   topic: Topic | undefined;
 }
 
+const DEFAULT_AVATOR_URL =
+  "//storage.googleapis.com/topic-chat/images/guest_user.png";
+
 export default tsx.component({
   name: "Room",
   data(): RoomData {
@@ -44,17 +47,23 @@ export default tsx.component({
       if (this.topic === undefined) {
         return "unknown";
       }
-      return `${this.topic.getId()}: ${this.topic.getName()}`
+      return `${this.topic.getId()}: ${this.topic.getName()}`;
     },
     getMemberUser(userId: number): User {
-      const user = room.readMember(this.$store)
-        .find(e => e.getId() === userId)
+      const user = room.readMember(this.$store).find(e => e.getId() === userId);
       if (user === undefined) {
         const unUser = new User();
         unUser.setName("system");
         return unUser;
       }
       return user;
+    },
+    getAvator(userId: number): string {
+      const user = this.getMemberUser(userId);
+      if (user.getAvator() === "") {
+        user.setAvator(DEFAULT_AVATOR_URL);
+      }
+      return user.getAvator();
     }
   },
   created() {
@@ -72,7 +81,6 @@ export default tsx.component({
 
     chat.dispatchJoinRoom(this.$store, payload).then(res => {
       res.on("data", res => {
-        console.log(res.getMemberList());
         room.commitInitializeMember(this.$store, res.getMemberList());
         chat.dispatchRecvMessage(this.$store, payload).then(res => {
           res.on("data", res => {
@@ -100,17 +108,17 @@ export default tsx.component({
         {this.messages.map(e => (
           <div class="media my-sm-2">
             <img
-              src="//storage.googleapis.com/topic-chat/images/guest_user.png"
+              src={this.getAvator(e.getUserId())}
               width="64"
               height="64"
               class="bd-placeholder-img mr-3"
             />
             <div class="media-body text-monospace">
               <h5 class="mt-0">
-                { this.getMemberUser(e.getUserId())?.getName() ?? "system" }{" "}
-                <small class="text-muted">{ e.getActionedAt() }</small>
+                {this.getMemberUser(e.getUserId()).getName()}{" "}
+                <small class="text-muted">{e.getActionedAt()}</small>
               </h5>
-              { e.getText() }
+              {e.getText()}
             </div>
           </div>
         ))}
@@ -133,7 +141,8 @@ export default tsx.component({
               type="button"
               onClick={() => {
                 const payload = {
-                  topicId: user.readGetSelectedTopic(this.$store)?.getId() ?? -1,
+                  topicId:
+                    user.readGetSelectedTopic(this.$store)?.getId() ?? -1,
                   message: this.message()
                 };
                 chat.dispatchSendMessage(this.$store, payload);
