@@ -115,7 +115,10 @@ export default tsx.component({
           </div>
         ))}
 
-        <div class="input-group mb-3">
+        <div
+          class="input-group mb-3 mx-sm-2 position-absolute"
+          style="bottom: 0; right: 0;"
+        >
           <input
             type="text"
             class="form-control"

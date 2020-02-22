@@ -20,17 +20,11 @@ export default tsx.component({
   render() {
     return (
       <div>
-        {user.readIsLoggedIn(this.$store) && (
-          <div>
-            <span class="badge badge-primary">{ user.readGetMine(this.$store)?.getName() }</span>
-            <hr />
-          </div>
-        )}
-
         {user.readIsSelectedTopic(this.$store) && (
           <div>
+            <hr />
             <div class="card">
-              <img src="https://storage.googleapis.com/topic-chat/images/no_img.png" width="128" height="128" />
+              <img src="//storage.googleapis.com/topic-chat/images/no_img.png" class="rounded-circle" width="128" height="128" />
               <div class="card-body">
                 <h5 class="card-title">{ user.readGetSelectedTopic(this.$store)?.getName() }</h5>
                 <p class="card-text">topic detail</p>
