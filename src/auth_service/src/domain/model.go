@@ -13,10 +13,15 @@ type UserID int32
 type UserMap map[UserID]*pb.User
 
 // NewUser return user
-func NewUser(id UserID, name string) *pb.User {
+func NewUser(
+	id UserID,
+	name string,
+	avator string,
+) *pb.User {
 	return &pb.User{
-		Id:   int32(id),
-		Name: name,
+		Id:     int32(id),
+		Name:   name,
+		Avator: avator,
 	}
 }
 
@@ -46,7 +51,7 @@ func CreateMockUserMap() UserMap {
 	results := UserMap{}
 	for i, v := range []string{"user1", "user2", "user3", "user4", "user5"} {
 		userID := UserID(i + 1)
-		results[userID] = NewUser(userID, v)
+		results[userID] = NewUser(userID, v, "")
 	}
 	return results
 }

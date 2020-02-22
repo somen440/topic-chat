@@ -19,7 +19,7 @@ func (r *inMemoryUserRepository) Exists(userID domain.UserID) bool {
 
 func (r *inMemoryUserRepository) Create(user *pb.User) (*pb.User, error) {
 	userID := domain.UserID(len(r.users) + 1)
-	createdUser := domain.NewUser(userID, user.GetName())
+	createdUser := domain.NewUser(userID, user.GetName(), user.GetAvator())
 	r.users[userID] = createdUser
 	return createdUser, nil
 }

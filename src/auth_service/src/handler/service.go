@@ -16,7 +16,11 @@ type authServiceServer struct {
 
 func (srv *authServiceServer) Join(ctx context.Context, req *pb.JoinRequest) (*pb.User, error) {
 	name := req.GetName()
-	user, err := srv.r.Create(&pb.User{Name: name})
+	avator := req.GetAvator()
+	user, err := srv.r.Create(&pb.User{
+		Name:   name,
+		Avator: avator,
+	})
 	return user, err
 }
 

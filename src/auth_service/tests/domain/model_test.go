@@ -11,12 +11,14 @@ import (
 func TestNewUser(t *testing.T) {
 	id := domain.UserID(3)
 	name := "user3"
+	avator := "avator3"
 
 	expect := &pb.User{
-		Id:   int32(id),
-		Name: name,
+		Id:     int32(id),
+		Name:   name,
+		Avator: avator,
 	}
-	actual := domain.NewUser(id, name)
+	actual := domain.NewUser(id, name, avator)
 
 	if !reflect.DeepEqual(expect, actual) {
 		t.Errorf("expect [%v] != actual [%v]", expect, actual)
@@ -24,9 +26,9 @@ func TestNewUser(t *testing.T) {
 }
 
 func TestConvertUserMapToList(t *testing.T) {
-	a := &pb.User{Id: 1, Name: "user1"}
-	b := &pb.User{Id: 2, Name: "user2"}
-	c := &pb.User{Id: 3, Name: "user3"}
+	a := &pb.User{Id: 1, Name: "user1", Avator: "avator1"}
+	b := &pb.User{Id: 2, Name: "user2", Avator: "avator2"}
+	c := &pb.User{Id: 3, Name: "user3", Avator: "avator3"}
 
 	users := domain.UserMap{
 		1: a,
@@ -44,11 +46,11 @@ func TestConvertUserMapToList(t *testing.T) {
 
 func TestCreateMockUserMap(t *testing.T) {
 	expect := domain.UserMap{
-		1: &pb.User{Id: 1, Name: "user1"},
-		2: &pb.User{Id: 2, Name: "user2"},
-		3: &pb.User{Id: 3, Name: "user3"},
-		4: &pb.User{Id: 4, Name: "user4"},
-		5: &pb.User{Id: 5, Name: "user5"},
+		1: &pb.User{Id: 1, Name: "user1", Avator: ""},
+		2: &pb.User{Id: 2, Name: "user2", Avator: ""},
+		3: &pb.User{Id: 3, Name: "user3", Avator: ""},
+		4: &pb.User{Id: 4, Name: "user4", Avator: ""},
+		5: &pb.User{Id: 5, Name: "user5", Avator: ""},
 	}
 	actual := domain.CreateMockUserMap()
 	if !reflect.DeepEqual(expect, actual) {

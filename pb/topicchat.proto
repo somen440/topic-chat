@@ -7,7 +7,7 @@ message Empty {}
 message User {
   int32 id = 1;
   string name = 2;
-  // avator
+  string avator = 3;
 }
 
 message Topic {
@@ -40,6 +40,7 @@ service AuthService {
 
 message JoinRequest {
   string name = 1;
+  string avator = 2;
 }
 
 message LoggedInRequest {
