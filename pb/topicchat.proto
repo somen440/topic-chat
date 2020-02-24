@@ -13,11 +13,11 @@ message User {
 message Topic {
   int32 id = 1;
   string name = 2;
-  // todo: image
-  // todo: description
-  // todo: member_num
-  // todo: msg_num
-  // todo: updated_at
+  string image = 3;
+  string description = 4;
+  // todo: member_num メンバー数
+  // todo: msg_num メッセージ数
+  // todo: last_actioned_at 最終投稿日時
 }
 
 message ChatMessage {
