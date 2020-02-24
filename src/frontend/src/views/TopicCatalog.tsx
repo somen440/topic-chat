@@ -38,7 +38,7 @@ export default tsx.component({
                 <small>timestamp</small>
               </div>
               <div class="d-flex w-100 justify-content-between">
-                <p class="mb-1">topic detail.</p>
+                <p class="mb-1">{ e.getDescription() }</p>
                 <button
                   class="btn btn-outline-primary"
                   onClick={() => {

@@ -34,7 +34,7 @@ export default tsx.component({
                 <h5 class="card-title">
                   {user.readGetSelectedTopic(this.$store)?.getName()}
                 </h5>
-                <p class="card-text">topic detail</p>
+                <p class="card-text">{user.readGetSelectedTopic(this.$store)?.getDescription()}</p>
               </div>
             </div>
             <hr />
