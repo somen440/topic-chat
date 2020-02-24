@@ -13,10 +13,17 @@ type TopicID int32
 type TopicMap map[TopicID]*pb.Topic
 
 // NewTopic is return Topic
-func NewTopic(topicID TopicID, name string) *pb.Topic {
+func NewTopic(
+	topicID TopicID,
+	name string,
+	description string,
+	image string,
+) *pb.Topic {
 	return &pb.Topic{
-		Id:   int32(topicID),
-		Name: name,
+		Id:          int32(topicID),
+		Name:        name,
+		Description: description,
+		Image:       image,
 	}
 }
 
@@ -27,12 +34,13 @@ func ToTopicID(id int32) TopicID {
 
 // CreateTopicMapMock is return TopicMap mock
 func CreateTopicMapMock() TopicMap {
-	topics := TopicMap{}
-	for i, v := range []string{"topic1", "topic2", "topic3", "topic4", "topic5"} {
-		topicID := TopicID(i + 1)
-		topics[topicID] = NewTopic(topicID, v)
+	return TopicMap{
+		1: NewTopic(1, "Webエンジニア", "Webエンジニアとしてこの先生きのこるには", ""),
+		2: NewTopic(2, "お笑い", "好きなお笑いについて語ろう", ""),
+		3: NewTopic(3, "美味しいTKGについて", "TKGについて", ""),
+		4: NewTopic(4, "赤いきつねvs緑のたぬき", "どっち", ""),
+		5: NewTopic(5, "新型コロナについて", "新型コロナについて", ""),
 	}
-	return topics
 }
 
 // TopicMapToList return topic list
