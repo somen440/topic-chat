@@ -35,11 +35,11 @@ func ToTopicID(id int32) TopicID {
 // CreateTopicMapMock is return TopicMap mock
 func CreateTopicMapMock() TopicMap {
 	return TopicMap{
-		1: NewTopic(1, "Webエンジニア", "Webエンジニアとしてこの先生きのこるには", ""),
-		2: NewTopic(2, "お笑い", "好きなお笑いについて語ろう", ""),
-		3: NewTopic(3, "美味しいTKGについて", "TKGについて", ""),
-		4: NewTopic(4, "赤いきつねvs緑のたぬき", "どっち", ""),
-		5: NewTopic(5, "新型コロナについて", "新型コロナについて", ""),
+		1: NewTopic(1, "Webエンジニア", "Webエンジニアとしてこの先生きのこるには", "https://www.pakutaso.com/shared/img/thumb/PAK86_smonitatocode20140517_TP_V.jpg"),
+		2: NewTopic(2, "お笑い", "好きなお笑いについて語ろう", "https://www.pakutaso.com/shared/img/thumb/ookawaIMGL2044_TP_V.jpg"),
+		3: NewTopic(3, "美味しいTKGについて", "TKGについて", "https://www.pakutaso.com/shared/img/thumb/YAMA845021_TP_V4.jpg"),
+		4: NewTopic(4, "赤いきつねvs緑のたぬき", "どっち", "https://www.pakutaso.com/shared/img/thumb/AME19716038_TP_V.jpg"),
+		5: NewTopic(5, "新型コロナについて", "新型コロナについて", "https://www.pakutaso.com/shared/img/thumb/KMKC428D343_TP_V.jpg"),
 	}
 }
 
