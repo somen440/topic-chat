@@ -67,12 +67,14 @@ export default tsx.component({
     }
   },
   created() {
-    this.mine = user.readGetMine(this.$store);
-    this.topic = user.readGetSelectedTopic(this.$store);
-    if (this.mine === undefined || this.topic === undefined) {
+    if (!user.readIsLoggedIn(this.$store)) {
       this.$router.push("/");
       alert("login");
+      return;
     }
+
+    this.mine = user.readGetMine(this.$store);
+    this.topic = user.readGetSelectedTopic(this.$store);
 
     const payload = {
       userId: this.getMineId(),

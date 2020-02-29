@@ -3,10 +3,10 @@ import * as auth from "@/store/modules/auth";
 import * as user from "@/store/modules/user";
 
 export default tsx.component({
-  name: "Join",
+  name: "JoinForm",
   data() {
     return {
-      title: "Join",
+      title: "JoinForm",
       name: "",
       avatorUrl:
         "https://storage.googleapis.com/topic-chat/images/animals/ris.png",
@@ -71,9 +71,10 @@ export default tsx.component({
   render() {
     return (
       <div>
-        <h1>{this.title}</h1>
         <div class="form-group">
-          <label for="inputName">Name</label>
+          <label for="inputName">
+            こんにちは。あなたのお名前を教えてください。
+          </label>
           <input
             id="inputName"
             class="form-control"
@@ -110,13 +111,13 @@ export default tsx.component({
 
         {this.validName && (
           <button
-            class="btn btn-outline-primary"
+            class="btn btn-outline-primary btn-block"
             onClick={() => {
               const payload = { name: this.name, avator: this.avatorUrl };
               auth.dispatchJoin(this.$store, payload).then(res => {
                 res.on("data", res => {
                   user.commitLoggedIn(this.$store, res);
-                  this.$router.push("/");
+                  this.$router.push("/topic");
                 });
               });
             }}

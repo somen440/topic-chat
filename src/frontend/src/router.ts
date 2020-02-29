@@ -1,9 +1,6 @@
 import Vue from "vue";
 import Router from "vue-router";
-
-import Count from "./views/Count";
 import Home from "./views/Home";
-import Join from "./views/Join";
 import Room from "./views/Room";
 import TopicCatalog from "./views/TopicCatalog";
 
@@ -17,11 +14,6 @@ export default new Router({
       component: Home
     },
     {
-      path: "/join",
-      name: "Join",
-      component: Join
-    },
-    {
       path: "/room",
       name: "Room",
       component: Room
@@ -30,11 +22,6 @@ export default new Router({
       path: "/topic",
       name: "TopicCatalog",
       component: TopicCatalog
-    },
-    {
-      path: "/count",
-      name: "Count",
-      component: Count
     }
   ]
 });

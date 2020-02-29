@@ -1,6 +1,7 @@
 import * as tsx from "vue-tsx-support";
 import Header from "@/components/Header";
-import Sidebar from "./components/Sidebar";
+import Sidebar from "@/components/Sidebar";
+import * as user from "@/store/modules/user";
 
 export default tsx.component({
   name: "App",
@@ -8,16 +9,24 @@ export default tsx.component({
     return (
       <div id="app">
         <Header />
-        <div class="container-fluid">
-          <div class="row">
-            <div class="col-sm-3">
-              <Sidebar current={this.$router.currentRoute.name} />
-            </div>
-            <div class="col-sm-9">
-              <router-view />
-            </div>
-          </div>
-        </div>
+
+        {user.readIsLoggedIn(this.$store) ? (
+          <main role="main">
+            <section class="jumbotron text-center">
+              <div class="container-fluid">
+                <router-view />
+              </div>
+            </section>
+          </main>
+        ) : (
+          <main role="main">
+            <section class="jumbotron text-center">
+              <div class="container">
+                <router-view />
+              </div>
+            </section>
+          </main>
+        )}
       </div>
     );
   }
