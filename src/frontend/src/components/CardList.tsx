@@ -56,17 +56,15 @@ export default tsx.component({
   },
   render() {
     return (
-      <div>
-        {this.topicsList.map(topics => (
-          <div class="row">
-            {console.log(topics)}
-            {topics.map(topic => (
-              <div class={this.toCardCol(topics)}>
+      <div class="row">
+        {this.topicsList.map(topics => {
+          return topics.map(topic => (
+            <div class="col-md-4">
+              <div class="card shadow-sm md-4">
                 <img
                   class="card-img-top"
-                  data-src="holder.js/100px225?theme=thumb&amp;bg=55595c&amp;fg=eceeef&amp;text=Thumbnail"
-                  alt="Thumbnail [100%x225]"
-                  style="height: 225px;width: 225px;"
+                  width="225"
+                  height="225"
                   src={topic.getImage()}
                   data-holder-rendered="true"
                 />
@@ -91,9 +89,9 @@ export default tsx.component({
                   </div>
                 </div>
               </div>
-            ))}
-          </div>
-        ))}
+            </div>
+          ));
+        })}
       </div>
     );
   }

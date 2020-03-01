@@ -11,7 +11,7 @@ export default tsx.component({
 
         {user.readIsLoggedIn(this.$store) ? (
           <main role="main">
-            <section class="jumbotron text-center" style="height: 100vh;">
+            <section class="text-center">
               <div class="container-fluid">
                 <router-view />
               </div>
@@ -19,7 +19,7 @@ export default tsx.component({
           </main>
         ) : (
           <main role="main">
-            <section class="jumbotron text-center" style="height: 100vh;">
+            <section class="text-center">
               <div class="container">
                 <router-view />
               </div>
