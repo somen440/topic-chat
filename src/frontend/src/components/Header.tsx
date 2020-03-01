@@ -7,7 +7,7 @@ export default tsx.component({
     return (
       <header>
         <div class="bg-info collapse" id="navbarHeader" style="">
-          <div class="container">
+          <div class="container-fluid">
             <div class="row">
               <div class="col-sm-8 col-md-7 py-4">
                 <h4 class="text-white">About</h4>
@@ -38,7 +38,7 @@ export default tsx.component({
         </div>
 
         <div class="navbar navbar-dark bg-info shadow-sm">
-          <div class="container d-flex justify-content-between">
+          <div class="container-fluid d-flex justify-content-between">
             <a
               href="#"
               class="navbar-brand d-flex align-items-center text-white"
@@ -54,10 +54,7 @@ export default tsx.component({
                   placeholder="Search"
                   aria-label="Search"
                 />
-                <button
-                  class="btn btn-outline-success my-2 my-sm-0"
-                  type="submit"
-                >
+                <button class="btn btn-success my-2 my-sm-0" type="submit">
                   Search
                 </button>
               </form>

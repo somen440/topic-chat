@@ -104,54 +104,70 @@ export default tsx.component({
       });
     });
   },
+  updated() {
+    const messages = document.getElementById("messages");
+    if (messages === null) {
+      return;
+    }
+    messages.scrollBy(0, messages.scrollHeight);
+  },
   render() {
     return (
       <div>
-        {this.messages.map(e => (
-          <div class="media my-sm-2">
-            <img
-              src={this.getAvator(e.getUserId())}
-              width="64"
-              height="64"
-              class="bd-placeholder-img mr-3"
-            />
-            <div class="media-body text-monospace">
-              <h5 class="mt-0">
-                {this.getMemberUser(e.getUserId()).getName()}{" "}
-                <small class="text-muted">{e.getActionedAt()}</small>
-              </h5>
-              {e.getText()}
-            </div>
+        <div class="card" style="height: 70vh;">
+          <h5 class="card-header">
+            {user.readGetSelectedTopic(this.$store)?.getName() ?? "unknown"}
+          </h5>
+          <div
+            class="card-body text-left"
+            id="messages"
+            style="overflow-y:scroll;"
+          >
+            {this.messages.map(e => (
+              <div class="media my-sm-2">
+                <img
+                  src={this.getAvator(e.getUserId())}
+                  width="64"
+                  height="64"
+                  class="bd-placeholder-img mr-3"
+                />
+                <div class="media-body text-monospace">
+                  <h5 class="mt-0">
+                    {this.getMemberUser(e.getUserId()).getName()}{" "}
+                    <small class="text-muted">{e.getActionedAt()}</small>
+                  </h5>
+                  {e.getText()}
+                </div>
+              </div>
+            ))}
           </div>
-        ))}
-
-        <div
-          class="input-group mb-3 mx-sm-2 position-absolute"
-          style="bottom: 0; right: 0;"
-        >
-          <input
-            type="text"
-            class="form-control"
-            placeholder="Message"
-            onInput={e => {
-              this.sendText = e.target.value?.toString() ?? "";
-            }}
-          />
-          <div class="input-group-append">
-            <button
-              class="btn btn-outline-secondary"
-              type="button"
-              onClick={() => {
-                const payload = {
-                  topicId:
-                    user.readGetSelectedTopic(this.$store)?.getId() ?? -1,
-                  message: this.message()
-                };
-                chat.dispatchSendMessage(this.$store, payload);
+        </div>
+        <div class="position-fixed" style="bottom: 10px; width: 90%;">
+          <div class="input-group mb-3 mx-sm-2">
+            <input
+              type="text"
+              class="form-control"
+              placeholder="Message"
+              onInput={e => {
+                this.sendText = e.target.value?.toString() ?? "";
               }}
-            >
-              Send
-            </button>
+            />
+            <div class="input-group-append">
+              <button
+                class="btn btn-outline-secondary"
+                type="button"
+                onClick={() => {
+                  const payload = {
+                    topicId:
+                      user.readGetSelectedTopic(this.$store)?.getId() ?? -1,
+                    message: this.message()
+                  };
+                  chat.dispatchSendMessage(this.$store, payload);
+                }}
+              >
+                Send
+              </button>
+            </div>
           </div>
         </div>
       </div>

@@ -1,5 +1,6 @@
 import * as tsx from "vue-tsx-support";
 import { Topic } from "@/pb/topicchat_pb";
+import * as user from "@/store/modules/user";
 
 type Topics = Topic[];
 type TopicsList = Topics[];
@@ -65,7 +66,7 @@ export default tsx.component({
                   class="card-img-top"
                   data-src="holder.js/100px225?theme=thumb&amp;bg=55595c&amp;fg=eceeef&amp;text=Thumbnail"
                   alt="Thumbnail [100%x225]"
-                  style="height: 225px; width: 100%; display: block;"
+                  style="height: 225px;width: 225px;"
                   src={topic.getImage()}
                   data-holder-rendered="true"
                 />
@@ -78,6 +79,10 @@ export default tsx.component({
                       <button
                         type="button"
                         class="btn btn-sm  btn-outline-secondary"
+                        onClick={() => {
+                          user.commitSelectTopic(this.$store, topic);
+                          this.$router.push("/room");
+                        }}
                       >
                         Join
                       </button>

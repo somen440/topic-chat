@@ -1,6 +1,5 @@
 import * as tsx from "vue-tsx-support";
 import Header from "@/components/Header";
-import Sidebar from "@/components/Sidebar";
 import * as user from "@/store/modules/user";
 
 export default tsx.component({
@@ -12,7 +11,7 @@ export default tsx.component({
 
         {user.readIsLoggedIn(this.$store) ? (
           <main role="main">
-            <section class="jumbotron text-center">
+            <section class="jumbotron text-center" style="height: 100vh;">
               <div class="container-fluid">
                 <router-view />
               </div>
@@ -20,7 +19,7 @@ export default tsx.component({
           </main>
         ) : (
           <main role="main">
-            <section class="jumbotron text-center">
+            <section class="jumbotron text-center" style="height: 100vh;">
               <div class="container">
                 <router-view />
               </div>
